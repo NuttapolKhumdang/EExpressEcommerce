@@ -1,0 +1,65 @@
+<main class="managers-view orders">
+    <header>
+        <h1 class="mono">รายการสั่งซื้อ</h1>
+
+        <div class="view-options">
+            <span class="material-icons-outlined">filter_alt</span>
+            <select name="" id="" class="sans" onchange="redirect('/managers/orders?' + this.value)">
+                <option disabled selected>ตัวกรอง</option>
+                <option value="">ทั้งหมด</option>
+                <hr>
+                <option disabled>สถานะ</option>
+                {% for status in OrderStatus %}
+                <option value="status={{ status }}">{{ OrderStatusName[status] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </header>
+
+    <section class="my orders-viewlist">
+        {% if orders.length === 0 %}
+        <h3 class="sans">ยังไม่มีเนื้อหาใดๆ</h3>
+        {% endif %}
+
+        {% for order in orders %}
+        <a href="/managers/order/{{ order._id.toString() }}">
+            <header>
+                <h1 class="display">{{ loop.index}}</h1>
+            </header>
+
+            <article>
+                <h2 class="mono">{{ order._id.toString() }}</h2>
+
+                <div>
+                    <p class="sans">ชื่อ - สกุล</p>
+                    <span class="mono">{{ order.fullname }}</span>
+                </div>
+                <div>
+                    <p class="sans">อีเมล์</p>
+                    <span class="mono">{{ order.email }}</span>
+                </div>
+                <div>
+                    <p class="sans">จำนวนสินค้า</p>
+                    <span class="mono">{{ order.product.length }}</span>
+                </div>
+                <div>
+                    <p class="sans">ราคาสินค้า</p>
+                    <span class="mono">{{ order.bill.total }}</span>
+                </div>
+                <div>
+                    <p class="sans">วันที่สั่งซื้อ</p>
+                    <span class="mono">{{ order.createdAt|date('Y.m.d H:i', -420) }}</span>
+                </div>
+                <div>
+                    <p class="sans">วันที่ทำรายการล่าสุด</p>
+                    <span class="mono">{{ order.updatedAt|date('Y.m.d H:i', -420) }}</span>
+                </div>
+                <div>
+                    <p class="sans">สถานะ</p>
+                    <span class="mono">{{ OrderStatusName[order.status] }}</span>
+                </div>
+            </article>
+        </a>
+        {% endfor %}
+    </section>
+</main>

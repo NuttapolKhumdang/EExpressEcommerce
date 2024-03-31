@@ -1,0 +1,84 @@
+{% import './components.html' as template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include '.head.html' %}
+    <title>EExpress</title>
+</head>
+
+<body>
+    {% include '.nav.html' %}
+
+    <main class=" webstatic banner-section" id="banner">
+        <menu>
+            <div id="b_left">
+                <span class="material-icons-outlined">chevron_left</span>
+            </div>
+
+            <div id="b_right">
+                <span class="material-icons-outlined">chevron_right</span>
+            </div>
+        </menu>
+        <section></section>
+    </main>
+
+    <script>
+        const banner = document.getElementById("banner");
+        const bbanner = new Banner(banner, [
+            {
+                image: 'https://placehold.co/1114x512/white/999999/webp',
+                link: '/a',
+            },
+            {
+                image: 'https://placehold.co/1114x512/white/999999/webp',
+                link: '/b',
+            },
+            {
+                image: 'https://placehold.co/1114x512/white/999999/webp',
+                link: '/c',
+            },
+        ]);
+
+        bbanner.render()
+    </script>
+
+    <main class="my webstatuc heading">
+        <div>
+            <h2 class="sans">สินค้าแนะนำ</h2>
+        </div>
+    </main>
+
+    <main class="webstatic ptable">
+        <section>
+            <img src="https://placehold.co/480x480" alt="">
+
+            <article>
+                <a href="/view/id" class="sans title">
+                    เมฆขาวปกคลุมท้องฟ้า สายลมพัดปลิวหวิววับผ่านหู มองดูต้นไม้ใหญ่สั่นไหวตามสายลม
+                    ผืนฟ้ากลืนกลมลงพบบบรจบกับต้นหญ้าที่ปลายเขา
+                </a>
+
+                <div>
+                    <p class="display price">thb 3.99</p>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <main class="my webstatuc heading">
+        <div>
+            <h2 class="sans">สินค้าทั้งหมด</h2>
+        </div>
+    </main>
+
+    <main class="webstatic ptable">
+        {% for product in products %}
+        {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
+        {% endfor %}
+    </main>
+
+    {% include 'cartview.html' %}
+</body>
+
+</html>

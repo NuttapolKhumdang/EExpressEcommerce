@@ -1,0 +1,12 @@
+<head>
+    {% include '.head.html' %}
+</head>
+
+<script>
+    async function pv() {
+        const res = await fetchJson("/resource/api/provinces");
+        console.log(res);
+    }
+
+    pv();
+</script>

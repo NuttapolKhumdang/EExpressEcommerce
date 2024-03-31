@@ -1,0 +1,44 @@
+<section class="webstatic cartview-container hide" id="cartview-container">
+    <header class="sans">
+        <h2>ตะกร้าสินค้า</h2>
+
+        <button onclick="toggleCartview()"><span class="material-icons-outlined">chevron_right</span></button>
+    </header>
+
+    <article id="cartview-cartlist"></article>
+
+    <summary class="hide">
+        <div>
+            <span class="sans">ราคา</span>
+            <p class="display" id="subtotal">0</p>
+        </div>
+
+        <div>
+            <span class="sans">ค่าขนส่ง</span>
+            <p class="display" id="shiping">0</p>
+        </div>
+
+        <div>
+            <span class="sans">ส่วนลด</span>
+            <p class="display" id="discount">0</p>
+        </div>
+
+        <div>
+            <span class="sans">รวม</span>
+            <p class="display" id="total">0</p>
+        </div>
+
+        <button class="sans" onclick="window.location.href = '/checkout'">สั่งซื้อ</button>
+    </summary>
+</section>
+
+<script>
+    const cartviewcartlist = document.getElementById("cartview-cartlist");
+    const cartviewcontainer = document.getElementById("cartview-container");
+
+    const cart = new Cart(cartviewcontainer, cartviewcartlist);
+
+    function toggleCartview() {
+        return cartviewcontainer.classList.toggle("hide");
+    }
+</script>

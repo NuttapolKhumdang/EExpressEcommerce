@@ -1,0 +1,62 @@
+{% if account?._id %}
+<p class="mono">การสั่งซื้อ</p>
+<a href="/managers/orders">
+    <span class="material-icons-outlined">receipt_long</span>
+    <p class="sans">รายการสั่งซื้อ</p>
+</a>
+<a>
+    <span class="material-icons-outlined">history_edu</span>
+    <p class="sans">ประวัติการขาย</p>
+</a>
+
+<!-- ? -->
+<p class="mono">ร้านค้า</p>
+<a>
+    <span class="material-icons-outlined">style</span>
+    <p class="sans">การจัดวาง</p>
+</a>
+<a href="/managers/shop/promos">
+    <span class="material-icons-outlined">discount</span>
+    <p class="sans">โค้ดส่วนลด</p>
+</a>
+
+<!-- ? -->
+<p class="mono">สินค้า</p>
+<a href="/managers/product">
+    <span class="material-icons-outlined">dns</span>
+    <p class="sans">สินค้าทั้งหมด</p>
+</a>
+<a href="/managers/product/create">
+    <span class="material-icons-outlined">add</span>
+    <p class="sans">เพิ่มสินค้า</p>
+</a>
+
+<!-- ? -->
+<p class="mono">บัญชี</p>
+<a>
+    <span class="material-icons-outlined">person</span>
+    <p class="sans">บัญชี</p>
+</a>
+<a>
+    <span class="material-icons-outlined">logout</span>
+    <p class="sans">ออกจากระบบ</p>
+</a>
+
+<!-- ? -->
+<p class="mono">สถิติและการวิเคราะห์ข้อมูล</p>
+<a>
+    <span class="material-icons-outlined">insights</span>
+    <p class="sans">ข้อมูลเชิงลึก</p>
+</a>
+<a>
+    <span class="material-icons-outlined">analytics</span>
+    <p class="sans">การวิเคราะการขาย</p>
+</a>
+
+{% else %}
+<p class="mono">บัญชี</p>
+<a href="/managers/account/auth">
+    <span class="material-icons-outlined">login</span>
+    <p class="sans">เข้าสู่ระบบ</p>
+</a>
+{% endif %}

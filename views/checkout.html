@@ -1,0 +1,282 @@
+{% import './components.html' as template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include '.head.html' %}
+    <title>EExpress</title>
+</head>
+
+<body>
+    <!-- <script>
+        new Alert('ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/docs/about-this-project">ข้อมูลเพิ่มเติม</a>', AlertType.ERROR);
+    </script> -->
+
+    <header class="my webstatic checkout-header">
+        <h1 class="display">EExpress</h1>
+        <p class="sans">Cart > Infomation > Shipping > Payment</p>
+    </header>
+
+    <main class="my webstatic checkout-container">
+        <section class="checkout-form">
+            <form id="checkout-form">
+                <fieldset>
+                    <h1 class="sans">ข้อมูลติดต่อ</h1>
+
+                    <div>
+                        <label for="email" class="mono">อีเมล์</label>
+                        <input type="text" id="email" class="sans" placeholder="อีเมล์">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <h1 class="sans">สถานที่จัดส่ง</h1>
+                    <div>
+                        <label for="country" class="mono">ประเทศ/ภูมิภาค</label>
+                        <select id="country" class="sans">
+                            <option disabled>ประเทศ/ภูมิภาค</option>
+                            <option value="thailand" selected>ประเทศไทย</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="fname" class="mono">ชื่อ - นามสกุล</label>
+
+                        <div class="row">
+                            <input type="text" id="fname" class="sans" placeholder="ชื่อ">
+                            <input type="text" id="lname" class="sans" placeholder="นามสกุล">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="address" class="mono">ที่อยู่</label>
+                        <input type="text" id="address" class="sans" placeholder="ที่อยู่">
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <label for="province" class="mono">จังหวัด</label>
+                            <select id="province" class="sans" onchange="OnProvinceChange(this.value)">
+                                <option selected disabled value="">จังหวัด</option>
+                                {% for province in thai_provinces %}
+                                <option value="{{ province.id }}">{{ province.name_th }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="district" class="mono">อำเภอ</label>
+                            <select id="district" class="sans" onchange="OnAmphureChange(this.value)">
+                                <option selected disabled value="">อำเภอ</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="subdistrict" class="mono">ตำบล</label>
+                        <select id="subdistrict" class="sans" onchange="OnTambonChange(this.value)">
+                            <option selected disabled value="">ตำบล</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="postalCode" class="mono">รหัสไปรษณีย์</label>
+                        <input type="text" id="postalCode" class="sans" placeholder="รหัสไปรษณีย์">
+                    </div>
+                    <div>
+                        <label for="phone" class="mono">โทรศัพท์</label>
+                        <input type="tel" id="phone" class="sans" placeholder="โทรศัพท์">
+                    </div>
+                </fieldset>
+
+                <menu>
+                    <button onclick="redirect('/')" type="button"><span
+                            class="material-icons-outlined">chevron_left</span>
+                        <p class="sans">กลับสู่หน้าหลัก</p>
+                    </button>
+                    <button class="primary" type="submit">
+                        <p class="sans">ถัดไป</p>
+                    </button>
+                </menu>
+            </form>
+
+            <script>
+                async function loadAddress() {
+                    const res = await fetchJson('/api/address');
+
+                    if (res.status == 200) {
+                        setLocalStorage("address", {
+                            province: res.thai_provinces,
+                            amphures: res.thai_amphures,
+                            tambons: res.thai_tambons
+                        }, true);
+                    }
+                }
+
+                if (!getLocalStorage("address", true)) {
+                    loadAddress();
+                };
+
+                function createFormOption(value, text) {
+                    const option = document.createElement("option");
+                    option.value = value;
+                    option.innerHTML = text;
+                    return option;
+                }
+
+                const amphures_elemt = document.getElementById('district');
+                const default_amphures = amphures_elemt.innerHTML;
+
+                const tambons_elemt = document.getElementById('subdistrict');
+                const default_tambons = tambons_elemt.innerHTML;
+
+                const postcode_elemt = document.getElementById('postalCode');
+                const default_postcode = "";
+
+                function OnProvinceChange(province) { // Render amphures
+                    const amphures = getLocalStorage("address", true).amphures.filter(e => e.province_id == province);
+
+                    amphures_elemt.innerHTML = default_amphures;
+                    tambons_elemt.innerHTML = default_tambons;
+                    postcode_elemt.value = default_postcode;
+
+                    amphures.forEach(e => {
+                        amphures_elemt.insertAdjacentElement("beforeend", createFormOption(e.id, e.name_th));
+                    });
+                }
+
+                function OnAmphureChange(amphure) { // Render tambons
+                    const tambons = getLocalStorage("address", true).tambons.filter(e => e.amphure_id == amphure);
+
+                    tambons_elemt.innerHTML = default_tambons;
+                    tambons.forEach(e => {
+                        tambons_elemt.insertAdjacentElement("beforeend", createFormOption(e.id, e.name_th));
+                    });
+                }
+
+                function OnTambonChange(tambon) { // Render postcode
+                    const tambons = getLocalStorage("address", true).tambons.filter(e => e.id == tambon);
+                    postcode_elemt.value = tambons[0].zip_code;
+                }
+            </script>
+        </section>
+
+        <section class="webstatic cartview-container" id="cartview-container">
+            <header class="sans">
+                <h2>ตะกร้า</h2>
+            </header>
+
+            <article id="cartview-cartlist"></article>
+
+            <form id="discount-code">
+                <input type="text" class="sans" placeholder="บัตรของขวัญหรือรหัสส่วนลด">
+                <button type="submit" class="sans">ยืนยัน</button>
+            </form>
+            <script>
+                const discount_code = document.getElementById("discount-code");
+                discount_code.addEventListener("submit", e => {
+                    e.preventDefault();
+
+                    const code = discount_code.querySelector("input").value;
+                    cart.applyDiscardCode(code);
+                });
+            </script>
+
+            <summary>
+                <div>
+                    <span class="sans">ราคา</span>
+                    <p class="display" id="subtotal">0</p>
+                </div>
+
+                <div>
+                    <span class="sans">ค่าขนส่ง</span>
+                    <p class="display" id="shiping">0</p>
+                </div>
+
+                <div>
+                    <span class="sans">ส่วนลด</span>
+                    <p class="display" id="discount">0</p>
+                </div>
+
+                <div>
+                    <span class="sans">รวม</span>
+                    <p class="display" id="total">0</p>
+                </div>
+            </summary>
+        </section>
+
+        <script>
+            const cartviewcartlist = document.getElementById("cartview-cartlist");
+            const cartviewcontainer = document.getElementById("cartview-container");
+
+            const cart = new Cart(cartviewcontainer, cartviewcartlist);
+        </script>
+    </main>
+
+    <script>
+        const checkout = document.getElementById("checkout-form");
+        const checkout_submit = checkout.querySelector("button[type=submit]");
+        const checkout_submit_default = checkout_submit.innerHTML;
+
+        function btnSubmitAction(action = "normal") {
+            if (action == 'loading') checkout_submit.innerHTML = `<div class="s2loader"></div>`;
+            else if (action = 'normal') checkout_submit.innerHTML = checkout_submit_default;
+        }
+
+        checkout.addEventListener("submit", async e => {
+            e.preventDefault();
+
+            const address = {};
+            checkout.querySelectorAll("input").forEach(e => {
+                if (e.value == "") e.classList.add("incorrect");
+                else e.classList.remove("incorrect");
+                e.oninput = () => e.classList.remove("incorrect");
+
+                address[e.id] = e.value;
+            });
+
+            checkout.querySelectorAll("select").forEach(e => {
+                if (e.value == "") e.classList.add("incorrect");
+                else e.classList.remove("incorrect");
+                e.oninput = () => e.classList.remove("incorrect");
+
+                address[e.id] = e.value;
+            });
+
+            let emptyValue = 0;
+            for (let k of Object.keys(address)) {
+                if (address[k] === "") emptyValue++;
+            }
+
+            const promotion = cart.promotion;
+            const product = getLocalStorage('cart', true);
+            if (!product || product.length == 0) return new Alert("ยังไม่มีสินค้าในตะกร้า &nbsp; <a href='/'>เลือกซื้อสินค้า</a>", AlertType.ERROR);
+            if (emptyValue) return new Alert("กรุณาตรวจสอบข้อมูลการจัดส่งก่อนดำเนินการต่อ", AlertType.ERROR);
+
+            btnSubmitAction('loading');
+            const res = await fetchJson("/api/checkout/new", {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    address,
+                    promotion,
+                    product
+                }),
+            });
+
+            console.log(res);
+
+            if (res.status === 200 || res.status === 201) {
+                setLocalStorage('cart', [], true);
+                redirect('/');
+            } else {
+                btnSubmitAction('normal');
+                return new Alert(res.message, AlertType.ERROR);
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+{% macro ptableitem(link, image, title, price)%}
+<section>
+    <a href="{{ link }}">
+        <img src="/images/{{ image }}" loading="lazy" alt="">
+    </a>
+
+    <article>
+        <a href="{{ link }}" class="sans title">{{ title}}</a>
+
+        {% if price %}
+        <div>
+            {% if not price.EQA %}
+            <p class="display price">{{ price.MIN }}~{{ price.MAX }}</p>
+            {% else %}
+            <p class="display price">{{ price.MIN }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </article>
+</section>
+{% endmacro %}

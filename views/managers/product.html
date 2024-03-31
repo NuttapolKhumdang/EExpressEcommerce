@@ -1,0 +1,19 @@
+<main class="managers-view product-list">
+    <header>
+        <h1 class="mono">รายการสินค้า</h1>
+    </header>
+
+    <section class="my product-viewlist"> 
+        {% for product in products %}
+        <div>
+            <div class="image">
+                <img src="/images/{{ product.images[0] }}" alt="Product picture of {{ product.name }}">
+            </div>
+            <a href="/managers/product/{{ product.search }}">
+                <h2 class="sans">{{ product.name }}</h2>
+                <p class="sans">{{ product.description }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </section>
+</main>

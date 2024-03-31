@@ -1,0 +1,190 @@
+<main class="managers-view orders">
+    <header>
+        <h1 class="mono">รายละเอียดคำสั่งซื้อ</h1>
+    </header>
+
+    <section class="my orders-view">
+        <section>
+            <h3 class="sans">รายละเอียด</h3>
+            <div>
+                <p class="sans">หมายเลขคำสั่งซื้อ</p>
+                <span class="mono">{{ order._id.toString() }}</span>
+            </div>
+            <div>
+                <p class="sans">วันที่สั่งซื้อ</p>
+                <span class="mono">{{ order.createdAt|date('Y.m.d H:i', -420) }}</span>
+            </div>
+            <div>
+                <p class="sans">วันที่เปลี่ยนแปลงล่าสุด</p>
+                <span class="mono">{{ order.updatedAt|date('Y.m.d H:i', -420) }}</span>
+            </div>
+            <div>
+                <p class="sans">สถานะ</p>
+                <span class="sans">{{ OrderStatusName[order.status] }}</span>
+            </div>
+            <div>
+                <p class="sans">ชื่อ - สกุล</p>
+                <span class="sans">{{ order.fullname }}</span>
+            </div>
+            <div>
+                <p class="sans">อีเมล์</p>
+                <span class="mono">{{ order.email }}</span>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="sans">อัพเดทสถานะ</h3>
+
+            <div>
+                <select class="sans" id="update-status-select">
+                    {% for status in OrderStatus %}
+                    <option value="{{ status }}" {% if order.status==status %} selected {% endif %}>
+                        {{ OrderStatusName[status] }}</option>
+                    {% endfor %}
+                </select>
+
+                <button class="sans" onclick="updateOrderStatus()">ยืนยัน</button>
+            </div>
+
+            <script>
+                const order_status = "{{ order.status }}";
+                async function updateOrderStatus() {
+                    if (order_status == "DELIVERED" || order_status == "CANCELLED")
+                        return new Alert("การจัดการสินค้าสิ้นสุดแล้ว", AlertType.INFO, true);
+
+                    const status = document.getElementById('update-status-select').value;
+                    if (order_status == status) return;
+                    
+                    const res = await fetchJson('/api/checkout/{{ order._id.toString() }}', {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            status,
+                            $push: { update: { status, timestamp: new Date() } }
+                        }),
+                    });
+
+                    if (res.status === 200) { window.location.reload(); };
+                }
+            </script>
+        </section>
+
+        <section class="webstatic cartview-container">
+            <h3 class="sans">รายการสินค้า</h3>
+            <article>
+                {% for p in products %}
+                <div>
+                    <img src="/images/{{ p.product.images[p.option.imageindex|default(0)] }}" loading="lazy">
+
+                    <h4 class="sans">
+                        <a href="/{{ p.product.search }}?option={{ p.option.id }}">
+                            <span>{{ p.product.name }}</span>
+                            <p><b>ตัวเลือกสินค้า:</b> {{ p.option.title }}</p>
+                        </a>
+                    </h4>
+
+                    <div>
+                        <p class="display">
+                            <span>{{ p.quantity }} x</span>
+                            <span>{{ p.option.price }}</span>
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </article>
+        </section>
+
+        <section>
+            <h3 class="sans">ราคาสินค้าและค่าบริการ</h3>
+
+            <div>
+                <p class="sans">ราคาสินค้า</p>
+                <span class="display bold">{{ order.bill.subtotal }}</span>
+            </div>
+            <div>
+                <p class="sans">ค่าขนส่ง</p>
+                <span class="display bold">+ {{ order.bill.shipping }}</span>
+            </div>
+            <div>
+                <p class="sans">ส่วนลด</p>
+                <span class="display bold">- {{ order.bill.discount }}</span>
+            </div>
+            <div>
+                <p class="sans">ภาษีอากร</p>
+                <span class="display bold">+ {{ order.bill.taxes }}</span>
+            </div>
+            <div>
+                <p class="sans">ยอดสุทธิ</p>
+                <span class="display bold">{{ order.bill.total }}</span>
+            </div>
+        </section>
+        <section>
+            <h3 class="sans">การใช้งานล่วนลด</h3>
+            {% if not promotion %}
+            <p class="sans">ไม่ได้ใช้งานรหัสล่วนลดใดๆ</p>
+            {% else %}
+            <div>
+                <p class="sans">ชื่อโปรโมชั่น</p>
+                <span class="sans bold">{{ promotion.title }}</span>
+            </div>
+            <div>
+                <p class="sans">รหัสโปรโมชั่น</p>
+                <span class="sans">{{ promotion.code }}</span>
+            </div>
+            <div>
+                <p class="sans">ล่วนลด</p>
+                <span class="sans">{{ promotion.discount }}{% if promotion.discountByPercen%}%{% endif %}</span>
+            </div>
+            {% endif %}
+        </section>
+
+        <section>
+            <h3 class="sans">สถานที่จัดส่ง</h3>
+
+            <div>
+                <p class="sans">ที่อยู่</p>
+                <span class="sans">{{ address.address }}</span>
+            </div>
+            <div>
+                <p class="sans">ตำบล</p>
+                <span class="sans">{% for tambon in thai_tambons %}
+                    {% if tambon.id == address.subdistrict %}{{ tambon.name_th }}{% endif %}{% endfor %}</span>
+            </div>
+            <div>
+                <p class="sans">อำเภอ</p>
+                <span class="sans">{% for amphure in thai_amphures %}
+                    {% if amphure.id == address.district %}{{ amphure.name_th }}{% endif %}{% endfor %}</span>
+            </div>
+            <div>
+                <p class="sans">จังหวัด</p>
+                <span class="sans">{% for province in thai_provinces %}
+                    {% if province.id == address.province %}{{ province.name_th }}{% endif %}{% endfor %}</span>
+            </div>
+            <div>
+                <p class="sans">ประเทศ/ภูมิภาค</p>
+                <span class="sans">ไทย</span>
+            </div>
+            <div>
+                <p class="sans">รหัสไปรษณีย์</p>
+                <span class="mono">{{ address.postalCode }}</span>
+            </div>
+            <div>
+                <p class="sans">โทรศัพท์</p>
+                <span class="mono">{{ address.phone }}</span>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="sans">ประวัติการเปลี่ยนแปลง</h3>
+
+            {% for update in order.update %}
+            <div>
+                <p class="sans">{{ OrderStatusName[update.status] }}</p>
+                <p class="mono">{{ update.timestamp|date('Y.m.d H:i', -420) }}</p>
+            </div>
+            {% endfor %}
+        </section>
+    </section>
+</main>

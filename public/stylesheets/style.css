@@ -1,0 +1,824 @@
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-thumb-background);
+}
+
+:root {
+  --nav-background: #FFFFFF;
+  --banner-background: #191919;
+  --nav-border: #191919;
+  --scroll-thumb-background: #191919;
+  --banner-dot-color: #F1EF99;
+  --banner-dot-active-color: #D37676;
+  --button-normal-background: #FFFFFF;
+  --button-normal-text: #191919;
+  --button-normal-border: #191919;
+  --button-normal-hover-text: #FFFFFF;
+  --button-normal-hover-background: #191919;
+  --button-red-background: #FFFFFF;
+  --button-red-text: #191919;
+  --button-red-border: #191919;
+  --button-red-hover-text: #FFFFFF;
+  --button-red-hover-background: #D37676;
+  --notify-backgound: #D37676;
+  --button-action-transition: 160ms;
+  --normal-text: #191919;
+  --cartview-background: #FFFFFF;
+  --cartview-text: #191919;
+}
+
+* {
+  margin: 0;
+}
+
+.sans {
+  font-family: "Poppins", "Noto Sans Thai", sans-serif;
+}
+
+.mono {
+  font-family: "DM Mono", monospace;
+}
+
+.display {
+  font-family: "Major Mono Display", "Noto Sans Thai", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+button {
+  border: 2px solid var(--button-normal-border);
+  background-color: var(--button-normal-background);
+  color: var(--button-normal-text);
+  transition: var(--button-action-transition);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+button:hover {
+  background-color: var(--button-normal-hover-background);
+  color: var(--button-normal-hover-text);
+}
+
+:is(a, button, input, select, textarea) {
+  outline-offset: 4px;
+  outline-style: #191919;
+}
+
+body {
+  overflow-x: hidden;
+  cursor: default;
+}
+
+body > header {
+  width: min(1114px, 90vw);
+  padding-left: max((100vw - 1114px) / 2, 5vw);
+  padding-right: max((100vw - 1114px) / 2, 5vw);
+}
+
+body > main {
+  width: min(1114px, 90vw);
+  margin-left: max((100vw - 1114px) / 2, 5vw);
+  margin-right: max((100vw - 1114px) / 2, 5vw);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: flex-start;
+  gap: 1rem;
+}
+form > button {
+  width: 100%;
+  height: 3rem;
+  font-size: 16px;
+  font-weight: bold;
+}
+form header {
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+form header button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--button-normal-border);
+  background-color: var(--button-normal-background);
+  color: var(--button-normal-text);
+  transition: var(--button-action-transition);
+}
+form header button:hover {
+  background-color: var(--button-normal-hover-background);
+  color: var(--button-normal-hover-text);
+}
+form :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 500;
+  padding: 1rem 0 6pt 0;
+}
+form fieldset {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  gap: 6pt;
+  border: none;
+  width: calc(100% - 2rem - 4px);
+  padding: 1rem;
+  height: -moz-max-content;
+  height: max-content;
+  border: 2px solid #191919;
+}
+form label {
+  border-bottom: 1px solid #191919;
+}
+form input,
+form textarea,
+form select {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0;
+  border: none;
+  font-size: 16px;
+  border-bottom: 2px solid #191919;
+}
+form textarea {
+  padding-top: 1rem;
+  resize: none;
+}
+
+.webstatic.masterhead {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: var(--nav-background);
+  border-bottom: 2px solid var(--nav-border);
+}
+.webstatic.masterhead nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6pt;
+}
+.webstatic.masterhead a {
+  font-weight: bold;
+}
+.webstatic.masterhead a,
+.webstatic.masterhead button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  padding: 0 1rem;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+.webstatic.masterhead a.i,
+.webstatic.masterhead button.i {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  position: relative;
+}
+.webstatic.masterhead a.a::after,
+.webstatic.masterhead button.a::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  background-color: var(--notify-backgound);
+}
+.webstatic.masterhead a:hover,
+.webstatic.masterhead button:hover {
+  background-color: #000;
+  color: #fff;
+}
+.webstatic.masterhead h3 > a {
+  all: unset;
+  cursor: pointer;
+}
+.webstatic.masterhead h3 > a:hover {
+  all: unset;
+  cursor: pointer;
+}
+
+.my {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.webstatic.banner-section {
+  position: relative;
+  height: 512px;
+  background-color: var(--banner-background);
+}
+.webstatic.banner-section menu {
+  all: unset;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.webstatic.banner-section menu div {
+  background-color: #fff;
+  -webkit-backdrop-filter: blur(2pt);
+          backdrop-filter: blur(2pt);
+  width: 4rem;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: var(--button-action-transition);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.webstatic.banner-section menu div:hover {
+  color: #fff;
+  background-color: #000;
+}
+.webstatic.banner-section menu nav {
+  width: 4rem;
+  height: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6pt;
+}
+.webstatic.banner-section menu nav span {
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  background-color: var(--banner-dot-color);
+}
+.webstatic.banner-section menu nav span.a {
+  background-color: var(--banner-dot-active-color);
+}
+.webstatic.banner-section menu:hover div {
+  opacity: 1;
+}
+.webstatic.banner-section section {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.webstatic.banner-section section div {
+  width: 0;
+  height: 100%;
+  transition: 320ms;
+}
+.webstatic.banner-section section div img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.webstatic.banner-section section div.a {
+  width: 100%;
+}
+
+.webstatic.heading {
+  min-height: 4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.webstatic.ptable {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+.webstatic.ptable section {
+  width: 100%;
+  height: 24rem;
+  display: flex;
+  flex-direction: column;
+}
+.webstatic.ptable section > a {
+  all: unset;
+}
+.webstatic.ptable section img {
+  width: 100%;
+  height: 16rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.webstatic.ptable section article {
+  width: auto;
+  padding: 6pt;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.webstatic.ptable section article .title {
+  text-decoration: none;
+  color: var(--normal-text);
+  line-height: 1.4;
+  font-size: 16px;
+  font-weight: bold;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.webstatic.ptable section article div {
+  display: flex;
+  flex-direction: row;
+  align-items: last baseline;
+  justify-content: right;
+  gap: 6pt;
+}
+.webstatic.ptable section article div .price {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.webstatic.view-product {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 4rem;
+}
+.webstatic.view-product .product.picture {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  gap: 1rem;
+  width: 100%;
+}
+.webstatic.view-product .product.picture .image {
+  width: 100%;
+}
+.webstatic.view-product .product.picture .image img {
+  width: 100%;
+  height: 480px;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.webstatic.view-product .product.picture .itable {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  gap: 6pt;
+  width: 100%;
+  overflow-x: scroll;
+  padding-bottom: 4px;
+}
+.webstatic.view-product .product.picture .itable img {
+  width: 4rem;
+  height: 4rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+  cursor: pointer;
+}
+.webstatic.view-product header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  gap: 1rem;
+}
+.webstatic.view-product header h1 {
+  line-height: 1.5;
+}
+.webstatic.view-product header p {
+  line-height: 1.4;
+}
+.webstatic.view-product header .price {
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: last baseline;
+  justify-content: right;
+  gap: 6pt;
+}
+.webstatic.view-product header .price span {
+  font-size: 16px;
+  font-weight: normal;
+}
+.webstatic.view-product header .price p {
+  font-size: 24px;
+  font-weight: bold;
+}
+.webstatic.view-product header .options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: left;
+  gap: 1rem;
+}
+.webstatic.view-product header .options button {
+  width: -moz-max-content;
+  width: max-content;
+  height: 3rem;
+  min-width: 6rem;
+  padding: 0 1rem;
+  font-size: 16px;
+  font-weight: bold;
+}
+.webstatic.view-product header .options button.selected {
+  background-color: var(--button-normal-hover-background);
+  color: var(--button-normal-hover-text);
+}
+.webstatic.view-product header .qbuy {
+  display: grid;
+  grid-template-columns: 2fr 4fr 1fr;
+  gap: 1rem;
+  height: 4rem;
+}
+.webstatic.view-product header .qbuy menu {
+  all: unset;
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  height: 4rem;
+  width: 100%;
+}
+.webstatic.view-product header .qbuy menu div {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.webstatic.view-product header .qbuy menu button {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+.webstatic.view-product header .qbuy menu button:hover {
+  background-color: #191919;
+  color: white;
+}
+.webstatic.view-product header .qbuy input[type=number] {
+  width: 100%;
+  height: calc(100% - 4px);
+  padding: 0;
+  border: 2px solid #191919;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+}
+.webstatic.view-product header .qbuy input[type=number]::-webkit-inner-spin-button, .webstatic.view-product header .qbuy input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.webstatic.view-product header .qbuy button {
+  width: 100%;
+  height: 100%;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.webstatic.view-product header .qbuy button span {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.webstatic.product-detail article {
+  display: flex;
+  flex-direction: column;
+  gap: 6pt;
+}
+.webstatic.product-detail article p {
+  font-size: 16px;
+}
+.webstatic.product-detail article img {
+  width: 100%;
+  margin: 6pt 0;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.webstatic.cartview-container {
+  position: fixed;
+  top: 4rem;
+  right: 0;
+  z-index: 200;
+  background-color: var(--cartview-background);
+  height: calc(100vh - 4rem);
+  width: 24rem;
+  padding: 0 2rem;
+  border: 2px solid var(--button-normal-border);
+  border-right: 0;
+  border-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: 320ms;
+}
+.webstatic.cartview-container.hide {
+  right: -30rem;
+}
+.webstatic.cartview-container header {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.webstatic.cartview-container header button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+}
+.webstatic.cartview-container article {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 50vh;
+  padding-right: 1rem;
+  border-bottom: 2px solid var(--button-normal-border);
+  overflow-y: scroll;
+}
+.webstatic.cartview-container article > span {
+  width: 100%;
+  padding: 1rem 0;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+.webstatic.cartview-container article div {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr 4rem;
+  place-items: center;
+  gap: 6pt;
+}
+.webstatic.cartview-container article div img {
+  width: 3.5rem;
+  height: 3.5rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.webstatic.cartview-container article div h4 {
+  line-height: 1.2;
+  width: 100%;
+  text-align: left;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.webstatic.cartview-container article div h4 a {
+  text-decoration: none;
+  color: inherit;
+}
+.webstatic.cartview-container article div div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.webstatic.cartview-container article div div p {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.webstatic.cartview-container article div div p span {
+  width: 100%;
+  text-align: right;
+}
+.webstatic.cartview-container article div menu {
+  all: unset;
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+.webstatic.cartview-container article div menu button {
+  all: unset;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: var(--button-red-text);
+  background-color: var(--button-red-background);
+  transition: var(--button-action-transition);
+}
+.webstatic.cartview-container article div menu button:hover {
+  background-color: var(--button-red-hover-background);
+  color: var(--button-red-hover-text);
+}
+.webstatic.cartview-container summary {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 0;
+  gap: 6pt;
+}
+.webstatic.cartview-container summary.hide {
+  display: none;
+}
+.webstatic.cartview-container summary div {
+  display: flex;
+  flex-direction: row;
+  align-items: last baseline;
+  justify-content: right;
+  gap: 6pt;
+}
+.webstatic.cartview-container summary div span {
+  font-size: 16px;
+}
+.webstatic.cartview-container summary div p {
+  font-size: 24px;
+}
+.webstatic.cartview-container summary button {
+  height: 3rem;
+  margin: 2rem 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.webstatic.alert-message-container {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 299;
+  display: grid;
+  grid-template-columns: 2rem 1fr 2rem;
+  height: 2rem;
+}
+.webstatic.alert-message-container.follow {
+  top: calc(4rem + 2px);
+}
+.webstatic.alert-message-container.ERROR {
+  background-color: #D37676;
+}
+.webstatic.alert-message-container.INFO {
+  background-color: #99B898;
+}
+.webstatic.alert-message-container p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+.webstatic.alert-message-container a {
+  -webkit-text-decoration: 2px underline #fff;
+          text-decoration: 2px underline #fff;
+  color: white;
+}
+.webstatic.alert-message-container button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border: none;
+  background-color: transparent;
+}
+.webstatic.alert-message-container button:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.webstatic.checkout-container {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+}
+.webstatic.checkout-container .checkout-form fieldset {
+  gap: 1.4rem;
+}
+.webstatic.checkout-container .checkout-form fieldset div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  gap: 6pt;
+}
+.webstatic.checkout-container .checkout-form fieldset div label {
+  width: -moz-max-content;
+  width: max-content;
+}
+.webstatic.checkout-container .checkout-form fieldset div.row {
+  flex-direction: row;
+}
+.webstatic.checkout-container .checkout-form select.incorrect,
+.webstatic.checkout-container .checkout-form input.incorrect {
+  border-color: #D37676;
+}
+.webstatic.checkout-container .checkout-form menu {
+  all: unset;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.webstatic.checkout-container .checkout-form menu button {
+  border: none;
+  height: 3rem;
+  gap: 2pt;
+  padding-right: 1rem;
+}
+.webstatic.checkout-container .checkout-form menu button.primary {
+  padding: 0 2rem;
+  border: 2px solid var(--button-normal-border);
+  font-weight: bold;
+}
+.webstatic.checkout-container .checkout-form menu button p {
+  font-size: 16px;
+}
+.webstatic.checkout-container .cartview-container {
+  width: 100%;
+  padding: 0;
+  border: none;
+  position: relative;
+  top: unset;
+  right: unset;
+}
+.webstatic.checkout-container .cartview-container article {
+  overflow-y: auto;
+  padding-bottom: 1rem;
+}
+.webstatic.checkout-container .cartview-container form {
+  display: grid;
+  grid-template-columns: 1fr 6rem;
+  padding-top: 1rem;
+}
+.webstatic.checkout-container .cartview-container summary {
+  width: 100%;
+}
+.webstatic.checkout-container .cartview-container summary div {
+  justify-content: space-between;
+}
+
+.webstatic.checkout-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6pt;
+}
+.webstatic.checkout-header p {
+  font-size: 14px;
+}
+
+.s2loader {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 4px solid;
+  border-color: #E0E0E0;
+  border-right-color: #000000;
+  animation: s2 680ms infinite linear;
+}
+
+@keyframes s2 {
+  to {
+    transform: rotate(1turn);
+  }
+}

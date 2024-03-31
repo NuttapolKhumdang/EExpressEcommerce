@@ -1,0 +1,92 @@
+<main class="managers-view shop-promotions">
+    <header>
+        <h1 class="mono">โค้ดส่วนลด</h1>
+
+        <button onclick="redirect('/managers/shop/promos/add')"><span
+                class="material-icons-outlined">add</span></button>
+    </header>
+
+    <article>
+        {% if promos.length === 0%}
+        <h3 class="sans">ยังไม่มีเนื้อหาใดๆ</h3>
+        {% endif %}
+
+        {% for promo in promos %}
+        <section>
+            <header>
+                <div>
+                    <h3 class="sans">{{ promo.title }}</h3>
+                    <code class="mono">{{ promo.code }}</code>
+                </div>
+
+                <menu>
+                    <button onclick="redirect('/managers/shop/promos/{{ promo._id.toString() }}')"><span class="material-icons-outlined">edit</span></button>
+                    <button onclick="OnDeletePromocode('{{ promo._id.toString() }}')"><span class="material-icons-outlined">delete</span></button>
+                </menu>
+            </header>
+            <article>
+                <div>
+                    <p class="sans">ส่วนลด</p>
+                    <span class="mono">{{ promo.discount }}{% if promo.discountByPercen %}%{% endif %}</span>
+                </div>
+                <div>
+                    <p class="sans">ขั้นต่ำ</p>
+                    <span class="mono">{{ promo.minimumPrice|default('-') }}</span>
+                </div>
+                <div>
+                    <p class="sans">สูงสุด</p>
+                    <span class="mono">{{ promo.maximumDiscount|default('-') }}</span>
+                </div>
+
+                <div>
+                    <p class="sans">จำนวนการใช้งาน</p>
+                    <span class="mono">{{ promo.usage.length }}</span>
+                </div>
+                <div>
+                    <p class="sans">วันที่เพิ่ม</p>
+                    <span class="mono">{{ promo.createdAt|date('Y.m.d') }}</span>
+                </div>
+                <div>
+                    <p class="sans">สถานะ</p>
+                    <select id="{{ promo._id.toString() }}" class="mono"
+                        onchange="OnActiveSelectChange(this.id, this.value)">
+                        <option value="active">Active</option>
+                        <option value="inactive" {% if not promo.active %} selected {% endif %}>Inactive</option>
+                    </select>
+                </div>
+
+            </article>
+        </section>
+        {% endfor %}
+
+        <script>
+            async function OnActiveSelectChange(id, isActive) {
+                const res = await fetchJson('/api/promocode/' + id, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    method: 'PUT',
+                    body: JSON.stringify({ active: isActive == 'active' ? true : false }),
+                });
+
+                if (res.status === 201) {
+                    new Alert("อัพเดทข้อมูลสำเร็จ", AlertType.INFO, true);
+                } else {
+                    new Alert("เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้ง", AlertType.ERROR, true);
+                }
+            }
+
+            async function OnDeletePromocode(id) {
+                const res = await fetchJson('/api/promocode/' + id, {
+                    method: 'DELETE'
+                });
+
+                if (res.status === 204) {
+                    window.location.reload();
+                } else {
+                    new Alert("เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้ง", AlertType.ERROR, true);
+                }
+            }
+        </script>
+    </article>
+</main>

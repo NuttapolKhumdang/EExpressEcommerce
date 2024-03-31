@@ -1,0 +1,321 @@
+<main class="managers-view product-create">
+    <header>
+        <h1 class="mono">เพิ่มสินค้า</h1>
+    </header>
+
+    <form id="product-create">
+        <h3 class="mono">รูปภาพสินค้า</h3>
+
+        <section class="image-select-container">
+            <label for="image" class="image-select {% if product.images %} hide {% endif %}" id="image-select">
+                <div>
+                    <span class="material-icons-outlined">image</span>
+                    <p class="sans">เพิ่มรูปภาพ</p>
+                </div>
+            </label>
+
+            <div class="image-preview" id="image-preview">
+                <label for="image">
+                    <span class="material-icons-outlined">autorenew</span>
+                </label>
+
+                {% for image in product.images %}
+                <img src="/images/{{ image }}" loading="lazy" alt="product image {{ loop.index }}">
+                {% endfor %}
+            </div>
+
+            <input type="file" id="image" accept="image/*" multiple>
+
+            <script>
+                const image = document.getElementById("image");
+                const imagelabel = document.getElementById("image-select");
+                const imagepreview = document.getElementById("image-preview");
+                const defaultimagepreview = imagepreview.querySelector("label");
+
+                const imagefile = [
+                    // {% for img in product.images %}
+                    "{{ img }}",
+                    // {% endfor %}
+                ];
+
+                let files = [];
+                function createPreview(files) {
+                    let imgl = [];
+
+                    for (let i = 0; i < files.length; i++) {
+                        if (i >= 20) { break; }
+                        const img = document.createElement('img');
+
+                        if (typeof files[i] === "string") {
+                            img.src = '/images/' + files[i];
+                        } else {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                            };
+
+                            reader.readAsDataURL(files[i]);
+                        }
+                        imgl.push(img);
+                    }
+
+                    return imgl;
+                }
+
+                image.addEventListener("change", e => {
+                    if (e.target.files.length > 20) {
+                        const alert = new Alert("สามารถเลือกรูปภาพได้สูงสุด 20 ภาพเท่านั้น", AlertType.ERROR, true);
+                        return;
+                    }
+
+                    if (e.target.files.length !== 0) {
+                        imagelabel.classList.add('hide');
+                        imagepreview.innerHTML = "";
+                        imagepreview.insertAdjacentElement("afterbegin", defaultimagepreview);
+
+                        const imageContent = createPreview(e.target.files);
+                        files = e.target.files;
+
+                        imageContent.forEach(e => {
+                            imagepreview.insertAdjacentElement("beforeend", e);
+                        });
+                    } else {
+                        imagelabel.classList.remove('hide');
+                        imagepreview.innerHTML = "";
+                    }
+                });
+            </script>
+        </section>
+
+        <h3 class="mono">ข้อมูลสินค้า</h3>
+
+        <fieldset>
+            <label for="name" class="mono">ชื่อสินค้า</label>
+            <input type="text" id="name" class="sans" placeholder="ชื่อสินค้า" value="{{ product.name }}">
+        </fieldset>
+
+        <fieldset>
+            <label for="desc" class="mono">คำอธิบายสินค้า</label>
+            <textarea id="desc" class="sans" placeholder="คำอธิบายสินค้า"
+                onkeydown="return event.keyCode != 13 ? true: false">{{ product.description }}</textarea>
+        </fieldset>
+
+        <fieldset>
+            <label for="category" class="mono">ประเภทสินค้า</label>
+            <select id="category" class="sans">
+                <option value='' disabled>ประเภทสินค้า</option>
+                <option value="category-new">เพิ่มประเภทสินค้า</option>
+                <hr>
+
+                {% for cate in category %}
+                <option value="{{ cate._id.toString() }}" {% if cate._id.toString()==product.category %} selected {%
+                    endif %}>{{ cate.title }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="hidden" id="category-new" class="sans" placeholder="ประเภทสินค้า">
+
+            <script>
+                const category_select = document.getElementById("category");
+                const category_new = document.getElementById("category-new");
+
+                category_select.addEventListener("change", () => {
+                    if (category_select.value == "category-new")
+                        category_new.setAttribute("type", 'text');
+                    else category_new.setAttribute("type", 'hidden');
+                });
+            </script>
+        </fieldset>
+
+        <header>
+            <h3 class="mono">ตัวเลือก</h3>
+            <button type="button" onclick="pOptions.insertOption()">
+                <span class="material-icons-outlined">add</span></button>
+        </header>
+
+        <section class="options-container" id="options">
+            {% for option in product.options %}
+            <div class="options" id="{{ option.id }}">
+                <button type="button" onclick="pOptions.removeOption('{{ option.id }}')">
+                    <span class="material-icons-outlined">delete</span></button>
+                <section>
+                    <header class="mono">ตัวเลือก {{ loop.index }}</header>
+                    <menu>
+                        {% if option.imageindex !== "" %}
+                        <img onclick="selectOptionImage('{{ option.id }}')"
+                            src="/images/{{ product.images[option.imageindex] }}" loading="lazy"
+                            alt="option image preview">
+                        {% else %}
+                        <button type="button" onclick="selectOptionImage('{{ option.id }}')">
+                            <span class="material-icons-outlined">art_track</span>
+                            <p class="sans">เลือกรูปภาพสินค้า</p>
+                        </button>
+                        {% endif %}
+                    </menu>
+                </section>
+                <fieldset>
+                    <input type="hidden" id="imageindex" value="{{ option.imageindex }}">
+                    <input type="hidden" id="optionid" value="{{ option.id }}">
+                    <label for="title" class="mono">ชื่อตัวเลือก</label>
+                    <input type="text" id="title" class="sans" placeholder="ชื่อตัวเลือก" value="{{ option.title }}">
+                    <label for="price" class="mono">ราคา</label>
+                    <input type="number" id="price" class="sans" placeholder="ราคา" min="0" value="{{ option.price }}">
+                </fieldset>
+            </div>
+            {% endfor %}
+        </section>
+        <button type="submit" class="sans">
+            {% if product %} บันทึกการเปลี่ยนแปลง
+            {% else %} เพิ่มสินค้า
+            {% endif %}
+        </button>
+
+        <script src="/javascripts/ProductOptions.js"></script>
+
+        <script>
+            const optionsContainer = document.getElementById("options");
+            const pOptions = new ProductOptions(optionsContainer);
+
+            function parseContent() {
+                const image = document.getElementById("image");
+                const name = document.getElementById("name").value;
+                const description = document.getElementById("desc").value;
+                const category = document.getElementById("category").value;
+                const newcategory = document.getElementById("category-new").value;
+                const options = pOptions.getresult();
+
+                const formData = new FormData();
+                let ignoreImage = false;
+
+                /*{% if product %}*/
+                ignoreImage = true;
+                /* {% endif %}*/
+
+                if (!name || !category) {
+                    new Alert("กรุณาเพิ่มชื่อสินค้า หรือเลือกประเภทของสินค้า", AlertType.ERROR, true);
+                    return false;
+                }
+
+                if (!ignoreImage && (!image?.files?.length || image?.files?.length === 0)) {
+                    new Alert("กรุณาเพิ่มภาพสินค้า", AlertType.ERROR, true);
+                    return false;
+                }
+
+                let invalidOptionCount = 0;
+                options.forEach(e => { if (!e.title || !e.price || !e.id) invalidOptionCount++ });
+
+                if (invalidOptionCount) {
+                    new Alert("ตัวเลือกของสินค้าไม่ถูกต้อง ลองตรวจสอบและดำเนินการอีกครั้ง", AlertType.ERROR, true);
+                    return false;
+                }
+
+                formData.append("name", name);
+                formData.append("description", description);
+                formData.append("category", category);
+                formData.append("newcategory", newcategory);
+                formData.append("options", JSON.stringify(options));
+
+                for (let i = 0; i < image.files.length; i++) {
+                    formData.append("images", image.files[i])
+                }
+
+                return formData;
+            }
+        </script>
+        {% if not product.options or product.options.length == 0 %}
+        <script>pOptions.insertOption()</script>
+        {% else %}
+
+        <script>
+            pOptions.update();
+        </script>
+        {% endif %}
+    </form>
+</main>
+
+
+<script>
+    const productForm = document.getElementById("product-create");
+    productForm.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const data = parseContent();
+        if (!data) return;
+
+        const res = await fetchJson('/product/' + "{{ product.search|default('new') }}", {
+            method: '{% if product %}PUT{% else %}POST{% endif %}',
+            body: data,
+        });
+
+        console.log(res);
+        if (res.status == 200) window.location.href = "/managers/product/";
+        else if (res.status == 409) new Alert("ชื่อสินค้ามีการใช้งานแล้ว", AlertType.ERROR, true);
+    });
+</script>
+
+<script src="/javascripts/textarea.js"></script>
+
+<script>
+    function setOptionImageIndex(id, index) {
+        const container = document.getElementById(id);
+        const menu = container.querySelector("menu");
+        const preview = document.createElement("img");
+        container.querySelector("input#imageindex").value = index;
+
+        if (!files || files.length === 0) {
+            preview.src = '/images/' + imagefile[index];
+        } else {
+            const reader = new FileReader();
+            reader.onload = function (e) { preview.src = e.target.result; };
+            reader.readAsDataURL(files[index]);
+        }
+
+        menu.innerHTML = "";
+        menu.insertAdjacentElement("beforeend", preview);
+        preview.addEventListener("click", () => selectOptionImage(id));
+    }
+
+    function selectOptionImage(id) {
+        if (imagefile.length === 0 && (!files || files.length === 0)) return new Alert("กรุณาอัพโหลดรูปภาพสินค้าก่อนดำเนินการต่อ", AlertType.ERROR, true);
+
+        const container = document.createElement("header");
+        container.classList.add("product-options-images-selector");
+
+        const button = document.createElement("button");
+        const span = document.createElement("span");
+        span.classList.add("material-icons-outlined");
+        span.innerHTML = "close";
+        button.insertAdjacentElement("beforeend", span);
+
+        button.addEventListener("click", () => container.remove());
+        const header = document.createElement("header");
+        header.classList.add("sans");
+        header.insertAdjacentText("beforeend", "เลือกรูปภาพ");
+        header.insertAdjacentElement("beforeend", button);
+
+        const div = document.createElement("div");
+        container.insertAdjacentElement("afterbegin", header);
+        container.insertAdjacentElement("beforeend", div);
+        const prefile = createPreview(imagefile.length !== 0 ? imagefile : files);
+
+        const selectpack = prefile.map((e, index) => {
+            const img = document.createElement("div");
+            img.insertAdjacentElement("beforeend", e);
+
+            img.addEventListener("click", () => {
+                setOptionImageIndex(id, index);
+                container.remove();
+                
+                setTimeout(() => {
+                    pOptions.update();
+                }, 160);
+            });
+
+            return img;
+        });
+
+        selectpack.forEach(e => div.insertAdjacentElement("beforeend", e));
+        document.body.insertAdjacentElement("beforeend", container);
+    }
+</script>

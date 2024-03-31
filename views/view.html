@@ -1,0 +1,200 @@
+{% import './components.html' as template %}
+
+<!-- ผลไม้ลูกสีขาวทอง สว่างไสวเป็นประกายอยู่บนท้องฟ้า ความมืดครึ้มได้ปกคลุมลงบนเมฆขาว ต้นหญ้สูงใหญ่ปลิวไหวตามสายลม เม็ดฝนโปรยปรายกลางสายน้ำ พัดพาสรรพสิ่งพัดปลิว ล่องลอยสู่เมฆา -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include '.head.html' %}
+    <title>{{ product.name }} &mdash; EExpress</title>
+</head>
+
+<body>
+    {% include '.nav.html' %}
+
+    <main class="my webstatic view-product">
+        <section class="product picture">
+            <div class="image">
+                <img src="/images/{{ product.images[0] }}" id="renderview-image" alt="product preview image">
+            </div>
+
+            <div class="itable" id="itable">
+                {% for image in product.images %}
+                <img src="/images/{{ image }}" loading="lazy" alt="product image {{ loop.index}}"
+                    onclick="previewImage(this.src)">
+                {% endfor %}
+            </div>
+
+            <script>
+                const renderviewimage = document.getElementById("renderview-image");
+                function previewImage(src = "") {
+                    renderviewimage.src = src;
+                }
+            </script>
+        </section>
+
+        <header>
+            <h1 class="sans">{{ product.name }}</h1>
+            <p class="sans">{{ product.description }}</p>
+
+            <div class="price">
+                <span class="sans">ราคา</span>
+                <p class="display" id="pdprice">{{ product.options[0].price }}</p>
+            </div>
+
+            <p class="sans"><b>ตัวเลือกสินค้า</b></p>
+            <div class="options" id="options-container">
+                {% for option in product.options %}
+                <button class="sans {% if option.id == option %} selected {% endif %}" id="{{option.id}}"
+                    onclick="optionSelect(this, { id: '{{option.id}}', title: '{{option.title}}', price: '{{option.price}}', imageindex: '{{option.imageindex}}' })">
+                    {{ option.title }}
+                </button>
+                {% endfor %}
+            </div>
+
+            <script>
+                const itable = document.getElementById("itable");
+                const images = [];
+                itable.querySelectorAll("img").forEach(e => images.push(e.src.split('/').reverse()[0]));
+            </script>
+
+            <div class="qbuy">
+                <menu>
+                    <div>
+                        <button onclick="qinc()"><span class="material-icons-outlined">add</span></button>
+                        <button onclick="qdec()"><span class="material-icons-outlined">remove</span></button>
+                    </div>
+
+                    <input type="number" class="display" value="1" id="incv">
+                </menu>
+
+                <button onclick="checkout()" class="sans">ซื้อ</button>
+                <button id="addtocart" onclick="addToCart()"><span
+                        class="material-icons-outlined">shopping_bag</span></button>
+            </div>
+            <script>
+                const btn_addtocart = document.getElementById("addtocart");
+                const incv = document.getElementById("incv");
+                function qinc() { quantity = ++incv.value; };
+                function qdec() { if (incv.value > 1) quantity = --incv.value; };
+            </script>
+
+            <script>
+                const optionscontainer = document.getElementById("options-container");
+                const pdprice = document.getElementById("pdprice");
+
+                const product = {
+                    id: '{{ product.id }}',
+                    name: '{{ product.name }}',
+                    images: [
+                        //{% for i in product.images %}
+                        '{{ i }}',
+                        //{% endfor %}
+                    ],
+
+                    search: '{{ product.search }}',
+                }
+
+                let selectOption = null;
+                let isAlreadyInCart = false;
+                let quantity = 1;
+
+                function optionSelect(obj = document.getElementById(), option = { id, title, price, imageindex }) {
+                    if (typeof obj === "string") obj = document.getElementById(obj);
+                    for (let e of optionscontainer.children) { e.classList.remove("selected") }
+                    obj.classList.add("selected");
+
+                    selectOption = option;
+                    pdprice.innerHTML = option.price;
+                    previewImage('/images/' + images[option.imageindex !== "" ? option.imageindex : 0]);
+
+                    isAlreadyInCart = getLocalStorage("cart", true).filter(e => e.option.id == selectOption.id)[0];
+                    btn_addtocart.querySelector("span").innerHTML = isAlreadyInCart ? "check" : 'shopping_bag';
+                }
+
+                function addToCart(force = false) {
+                    if (isAlreadyInCart && !force) {
+                        btn_addtocart.querySelector("span").innerHTML = 'shopping_bag';
+                        cart.remove(isAlreadyInCart.id);
+                        isAlreadyInCart = false;
+                        return false;
+                    };
+
+                    if (!selectOption) {
+                        new Alert("เลือกตัวเลือกสินค้าก่อนดำเนินการต่อ", AlertType.ERROR, true)
+                        return false;
+                    };
+
+                    if (force && isAlreadyInCart) return true;
+
+                    btn_addtocart.querySelector("span").innerHTML = 'check';
+                    isAlreadyInCart = cart.add(product, selectOption, quantity);
+                    return true;
+                }
+            </script>
+
+            {% if option %}{% for options in product.options %}{% if options.id == option %}
+            <script>
+                selectOption = {
+                    id: '{{ options.id }}',
+                    title: '{{ options.title }}',
+                    price: '{{ options.price }}',
+                    imageindex: '{{ options.imageindex }}',
+                }
+
+                if (selectOption) {
+                    optionSelect('{{options.id}}', selectOption);
+                    btn_addtocart.querySelector("span").innerHTML = "check";
+                };
+            </script>
+            {% endif %}{% endfor %}{% endif %}
+
+            <script>
+                function checkout() {
+                    const isSuccess = addToCart(true);
+                    if (!isSuccess) return;
+                    redirect('/checkout');
+                }
+
+            </script>
+        </header>
+    </main>
+
+    <!-- <main class="webstatic product-detail">
+        <article class="sans">
+            <h1>Heading</h1>
+            <p>
+                Aute in eu commodo qui. Nostrud minim laboris adipisicing mollit duis nostrud nisi. Consectetur in est
+                qui elit excepteur ex. Enim cupidatat dolore duis non aute. Deserunt duis enim quis officia velit mollit
+                cillum id est eu. Magna laborum amet Lorem sit. Nulla tempor adipisicing eiusmod dolore exercitation
+                reprehenderit et ipsum.
+            </p>
+
+            <img src="https://placehold.co/1114x480" alt="">
+        </article>
+    </main> -->
+
+    <header class="my webstatic heading">
+        <div>
+            <h2 class="sans">สินค้าที่คุณอาจสนใจ</h2>
+        </div>
+    </header>
+
+    <main class="webstatic ptable">
+        <!-- <section>
+            <img src="/images/{{ product.images[0] }}" alt="picture of {{ product.title }}">
+
+            <article>
+                <a href="/p/{{ product.search}}" class="sans title">{{ product.name }}</a>
+            </article>
+        </section> -->
+        {% for product in products %}
+        {{ template.ptableitem(product.search, product.images[0], product.name) }}
+        {% endfor %}
+    </main>
+
+    {% include 'cartview.html' %}
+</body>
+
+</html>

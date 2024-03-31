@@ -1,0 +1,528 @@
+.webstatic.managers.managers-container {
+  display: grid;
+  grid-template-columns: 18rem 1fr;
+  gap: 4rem;
+  position: relative;
+}
+.webstatic.managers.managers-container menu {
+  all: unset;
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  border: 2px solid #191919;
+  position: sticky;
+  top: calc(6rem + 2px);
+  left: 0;
+  overflow-y: scroll;
+  max-height: 80vh;
+}
+.webstatic.managers.managers-container menu > p {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 1rem;
+}
+.webstatic.managers.managers-container menu a {
+  text-decoration: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  gap: 6pt;
+  min-height: 3rem;
+  height: 3rem;
+  width: calc(100% - 2rem);
+  padding: 0 1rem;
+  border: none;
+  color: #191919;
+  background-color: white;
+  transition: var(--button-action-transition);
+}
+.webstatic.managers.managers-container menu a span {
+  font-size: 24px;
+}
+.webstatic.managers.managers-container menu a p {
+  font-size: 16px;
+  font-weight: bold;
+}
+.webstatic.managers.managers-container menu a:hover {
+  background-color: #191919;
+  color: white;
+}
+
+.webstatic.managers .managers-view header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+.webstatic.managers .managers-view header div {
+  display: flex;
+  flex-direction: column;
+}
+.webstatic.managers .managers-view header :is(h1, h2) {
+  font-weight: 500;
+}
+.webstatic.managers .managers-view header p {
+  padding: 6pt 0;
+}
+.webstatic.managers .managers-view header button {
+  height: 3rem;
+  width: 3rem;
+}
+
+.webstatic.managers .managers-view.managers-home {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-options-images-selector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 101;
+  height: 100vh;
+  background-color: rgba(240, 240, 240, 0.5019607843);
+  -webkit-backdrop-filter: blur(6pt);
+          backdrop-filter: blur(6pt);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.product-options-images-selector header {
+  width: calc(100% - 2rem - 4px);
+  padding: 1rem;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: white;
+  border: 2px solid #191919;
+  border-bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.product-options-images-selector header button {
+  width: 2rem;
+  height: 2rem;
+}
+.product-options-images-selector header button span {
+  font-size: 20px;
+}
+.product-options-images-selector > div {
+  max-height: 80vh;
+  width: calc(100% - 2rem - 4px);
+  padding: 1rem;
+  background-color: white;
+  border: 2px solid #191919;
+  border-top: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6pt;
+  overflow-y: scroll;
+}
+.product-options-images-selector > div > div {
+  height: 12rem;
+  width: 100%;
+}
+.product-options-images-selector > div > div img {
+  height: 12rem;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.webstatic.managers .managers-view.product-create .options-container {
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.webstatic.managers .managers-view.product-create .options {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: 1fr;
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  position: relative;
+}
+.webstatic.managers .managers-view.product-create .options > button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+.webstatic.managers .managers-view.product-create .options section {
+  padding: 0 1rem;
+  height: 100%;
+  border: 2px solid #191919;
+  border-right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: flex-start;
+}
+.webstatic.managers .managers-view.product-create .options section menu {
+  all: unset;
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+}
+.webstatic.managers .managers-view.product-create .options section menu img {
+  width: 100%;
+  height: 100%;
+  max-height: 12rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.webstatic.managers .managers-view.product-create .options section menu button {
+  border: 2px solid var(--button-normal-border);
+  background-color: var(--button-normal-background);
+  color: var(--button-normal-text);
+  transition: var(--button-action-transition);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+  gap: 6pt;
+}
+.webstatic.managers .managers-view.product-create .options section menu button span {
+  font-size: 24px;
+}
+.webstatic.managers .managers-view.product-create .options section menu button p {
+  line-height: 1;
+  font-size: 16px;
+}
+.webstatic.managers .managers-view.product-create .options section menu button:hover {
+  background-color: var(--button-normal-hover-background);
+  color: var(--button-normal-hover-text);
+}
+.webstatic.managers .managers-view.product-create .options fieldset {
+  height: calc(100% - 2rem);
+}
+.webstatic.managers .managers-view.product-create .image-select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 2px solid var(--button-normal-border);
+  min-height: 6rem;
+  height: -moz-max-content;
+  height: max-content;
+  position: relative;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-preview {
+  width: calc(100% - 2rem);
+  height: -moz-max-content;
+  height: max-content;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6pt;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-preview img {
+  width: 100%;
+  height: 8rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-preview label {
+  width: calc(100% - 4px);
+  height: calc(8rem - 4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #191919;
+  transition: var(--button-action-transition);
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-preview label:hover {
+  color: white;
+  background-color: #191919;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-select {
+  all: unset;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  transition: var(--button-action-transition);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-select.hide {
+  display: none;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-select > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6pt;
+  height: 100%;
+  width: 100%;
+}
+.webstatic.managers .managers-view.product-create .image-select-container .image-select:hover {
+  background-color: #191919;
+  color: white;
+}
+.webstatic.managers .managers-view.product-create .image-select-container input[type=file] {
+  display: none;
+}
+
+.webstatic.managers .managers-view.product-list section.product-viewlist {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.webstatic.managers .managers-view.product-list section.product-viewlist div {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: 1rem;
+  width: 100%;
+  height: 12rem;
+}
+.webstatic.managers .managers-view.product-list section.product-viewlist div a {
+  color: #191919;
+  text-decoration: none;
+}
+.webstatic.managers .managers-view.product-list section.product-viewlist div img {
+  width: 100%;
+  height: 12rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.webstatic.managers .managers-view.shop-promotions article {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.webstatic.managers .managers-view.shop-promotions article section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  border: 2px solid #191919;
+  padding: 1rem;
+}
+.webstatic.managers .managers-view.shop-promotions article section article,
+.webstatic.managers .managers-view.shop-promotions article section header {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+}
+.webstatic.managers .managers-view.shop-promotions article section header {
+  gap: 6pt;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.webstatic.managers .managers-view.shop-promotions article section header h3 {
+  font-weight: 500;
+}
+.webstatic.managers .managers-view.shop-promotions article section header p {
+  padding: 0;
+  margin: 0;
+}
+.webstatic.managers .managers-view.shop-promotions article section header code {
+  width: -moz-max-content;
+  width: max-content;
+  background-color: #191919;
+  color: white;
+  padding: 2pt 6pt;
+}
+.webstatic.managers .managers-view.shop-promotions article section header menu {
+  all: unset;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2pt;
+}
+.webstatic.managers .managers-view.shop-promotions article section header menu button {
+  width: 2rem;
+  height: 2rem;
+}
+.webstatic.managers .managers-view.shop-promotions article section header menu button span {
+  font-size: 16px;
+}
+.webstatic.managers .managers-view.shop-promotions article section article {
+  width: 100%;
+}
+.webstatic.managers .managers-view.shop-promotions article section article div {
+  width: 100%;
+  height: -moz-max-content;
+  height: max-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 1;
+}
+.webstatic.managers .managers-view.shop-promotions article section article div select {
+  width: -moz-max-content;
+  width: max-content;
+  height: 1.4rem;
+  padding-right: 6pt;
+  font-size: 16px;
+  border: none;
+}
+
+.webstatic.managers .managers-view.orders header .view-options {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.webstatic.managers .managers-view.orders header .view-options select {
+  width: -moz-max-content;
+  width: max-content;
+  height: 2rem;
+  padding: 0 1rem 0 6pt;
+  border: none;
+  font-size: 16px;
+}
+.webstatic.managers .managers-view.orders .orders-viewlist {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: start;
+  gap: 1rem;
+  margin: 0;
+}
+.webstatic.managers .managers-view.orders .orders-viewlist a {
+  width: calc(100% - 2rem);
+  text-decoration: none;
+  color: #191919;
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 1rem;
+  border: 2px solid #191919;
+  padding: 1rem;
+}
+.webstatic.managers .managers-view.orders .orders-viewlist a header {
+  all: unset;
+  padding: 2pt;
+}
+.webstatic.managers .managers-view.orders .orders-viewlist a article {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  justify-content: start;
+}
+.webstatic.managers .managers-view.orders .orders-viewlist a article h2 {
+  text-transform: capitalize;
+  font-weight: 500;
+  padding-bottom: 6pt;
+}
+.webstatic.managers .managers-view.orders .orders-viewlist a article div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.webstatic.managers .managers-view.orders .orders-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.webstatic.managers .managers-view.orders .orders-view section {
+  border: 2px solid #191919;
+  padding: 1rem;
+  gap: 1rem;
+}
+.webstatic.managers .managers-view.orders .orders-view section h3 {
+  padding: 6pt 0;
+}
+.webstatic.managers .managers-view.orders .orders-view section div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: -moz-max-content;
+  height: max-content;
+  gap: 2rem;
+}
+.webstatic.managers .managers-view.orders .orders-view section div p,
+.webstatic.managers .managers-view.orders .orders-view section div span {
+  line-height: 2;
+}
+.webstatic.managers .managers-view.orders .orders-view section div .bold {
+  font-weight: bold;
+}
+.webstatic.managers .managers-view.orders .orders-view section div select {
+  width: 100%;
+  height: 2rem;
+  padding-right: 6pt;
+  font-size: 16px;
+  border: none;
+  text-align: left;
+}
+.webstatic.managers .managers-view.orders .orders-view section div button {
+  height: 2rem;
+  min-width: 6rem;
+  font-size: 16px;
+  font-weight: bold;
+}
+.webstatic.managers .managers-view.orders .orders-view .cartview-container {
+  position: relative;
+  right: unset;
+  top: unset;
+  z-index: unset;
+  width: unset;
+  overflow: show;
+  height: -moz-max-content;
+  height: max-content;
+  min-height: unset;
+  max-height: -moz-max-content;
+  max-height: max-content;
+}
+.webstatic.managers .managers-view.orders .orders-view .cartview-container article {
+  border: none;
+  min-height: unset;
+  max-height: -moz-max-content;
+  max-height: max-content;
+  height: -moz-max-content;
+  height: max-content;
+}
+.webstatic.managers .managers-view.orders .orders-view .cartview-container article > div {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr 4rem;
+}
+.webstatic.managers .managers-view.orders .orders-view .cartview-container article > div a {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+.webstatic.managers .managers-view.orders .orders-view .cartview-container article > div a p,
+.webstatic.managers .managers-view.orders .orders-view .cartview-container article > div a span {
+  font-weight: bold;
+  line-height: 1.4;
+}
