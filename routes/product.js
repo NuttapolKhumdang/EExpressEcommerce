@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
-const ProductObject = require('../models/Product');
-const Product = ProductObject.Product;
-const Category = ProductObject.Category;
+const {Product,Category} = require('../models/Product');
 
 const Image = require('../modules/Images');
 const ParseSearch = require('../modules/ParseSearch');

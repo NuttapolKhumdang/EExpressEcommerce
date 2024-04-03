@@ -294,9 +294,9 @@
         header.insertAdjacentText("beforeend", "เลือกรูปภาพ");
         header.insertAdjacentElement("beforeend", button);
 
-        const div = document.createElement("div");
+        const section = document.createElement("section");
         container.insertAdjacentElement("afterbegin", header);
-        container.insertAdjacentElement("beforeend", div);
+        container.insertAdjacentElement("beforeend", section);
         const prefile = createPreview(imagefile.length !== 0 ? imagefile : files);
 
         const selectpack = prefile.map((e, index) => {
@@ -315,7 +315,7 @@
             return img;
         });
 
-        selectpack.forEach(e => div.insertAdjacentElement("beforeend", e));
+        selectpack.forEach(e => section.insertAdjacentElement("beforeend", e));
         document.body.insertAdjacentElement("beforeend", container);
     }
 </script>

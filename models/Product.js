@@ -18,6 +18,7 @@ const ProductSchema = new Schema({
     timestamp: true,
 });
 
+ProductSchema.index({ name: 'text', description: 'text' });
 const ProductModel = mongoose.model('Product', ProductSchema);
 
 const CategorySchema = new Schema({

@@ -1,12 +1,13 @@
-<head>
-    {% include '.head.html' %}
-</head>
-
 <script>
-    async function pv() {
-        const res = await fetchJson("/resource/api/provinces");
-        console.log(res);
-    }
+    const y = [
+        { id: 1, t: -0 },
+        { id: 2, t: -0 },
+    ];
 
-    pv();
+    const x = y.map(e => {
+        if (e.id == 1) return { id: 1, t: 1 }
+        else return e;
+    });
+
+    console.log(x);
 </script>

@@ -22,6 +22,11 @@ router.get('/', (req, res, next) => {
 });
 
 // ?? Shop
+router.get('/shop/appearance', async (req, res, next) => {
+    const products =await Product.find();
+    return res.render('managers', { render: 'managers/shop-appearance.html',products });
+});
+
 router.get('/shop/promos', async (req, res, next) => {
     const promos = await Promotion.find({ deleted: false });
     return res.render('managers', { render: 'managers/shop-promos.html', promos });

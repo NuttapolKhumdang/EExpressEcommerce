@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const OrderObject = require('../models/Order');
 
-const Promotion = OrderObject.Promotion;
-const Address = OrderObject.Address;
-const Order = OrderObject.Order;
-const OrderStatus = OrderObject.OrderStatus;
+const { Promotion, Address, Order, OrderStatus } = require('../models/Order');
+const { Product } = require('../models/Product');
 
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
@@ -15,6 +12,14 @@ router.get('/address', async (req, res, next) => {
     return res.json({ status: 200, message: 'OK', thai_provinces, thai_amphures, thai_tambons });
 });
 
+router.get('/product', async (req, res, next) => {
+    const query = {};
+    if (req.query.id) query["_id"] = req.query.id;
+    if (req.query.q) query["$text"] = { $search: req.query.q };
+
+    const result = await Product.find(query).limit(10);
+    return res.json({ status: 200, message: 'OK', result });
+});
 
 router.route('/promocode/:code')
     .get(async (req, res, next) => {

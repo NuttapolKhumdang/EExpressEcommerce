@@ -1,4 +1,4 @@
-{% if account?._id %}
+{% if not account?._id %}
 <p class="mono">การสั่งซื้อ</p>
 <a href="/managers/orders">
     <span class="material-icons-outlined">receipt_long</span>
@@ -11,9 +11,9 @@
 
 <!-- ? -->
 <p class="mono">ร้านค้า</p>
-<a>
+<a href="/managers/shop/appearance">
     <span class="material-icons-outlined">style</span>
-    <p class="sans">การจัดวาง</p>
+    <p class="sans">รูปแบบและการจัดวาง</p>
 </a>
 <a href="/managers/shop/promos">
     <span class="material-icons-outlined">discount</span>

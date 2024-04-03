@@ -157,6 +157,43 @@ form textarea {
   resize: none;
 }
 
+.webstatic.search-container {
+  height: -moz-max-content;
+  height: max-content;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: -35rem;
+  left: 0;
+  z-index: 200;
+  background-color: #fff;
+  border-bottom: 2px solid #191919;
+  transition: 360ms;
+}
+.webstatic.search-container.extend {
+  top: 0;
+}
+.webstatic.search-container div {
+  display: grid;
+  grid-template-columns: 1fr 4rem;
+  place-items: center;
+}
+.webstatic.search-container div input {
+  width: 100%;
+  height: calc(3rem - 4px);
+  padding: 0 6pt;
+  font-size: 16px;
+  font-weight: normal;
+  border: 2px solid #191919;
+}
+.webstatic.search-container div button {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid #191919;
+}
+
 .webstatic.masterhead {
   display: flex;
   flex-direction: row;
@@ -811,7 +848,7 @@ form textarea {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 4px solid;
+  border: 3px solid;
   border-color: #E0E0E0;
   border-right-color: #000000;
   animation: s2 680ms infinite linear;

@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer')();
 
-const ProductObject = require('../models/Product');
-const Product = ProductObject.Product;
-const Category = ProductObject.Category;
+const {Product,Category} = require('../models/Product');
 
 const thai_provinces = require('../modules/address/thai_provinces.json');
 

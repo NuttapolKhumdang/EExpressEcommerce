@@ -1,0 +1,333 @@
+<main class="managers-view shop-appearance">
+    <header>
+        <h1 class="mono">รูปแบบและการจัดวาง</h1>
+
+        <button onclick="appearance.createInsertTrack()"><span class="material-icons-outlined">add</span></button>
+    </header>
+
+    <article id="appearance-placement-container">
+        <h3 class="sans">ยังไม่มีการจัดวางใดๆ</h3>
+    </article>
+</main>
+
+<header class="shop-appearance-insert-track" id="shop-appearance-insert-track">
+    <header class="sans">
+        เพิ่มส่วน
+        <button id="close"><span class="material-icons-outlined">close</span></button>
+    </header>
+
+    <section>
+        <form onsubmit="event.preventDefault()">
+            <input type="text" class="sans" id="section-title" placeholder="ชื่่อส่วน">
+
+            <h3 class="mono">เพิ่มสินค้า</h3>
+
+            <main class="product-selector">
+                <section class="plist" id="product-selector-selected">
+                    <h4 class="sans">ยังไม่เลือกสินค้า</h4>
+                </section>
+
+                <section class="search">
+                    <input type="text" id="search" placeholder="ค้นหาสินค้า" oninput="SC.search(this.value)">
+                    <button type="button" id="clearseach"><span class="material-icons-outlined">close</span></button>
+                </section>
+
+                <section class="plist" id="product-selector-filtered">
+                    <div class="s2loader"></div>
+                </section>
+            </main>
+        </form>
+    </section>
+</header>
+
+<script>
+    class SectionCreator {
+        constructor(parent = new AppearancePlacement(), container = document.getElementById(), id = false, title = '', result = []) {
+            this.parent = parent;
+            this.container = container;
+
+            this.submitButton = document.createElement("button");
+            this.submitButton.classList.add("sans", "hide");
+            this.submitButton.setAttribute("type", "submit");
+            this.submitButton.insertAdjacentText("beforeend", "ยืนยัน");
+            this.submitButton.onclick = () => this.submit();
+
+            this.container.querySelector("button#close").addEventListener("click", () => this.close());
+            this.container.querySelector("button#clearseach").addEventListener("click", () => {
+                this.container.querySelector("input#search").value = '';
+                this.loadProduct();
+            });
+
+            this.selectedContainer = container.querySelector("section#product-selector-selected");
+            this.filteredContainer = container.querySelector("section#product-selector-filtered");
+            this.selectedContainer.insertAdjacentElement("afterend", this.submitButton);
+
+            this.selectedContainerDefault = `<h4 class="sans">ยังไม่เลือกสินค้า</h4>`;
+            this.filteredContainerDefault = `<div class="s2loader"></div>`;
+
+            this.search_timeout = 1000;
+            this.search_timeout_object = setTimeout(() => { }, this.search_timeout);
+
+            this.clearRendered();
+            this.container.querySelector("input#section-title").value = title;
+            this.id = id;
+            this.result = result;
+            this.product = [];
+
+            this.loadProduct();
+        }
+
+        clearRendered() {
+            this.filteredContainer.innerHTML = this.filteredContainerDefault;
+            this.selectedContainer.innerHTML = this.selectedContainerDefault;
+        }
+
+        loadProduct() {
+            fetch('/api/product').then(res => res.json()).then(json => {
+                this.product = json.result;
+                this.renderFiltered(this.product);
+                console.log(1, this.result.length);
+                if (this.result.length !== 0) this.renderSelected();
+            }).catch(e => { console.error(e); new Alert("เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง", AlertType.ERROR, true) });
+        }
+
+        search(keyword) {
+            clearTimeout(this.search_timeout_object)
+            this.search_timeout_object = setTimeout(() => {
+                fetch('/api/product?q=' + keyword).then(res => res.json()).then(json => {
+                    this.product = json.result;
+                    this.renderFiltered(json.result)
+                }).catch(e => new Alert("เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง", AlertType.ERROR, true))
+            }, this.search_timeout);
+        }
+
+        createProductTemplate(product = {}, selected = false) {
+            if (!product?._id) {
+                product = this.product.filter(e => e._id === product.id)[0];
+            }
+
+            const container = document.createElement("div");
+            const img = document.createElement("img");
+            const p = document.createElement("p");
+
+            container.insertAdjacentElement("beforeend", img);
+            container.insertAdjacentElement("beforeend", p);
+            container.setAttribute("id", product._id);
+            container.classList.add("pitem");
+
+            img.setAttribute("src", '/images/' + product?.images[0]);
+            p.insertAdjacentText("beforeend", product.name);
+            p.classList.add("sans");
+
+            if (!selected) container.onclick = () => this.insertSelected(product);
+            else container.onclick = () => this.removeSelected(product._id);
+            return container;
+        }
+
+        renderFiltered(result = []) {
+            this.filteredContainer.innerHTML = '';
+            if (result.length === 0) this.filteredContainer.innerHTML = this.filteredContainerDefault;
+
+            const template = result.map(e => this.createProductTemplate(e, false));
+            template.forEach(e => this.filteredContainer.insertAdjacentElement("beforeend", e));
+        }
+
+        renderSelected() {
+            this.selectedContainer.innerHTML = '';
+            if (this.result.length === 0) {
+                this.selectedContainer.innerHTML = this.selectedContainerDefault;
+                this.submitButton.classList.add("hide");
+            } else this.submitButton.classList.remove("hide");
+
+            const template = this.result.map(e => this.createProductTemplate(e, true));
+            template.forEach(e => this.selectedContainer.insertAdjacentElement("beforeend", e));
+        }
+
+        insertSelected(product) {
+            const filter = this.result.filter(e => e._id === product._id);
+            if (filter.length !== 0) return false;
+
+            this.result.push(product);
+            this.renderSelected();
+        }
+
+        removeSelected(id) {
+            this.result = this.result.filter(e => e._id != id);
+            this.renderSelected();
+        }
+
+        submit() {
+            const title = this.container.querySelector("input#section-title").value;
+            const products = this.result.map(e => { return { id: e._id, name: e.name } });
+            this.parent.insertContainer(title, products, this.id);
+            this.submitButton.remove();
+            this.close();
+        }
+
+        close() {
+            this.submitButton.remove();
+            this.container.remove();
+        }
+    }
+</script>
+
+<script>
+    const sait = document.getElementById("shop-appearance-insert-track");
+    sait.remove();
+</script>
+
+<script>
+    function createAppearancePlacementTemplate(parent = new AppearancePlacement(), id = uuidv4(), title = '', products = []) {
+        const productTemaplate = products.map(e => {
+            const div = document.createElement("div");
+            const a = document.createElement("a");
+
+            a.classList.add('sans', 'title');
+            a.insertAdjacentText("beforeend", e.name);
+            div.insertAdjacentElement("afterbegin", a);
+
+            return div;
+        });
+
+        const container = document.createElement("section");
+        const header = document.createElement("header");
+        const h2 = document.createElement("h2");
+        h2.classList.add("sans");
+        h2.insertAdjacentText("beforeend", title);
+
+        container.insertAdjacentElement("afterbegin", header);
+        header.insertAdjacentElement("afterbegin", h2);
+
+        const menu = document.createElement("div");
+        menu.classList.add("hv");
+        const menu_button = document.createElement("button");
+        menu_button.onclick = () => menu_button.parentElement.classList.toggle("expand");
+
+        const menu_button_icon = document.createElement("span");
+        menu_button_icon.classList.add("material-icons-outlined");
+        menu_button_icon.insertAdjacentText("afterbegin", 'more_vert');
+
+        menu.insertAdjacentElement("afterbegin", menu_button);
+        menu_button.insertAdjacentElement("afterbegin", menu_button_icon);
+        header.insertAdjacentElement("beforeend", menu);
+
+        const menu_nav = document.createElement("nav");
+        menu_nav.classList.add("hvnav");
+
+        const menunav_list = [
+            {
+                icon: 'edit',
+                text: 'แก้ไข',
+                onclick: () => { parent.editTrack(id) }
+            },
+            {
+                icon: 'expand_less',
+                text: 'เลื่อนขึ้น',
+                onclick: () => { }
+            },
+            {
+                icon: 'expand_more',
+                text: 'เลื่อนลง',
+                onclick: () => { }
+            },
+        ]
+        const menulist = menunav_list.map(e => {
+            const a = document.createElement("a");
+            const icon = document.createElement("span");
+            const text = document.createElement("p");
+
+            icon.classList.add("material-icons-outlined");
+            text.classList.add("sans");
+
+            icon.insertAdjacentText("beforeend", e.icon);
+            text.insertAdjacentText("beforeend", e.text);
+            a.onclick = e.onclick;
+
+            a.insertAdjacentElement("beforeend", icon);
+            a.insertAdjacentElement("beforeend", text);
+            return a;
+        });
+        menulist.forEach(e => menu_nav.insertAdjacentElement("beforeend", e));
+        menu.insertAdjacentElement("beforeend", menu_nav);
+
+        const app = document.createElement("div");
+        app.classList.add("appearance-product-placement");
+        productTemaplate.forEach(e => app.insertAdjacentElement("beforeend", e));
+        container.insertAdjacentElement("beforeend", app);
+
+        return container;
+    }
+</script>
+
+<script>
+    class AppearancePlacement {
+        constructor(container = document.getElementById(), insertTrackTempalte = document.getElementById()) {
+            this.container = container;
+            this.containerDefault = this.container.innerHTML;
+            this.insertTrackTempalte = insertTrackTempalte;
+            this.result = [];
+        }
+
+        render() {
+            this.container.innerHTML = '';
+            if (this.result.length === 0) this.container.innerHTML = this.containerDefault;
+
+            this.result.forEach(e => {
+                const template = createAppearancePlacementTemplate(this, e.id, e.title, e.products);
+                this.container.insertAdjacentElement("beforeend", template);
+            });
+        }
+
+        createInsertTrack() {
+            document.body.insertAdjacentElement("beforeend", this.insertTrackTempalte);
+            new SectionCreator(this, this.insertTrackTempalte);
+        }
+
+        editTrack(id) {
+            const track = this.result.filter(e => e.id == id)[0];
+            document.body.insertAdjacentElement("beforeend", this.insertTrackTempalte);
+            new SectionCreator(this, this.insertTrackTempalte, track.id, track.title, track.products);
+        }
+
+        insertContainer(title = '', products = [], id = false) {
+            if (id) this.result = this.result.map(e => {
+                if (e.id === id) return { id, title, products };
+                else return e;
+            }); else this.result.push({ id: uuidv4(), title, products });
+
+            this.render();
+        }
+
+        getResult() {
+            return this.result;
+        }
+    }
+
+    /*
+    {
+        "id": "9012c577-681e-4b09-9d85-65d5603f8447",
+        "title": "",
+        "products": [
+            {
+                "id": "65fec24f799cb87498a012cf",
+                "name": "เซ็ตภาพวาด \"บุคคลแสนงดงามท่ามกลางทะเลหมอก\""
+            },
+            {
+                "id": "65ff1692be8a6fc6cb250fdc",
+                "name": "เซ็ตภาพวาด \"ความฝันในสายหมอก\""
+            }
+        ]
+    }
+    */
+
+    const appearanceplacementcontainer = document.getElementById("appearance-placement-container");
+    const appearance = new AppearancePlacement(appearanceplacementcontainer, sait);
+    appearance.insertContainer("Section", [{
+        "id": "65fec24f799cb87498a012cf",
+        "name": "เซ็ตภาพวาด \"บุคคลแสนงดงามท่ามกลางทะเลหมอก\""
+    },
+    {
+        "id": "65ff1692be8a6fc6cb250fdc",
+        "name": "เซ็ตภาพวาด \"ความฝันในสายหมอก\""
+    }]);
+</script>
