@@ -173,6 +173,10 @@ form {
         border: none;
         font-size: 16px;
         border-bottom: 2px solid #191919;
+        
+        &:invalid {
+            border-bottom: 2px solid #D37676;
+        }
     }
 
     textarea {
