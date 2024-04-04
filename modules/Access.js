@@ -1,10 +1,5 @@
-const { Rights, AccountRole } = require('./AccessRights');
-
-
 function access(rights = [], json = false) {
     return (req, res, next) => {
-        return next();
-
         if ((!rights && req.isAuthenticated())) return next();
         else if (rights && req?.user?.role) {
             const isAccessable = req?.user?.access.filter(e => rights.includes(e)).length !== 0;
