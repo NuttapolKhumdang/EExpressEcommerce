@@ -2,9 +2,10 @@
     <header>
         <h1 class="mono">รายการสั่งซื้อ</h1>
 
+        {% if filter %}
         <div class="view-options">
             <span class="material-icons-outlined">filter_alt</span>
-            <select name="" id="" class="sans" onchange="redirect('/managers/orders?' + this.value)">
+            <select name="" id="" class="sans" onchange="redirect('/managers/orders/history?' + this.value)">
                 <option disabled selected>ตัวกรอง</option>
                 <option value="">ทั้งหมด</option>
                 <hr>
@@ -14,11 +15,12 @@
                 {% endfor %}
             </select>
         </div>
+        {% endif %}
     </header>
 
     <section class="my orders-viewlist">
         {% if orders.length === 0 %}
-        <h3 class="sans">ยังไม่มีเนื้อหาใดๆ</h3>
+        <h3 class="sans">ยังไม่มีการทำรายการใดๆ</h3>
         {% endif %}
 
         {% for order in orders %}

@@ -57,11 +57,22 @@ router.get('/product/:id', async (req, res, next) => {
 
 // ?? Orders
 router.get('/orders', async (req, res, next) => {
-    const query = {};
-    if (req.query?.status) query["status"] = req.query?.status;
+    const orders = await Order.find({ status: OrderStatus.PROCESSING });
+    return res.render('managers', { render: 'managers/orders-order.html', orders, OrderStatus, OrderStatusName });
+});
+
+router.get('/orders/history', async (req, res, next) => {
+    let query = {
+        status: { $ne: OrderStatus.PROCESSING }
+    };
+    
+    if (req.query?.status) query = {
+        status: { $ne: OrderStatus.PROCESSING },
+        status: req.query?.status,
+    };
 
     const orders = await Order.find(query);
-    return res.render('managers', { render: 'managers/orders-order.html', orders, OrderStatus, OrderStatusName });
+    return res.render('managers', { render: 'managers/orders-order.html', orders, OrderStatus, OrderStatusName, filter: true });
 });
 
 router.get('/order/:id', async (req, res, next) => {
