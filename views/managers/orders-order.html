@@ -33,14 +33,6 @@
                 <h2 class="mono">{{ order._id.toString() }}</h2>
 
                 <div>
-                    <p class="sans">ชื่อ - สกุล</p>
-                    <span class="mono">{{ order.fullname }}</span>
-                </div>
-                <div>
-                    <p class="sans">อีเมล์</p>
-                    <span class="mono">{{ order.email }}</span>
-                </div>
-                <div>
                     <p class="sans">จำนวนสินค้า</p>
                     <span class="mono">{{ order.product.length }}</span>
                 </div>
@@ -53,7 +45,7 @@
                     <span class="mono">{{ order.createdAt|date('Y.m.d H:i', -420) }}</span>
                 </div>
                 <div>
-                    <p class="sans">วันที่ทำรายการล่าสุด</p>
+                    <p class="sans">วันที่เปลี่ยนแปลงล่าสุด</p>
                     <span class="mono">{{ order.updatedAt|date('Y.m.d H:i', -420) }}</span>
                 </div>
                 <div>

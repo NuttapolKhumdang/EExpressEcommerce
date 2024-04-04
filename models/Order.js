@@ -79,7 +79,6 @@ module.exports = {
     Promotion: PromotionModel,
     OrderStatus: {
         // Ordering Status
-        // Additional Status
         PENDING_PAYMENT: 'PENDING_PAYMENT',
         PAID: 'PAID',
         PROCESSING: 'PROCESSING',
@@ -87,6 +86,7 @@ module.exports = {
         IN_TRANSIT: 'IN_TRANSIT',
         DELIVERED: 'DELIVERED',
         CANCELLED: 'CANCELLED',
+        // Additional Status
         PENDING_REVIEW: 'PENDING_REVIEW',
         PREPARING: 'PREPARING',
         DELIVERY_FAILED: 'DELIVERY_FAILED',
