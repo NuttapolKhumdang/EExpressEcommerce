@@ -2,14 +2,24 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer')();
 
-const {Product,Category} = require('../models/Product');
+const Appearance = require('../models/Appearance');
+const { Product, Category } = require('../models/Product');
 
 const thai_provinces = require('../modules/address/thai_provinces.json');
 
 
 router.get('/', async (req, res, next) => {
+    const appearances = await Appearance.find({});
     const products = await Product.find({});
-    return res.render('index', { products });
+
+    const appearance = appearances.map(e => {
+        const result = { title: e.title, products: [] };
+        for (let p of e.products)
+            result.products.push(products.filter(e => e._id.toString() == p._id)[0]);
+        return result;
+    });
+
+    return res.render('index', { products, appearance });
 });
 
 router.get('/tst', async (req, res, next) => {
@@ -21,7 +31,7 @@ router.get('/checkout', async (req, res, next) => {
 });
 
 router.get('/checkout/:id', async (req, res, next) => {
-    return res.render('checkout', { });
+    return res.render('checkout', {});
 });
 
 router.get('/:id', async (req, res, next) => {

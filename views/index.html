@@ -43,28 +43,19 @@
         bbanner.render()
     </script>
 
+    {% for placement in appearance %}
     <main class="my webstatuc heading">
         <div>
-            <h2 class="sans">สินค้าแนะนำ</h2>
+            <h2 class="sans">{{ placement.title }}</h2>
         </div>
     </main>
 
     <main class="webstatic ptable">
-        <section>
-            <img src="https://placehold.co/480x480" alt="">
-
-            <article>
-                <a href="/view/id" class="sans title">
-                    เมฆขาวปกคลุมท้องฟ้า สายลมพัดปลิวหวิววับผ่านหู มองดูต้นไม้ใหญ่สั่นไหวตามสายลม
-                    ผืนฟ้ากลืนกลมลงพบบบรจบกับต้นหญ้าที่ปลายเขา
-                </a>
-
-                <div>
-                    <p class="display price">thb 3.99</p>
-                </div>
-            </article>
-        </section>
+        {% for product in placement.products %}
+        {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
+        {% endfor %}
     </main>
+    {% endfor %}
 
     <main class="my webstatuc heading">
         <div>
