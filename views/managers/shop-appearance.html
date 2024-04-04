@@ -219,17 +219,18 @@
                 text: 'แก้ไข',
                 onclick: () => { parent.editTrack(id) }
             },
-            {
-                icon: 'expand_less',
-                text: 'เลื่อนขึ้น',
-                onclick: () => { }
-            },
-            {
-                icon: 'expand_more',
-                text: 'เลื่อนลง',
-                onclick: () => { }
-            },
-        ]
+            // {
+            //     icon: 'expand_less',
+            //     text: 'เลื่อนขึ้น',
+            //     onclick: () => { }
+            // },
+            // {
+            //     icon: 'expand_more',
+            //     text: 'เลื่อนลง',
+            //     onclick: () => { }
+            // },
+        ];
+
         const menulist = menunav_list.map(e => {
             const a = document.createElement("a");
             const icon = document.createElement("span");
@@ -265,16 +266,22 @@
             this.containerDefault = this.container.innerHTML;
             this.insertTrackTempalte = insertTrackTempalte;
             this.result = [];
+            this.render(true);
         }
 
-        render() {
+        renderResult() {
             this.container.innerHTML = '';
             if (this.result.length === 0) this.container.innerHTML = this.containerDefault;
 
             this.result.forEach(e => {
-                const template = createAppearancePlacementTemplate(this, e.id, e.title, e.products);
+                const template = createAppearancePlacementTemplate(this, e._id, e.title, e.products);
                 this.container.insertAdjacentElement("beforeend", template);
             });
+        }
+
+        render(refetch = false) {
+            if (refetch) fetch('/api/managers/shop/appearance').then(res => res.json()).then(res => { this.result = res.appearance; this.renderResult() });
+            else this.renderResult();
         }
 
         createInsertTrack() {
@@ -283,25 +290,27 @@
         }
 
         editTrack(id) {
-            const track = this.result.filter(e => e.id == id)[0];
+            const track = this.result.filter(e => e._id == id)[0];
             document.body.insertAdjacentElement("beforeend", this.insertTrackTempalte);
-            new SectionCreator(this, this.insertTrackTempalte, track.id, track.title, track.products);
+            new SectionCreator(this, this.insertTrackTempalte, track._id, track.title, track.products);
         }
 
         insertContainer(title = '', products = [], id = false) {
-            if (id) this.result = this.result.map(e => {
-                if (e.id === id) return { id, title, products };
-                else return e;
-            }); else this.result.push({ id: uuidv4(), title, products });
-
-            this.render();
+            fetch('/api/managers/shop/appearance', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: id ? 'PUT' : 'POST',
+                body: JSON.stringify({ id, title, products }),
+            }).then(res => res.json).then(res => this.render(true));
         }
 
         getResult() {
             return this.result;
         }
     }
-
+</script>
+<script>
     const appearanceplacementcontainer = document.getElementById("appearance-placement-container");
     const appearance = new AppearancePlacement(appearanceplacementcontainer, sait);
 </script>

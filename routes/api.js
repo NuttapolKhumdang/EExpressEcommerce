@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { Promotion, Address, Order, OrderStatus } = require('../models/Order');
 const { Product } = require('../models/Product');
+const Appearance = require('../models/Appearance');
 
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
@@ -133,6 +134,21 @@ router.route('/checkout/:cart')
             console.error(e);
             return res.json({ status: 500, message: 'something wrong with database' });
         }
+    });
+
+router.route('/managers/shop/appearance')
+    .get(async (req, res, next) => {
+        const appearance = await Appearance.find({});
+        return res.json({ status: 200, message: 'OK', appearance });
+    })
+    .post(async (req, res, next) => {
+        const appearance = new Appearance(req.body);
+        await appearance.save();
+        return res.json({ status: 200, message: 'OK', appearance });
+    })
+    .put(async (req, res, next) => {
+        const appearance = await Appearance.findByIdAndUpdate(req.body.id, req.body);
+        return res.json({ status: 200, message: 'OK', appearance });
     });
 
 module.exports = router;
