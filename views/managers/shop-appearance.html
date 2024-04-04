@@ -86,7 +86,6 @@
             fetch('/api/product').then(res => res.json()).then(json => {
                 this.product = json.result;
                 this.renderFiltered(this.product);
-                console.log(1, this.result.length);
                 if (this.result.length !== 0) this.renderSelected();
             }).catch(e => { console.error(e); new Alert("เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง", AlertType.ERROR, true) });
         }
@@ -102,8 +101,8 @@
         }
 
         createProductTemplate(product = {}, selected = false) {
-            if (!product?._id) {
-                product = this.product.filter(e => e._id === product.id)[0];
+            if (!product?.images) {
+                product = this.product.filter(e => e._id === product._id)[0];
             }
 
             const container = document.createElement("div");
@@ -158,7 +157,7 @@
 
         submit() {
             const title = this.container.querySelector("input#section-title").value;
-            const products = this.result.map(e => { return { id: e._id, name: e.name } });
+            const products = this.result.map(e => { return { _id: e._id, name: e.name } });
             this.parent.insertContainer(title, products, this.id);
             this.submitButton.remove();
             this.close();
@@ -303,31 +302,6 @@
         }
     }
 
-    /*
-    {
-        "id": "9012c577-681e-4b09-9d85-65d5603f8447",
-        "title": "",
-        "products": [
-            {
-                "id": "65fec24f799cb87498a012cf",
-                "name": "เซ็ตภาพวาด \"บุคคลแสนงดงามท่ามกลางทะเลหมอก\""
-            },
-            {
-                "id": "65ff1692be8a6fc6cb250fdc",
-                "name": "เซ็ตภาพวาด \"ความฝันในสายหมอก\""
-            }
-        ]
-    }
-    */
-
     const appearanceplacementcontainer = document.getElementById("appearance-placement-container");
     const appearance = new AppearancePlacement(appearanceplacementcontainer, sait);
-    appearance.insertContainer("Section", [{
-        "id": "65fec24f799cb87498a012cf",
-        "name": "เซ็ตภาพวาด \"บุคคลแสนงดงามท่ามกลางทะเลหมอก\""
-    },
-    {
-        "id": "65ff1692be8a6fc6cb250fdc",
-        "name": "เซ็ตภาพวาด \"ความฝันในสายหมอก\""
-    }]);
 </script>
