@@ -43,6 +43,7 @@
                 <p class="display" id="pdprice">{{ product.options[0].price }}</p>
             </div>
 
+            {%if product.options.length > 1 %}
             <p class="sans"><b>ตัวเลือกสินค้า</b></p>
             <div class="options" id="options-container">
                 {% for option in product.options %}
@@ -52,6 +53,7 @@
                 </button>
                 {% endfor %}
             </div>
+            {% endif %}
 
             <script>
                 const itable = document.getElementById("itable");
@@ -144,11 +146,27 @@
                 }
 
                 if (selectOption) {
-                    optionSelect('{{options.id}}', selectOption);
+                    optionSelect('{{ options.id }}', selectOption);
                     btn_addtocart.querySelector("span").innerHTML = "check";
                 };
             </script>
             {% endif %}{% endfor %}{% endif %}
+
+            {% if product.options.length == 1%}
+            <script>
+                selectOption = {
+                    id: '{{ product.options[0].id }}',
+                    title: '{{ product.options[0].title }}',
+                    price: '{{ product.options[0].price }}',
+                    imageindex: '{{ product.options[0].imageindex }}',
+                }
+
+                if (selectOption) {
+                    optionSelect('{{ options.id }}', selectOption);
+                    btn_addtocart.querySelector("span").innerHTML = "check";
+                };
+            </script>
+            {% endif %}
 
             <script>
                 function checkout() {

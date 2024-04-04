@@ -2,14 +2,12 @@
 const Access = {
     //* Product
     PRODUCT: {
-        ALL: 'PRODUCT_ALL',
-        INFOMATION: 'PRODUCT_IMFOMATION',
+        INFOMATION: 'PRODUCT_INFOMATION',
         MODIFY: 'PRODUCT_MODIFY',
     },
 
     //* Orders
     ORDER: {
-        ALL: 'ORDER_ALL',
         OVERVIEW: 'ORDER_OVERVIEW',
         INFOMATION: 'ORDER_INFOMATION',
         MODIFY: 'ORDER_MODIFY'
@@ -17,25 +15,21 @@ const Access = {
 
     //* Customer
     CUSTOMER: {
-        ALL: 'CUSTOMER_ALL',
         INFOMATION: 'CUSTOMER_INFOMATION',
         CONTACT: 'CUSTOMER_CONTACT',
     },
 
     //* Sale
     MAKET: {
-        ALL: 'MAKET_ALL',
         ANALYSIS: 'MAKET_ANALYSIS',
     },
 
     SHOP: {
-        ALL: 'SHOP_ALL',
         MODIFY: 'SHOP_MODIFY',
     },
 
     //* Account
     ACCOUNT: {
-        ALL: 'ACCOUNT_ALL',
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
     }
@@ -46,21 +40,28 @@ const AccountRole = {
         Role: 'ALL',
         Name: 'ผู้ใช้สูงสุด',
         Access: [
-            Access.ACCOUNT.ALL,
-            Access.CUSTOMER.ALL,
-            Access.MAKET.ALL,
-            Access.ORDER.ALL,
-            Access.PRODUCT.ALL,
-            Access.SHOP.ALL
+            Access.ACCOUNT.INFOMATION,
+            Access.ACCOUNT.MODIFY,
+            Access.CUSTOMER.CONTACT,
+            Access.CUSTOMER.INFOMATION,
+            Access.MAKET.ANALYSIS,
+            Access.ORDER.INFOMATION,
+            Access.ORDER.MODIFY,
+            Access.ORDER.OVERVIEW,
+            Access.PRODUCT.INFOMATION,
+            Access.PRODUCT.MODIFY,
+            Access.SHOP.MODIFY,
         ]
     },
     ADMINISTRATOR: {
         Role: 'ADMINISTRATOR',
         Name: 'ผู้ดูแลระบบ',
         Access: [
-            Access.ACCOUNT.ALL,
-            Access.PRODUCT.ALL,
-            Access.MAKET.ALL,
+            Access.ACCOUNT.INFOMATION,
+            Access.ACCOUNT.MODIFY,
+            Access.PRODUCT.INFOMATION,
+            Access.PRODUCT.MODIFY,
+            Access.MAKET.ANALYSIS,
             Access.ORDER.OVERVIEW,
         ]
     },
@@ -68,8 +69,11 @@ const AccountRole = {
         Role: 'SALESPERSON',
         Name: 'พนักงานขาย',
         Access: [
-            Access.CUSTOMER.ALL,
-            Access.ORDER.ALL
+            Access.CUSTOMER.CONTACT,
+            Access.CUSTOMER.INFOMATION,
+            Access.ORDER.INFOMATION,
+            Access.ORDER.MODIFY,
+            Access.ORDER.OVERVIEW,
         ]
     },
     WAREHOUSE_WORKER: {
@@ -85,7 +89,7 @@ const AccountRole = {
         Role: 'MARKETER',
         Name: 'นักการตลาด',
         Access: [
-            Access.MAKET.ALL,
+            Access.MAKET.ANALYSIS,
             Access.PRODUCT.INFOMATION,
         ]
     },
@@ -93,7 +97,8 @@ const AccountRole = {
         Role: 'CUSTOMER_SERVICE_REPRESENTATIVE',
         Name: 'ฝ่ายบริการลูกค้า',
         Access: [
-            Access.CUSTOMER.ALL,
+            Access.CUSTOMER.CONTACT,
+            Access.CUSTOMER.INFOMATION,
             Access.ORDER.OVERVIEW,
             Access.ORDER.INFOMATION,
         ]

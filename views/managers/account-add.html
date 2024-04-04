@@ -1,23 +1,28 @@
 <main class="managers-view account">
     <header>
-        <h1 class="mono">เข้าสู่ระบบ</h1>
+        <h1 class="mono">เพิ่มบัญชี</h1>
     </header>
 
     <section>
         <form action="/managers/account/add" method="POST">
             <fieldset>
-                <label for="email">อีเมล์</label>
-                <input type="text" id="email" name="email" class="snas" placeholder="อีเมล์">
+                <label for="fullname">ชื่อ - สกุล</label>
+                <input type="text" id="fullname" name="fullname" class="sans" placeholder="ชื่อ - สกุล" required>
             </fieldset>
 
             <fieldset>
-                <label for="pwd">รหัสผ่าน</label>
-                <input type="password" id="pwd" name="password" class="sans" placeholder="รหัสผ่าน">
+                <label for="email">อีเมล์</label>
+                <input type="text" id="email" name="email" class="sans" placeholder="อีเมล์" required>
+            </fieldset>
+
+            <fieldset>
+                <label for="phone">โทรศัพท์</label>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" class="sans" placeholder="โทรศัพท์">
             </fieldset>
 
             <fieldset>
                 <label for="role">สถานะ</label>
-                <select name="role" id="role">
+                <select name="role" id="role" required>
                     <option disabled selected>สถานะ</option>
                     {% for role in AccountRole %}
                     <option value="{{ role.Role }}">{{ role.Name }}</option>

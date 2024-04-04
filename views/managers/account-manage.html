@@ -1,0 +1,40 @@
+<main class="managers-view account">
+    <header>
+        <h1 class="mono">จัดการบัญชี</h1>
+    </header>
+
+    <section class="account-list">
+        {% for profile in accounts %}
+        <a href="/managers/account/{{ profile._id.toString() }}">
+            <div>
+                <p class="sans">ชื่อผู้ใช้</p>
+                <span class="sans">{{ profile.fullname }}</span>
+            </div>
+            <div>
+                <p class="sans">อีเมล์</p>
+                <span class="mono">{{ profile.email }}</span>
+            </div>
+            <div>
+                <p class="sans">โทรศัพท์</p>
+                <span class="mono">{{ profile.phone|default('-') }}</span>
+            </div>
+            <div>
+                <p class="sans">ตำแหน่ง</p>
+                <span class="sans">{{ AccountRole[profile.role].Name }}</span>
+            </div>
+            <div>
+                <p class="sans">สิทธิ์การเข้าถึง</p>
+                <fieldset>
+                    {% for access in profile.access %}
+                    <span class="mono">{{ access|replace('_', ' ', 'g') }}</span>
+                    {% endfor %}
+                </fieldset>
+            </div>
+            <div>
+                <p class="sans">วันที่เพิ่ม</p>
+                <span class="mono">{{ profile.createdAt|date('Y.m.d') }}</span>
+            </div>
+        </a>
+        {% endfor%}
+    </section>
+</main>

@@ -1,0 +1,125 @@
+<main class="managers-view account">
+    <header>
+        <h1 class="mono">เพิ่มบัญชี</h1>
+    </header>
+
+    <section class="account-view">
+        <section>
+            <h3 class="sans">ข้อมูลบัญชี</h3>
+
+            <div>
+                <p class="sans">ชื่อผู้ใช้</p>
+                <span class="sans">{{ profile.fullname }}</span>
+            </div>
+            <div>
+                <p class="sans">อีเมล์</p>
+                <span class="mono">{{ profile.email }}</span>
+            </div>
+            <div>
+                <p class="sans">โทรศัพท์</p>
+                <span class="mono">{{ profile.phone|default('-') }}</span>
+            </div>
+            <div>
+                <p class="sans">วันที่เพิ่ม</p>
+                <span class="mono">{{ profile.createdAt|date('Y.m.d') }}</span>
+            </div>
+            <div>
+                <p class="sans">ตำแหน่ง</p>
+                <select class="sans" onchange="onAccountRoleChange(this.value)">
+                    {% for role in AccountRole %}
+                    <option value="{{ role.Role }}" {% if role.Role==profile.role %} selected {% endif %}>{{ role.Name
+                        }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <p class="sans">สถานะ</p>
+                <select class="sans">
+                    <option value="active">ปกติ</option>
+                    <option value="inactive">ปิดใช้งาน</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="permission">
+            <h3 class="sans">สิทธิ์การเข้าถึงข้อมูล</h3>
+
+            {% for k in Object.keys(Rights) %}
+            <div class="permission-selector">
+                <p class="mono">
+                    {{ k }}
+                </p>
+
+                <fieldset id="{{ k }}">
+                    {% for r in Object.keys(Rights[k]) %}
+                    <span>
+                        <input id="{{ k }}_{{ r }}" type="checkbox" onchange="onAccessChange(this.id, this.checked)" {%
+                            if profile.access.includes(k + '_' + r) %} checked {% endif %}>
+                        <label for="{{ k }}_{{ r }}" class="mono">{{ r }}</label>
+                    </span>
+                    {% endfor %}
+                </fieldset>
+            </div>
+            {% endfor %}
+
+            <script>
+                let account_role = {};
+                let access_rights = [];
+
+                async function loadAccessInfomation() {
+                    const res = await fetchJson('/api/account/access');
+                    if (res.status == 200) account_role = res.AccountRole;
+                }
+                loadAccessInfomation();
+
+                async function onAccountRoleChange(role) {
+                    access_rights = account_role[role].Access;
+
+                    await fetchJson('/managers/account/{{ profile._id.toString() }}', {
+                        headers: { 'Content-Type': 'application/json' },
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            access: access_rights,
+                            role: role
+                        }),
+                    });
+
+                    renderRoleSelector();
+                }
+            </script>
+
+            <script>
+                const permissionContainer = document.getElementById("permission");
+
+                permissionContainer.querySelectorAll("input").forEach(e => {
+                    if (e.checked) access_rights.push(e.id);
+                });
+
+                function renderRoleSelector() {
+                    permissionContainer.querySelectorAll("input").forEach(e => {
+                        if (access_rights.includes(e.id)) e.checked = true;
+                        else e.checked = false;
+                    });
+                }
+
+                async function onAccessChange(k, v) {
+                    if (v) {
+                        const isSelected = access_rights.filter(e => e === k).length !== 0;
+                        if (isSelected) return;
+                        else access_rights.push(k);
+                    } else access_rights = access_rights.filter(e => e !== k);
+
+                    const res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'PUT',
+                        body: JSON.stringify({ access: access_rights }),
+                    });
+
+                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
+                }
+            </script>
+        </section>
+    </section>
+</main>

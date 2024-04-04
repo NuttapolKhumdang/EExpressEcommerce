@@ -5,12 +5,18 @@ const { Promotion, Address, Order, OrderStatus } = require('../models/Order');
 const { Product } = require('../models/Product');
 const Appearance = require('../models/Appearance');
 
+const { Rights, AccountRole } = require('../modules/AccessRights');
+const Access = require('../modules/Access');
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
 const thai_tambons = require('../modules/address/thai_tambons.json');
 
 router.get('/address', async (req, res, next) => {
     return res.json({ status: 200, message: 'OK', thai_provinces, thai_amphures, thai_tambons });
+});
+
+router.get('/account/access', Access([Rights.ACCOUNT.MODIFY]), async (req, res, next) => {
+    return res.json({ status: 200, message: 'OK', Rights, AccountRole });
 });
 
 router.get('/product', async (req, res, next) => {

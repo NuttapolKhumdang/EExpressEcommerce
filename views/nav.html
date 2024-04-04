@@ -9,6 +9,9 @@
     <h3 class="display"><a href="/">EExpress</a></h3>
 
     <nav>
+        {% if account?._id %}
+        <button class="i" onclick="redirect('/managers')"><span class="material-icons-outlined">shopping_bag</span></button>
+        {% endif %}
         <button class="i" onclick="toggleSearchBox()"><span class="material-icons-outlined">search</span></button>
         <button class="i" onclick="toggleCartview()"><span class="material-icons-outlined">shopping_bag</span></button>
         <!-- <a class="sans">Login</a> -->

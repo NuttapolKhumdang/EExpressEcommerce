@@ -36,7 +36,7 @@
             <h3 class="sans">อัพเดทสถานะ</h3>
 
             <div>
-                <select class="sans" id="update-status-select">
+                <select class="sans full" id="update-status-select">
                     {% for status in OrderStatus %}
                     <option value="{{ status }}" {% if order.status==status %} selected {% endif %}>
                         {{ OrderStatusName[status] }}</option>
