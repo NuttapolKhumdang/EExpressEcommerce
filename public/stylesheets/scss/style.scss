@@ -259,6 +259,12 @@ form {
         align-items: center;
         justify-content: center;
         gap: 6pt;
+
+        .smb {
+            @media screen and (min-width: 856px) {
+                display: none;
+            }
+        }
     }
 
     a {
@@ -321,6 +327,11 @@ form {
     display: grid;
     grid-template-columns: 1fr 2fr;
 
+    @media screen and (max-width: 856px) {
+        display: flex;
+        flex-direction: column;
+    }
+
     width: min(1114px, 90vw);
     padding-left: max((100vw - 1114px) / 2, 5vw);
     padding-right: max((100vw - 1114px) / 2, 5vw);
@@ -351,6 +362,21 @@ form {
 
             span {
                 letter-spacing: 0;
+            }
+        }
+
+        @media screen and (max-width: 512px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            p {
+                font-size: 16px;
+                letter-spacing: 16px;
+
+                span {
+                    letter-spacing: 0;
+                }
             }
         }
     }
@@ -509,6 +535,18 @@ form {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
+
+    @media screen and (max-width: 1114px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media screen and (max-width: 856px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media screen and (max-width: 512px) {
+        grid-template-columns: 1fr;
+    }
 
     section {
         width: 100%;

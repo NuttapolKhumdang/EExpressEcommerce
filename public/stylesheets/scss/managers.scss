@@ -5,6 +5,11 @@
 
     position: relative;
 
+    @media screen and (max-width: 856px) {
+        display: flex;
+        flex-direction: column;
+    }
+
     menu {
         all: unset;
 
@@ -24,6 +29,21 @@
 
         overflow-y: scroll;
         max-height: 80vh;
+
+        background-color: #ffff;
+
+        @media screen and (max-width: 856px) {
+            position: fixed;
+            left: calc(-100vw + -18rem);
+            transition: 160ms;
+            z-index: 200;
+
+            &.extend {
+                width: 90vw;
+                left: 5vw;
+            }
+
+        }
 
         &>p {
             font-size: 16px;
@@ -306,13 +326,27 @@
             flex-direction: column;
             gap: 1rem;
 
+            @media screen and (max-width: 856px) {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
             div {
                 display: grid;
                 grid-template-columns: 12rem 1fr;
                 gap: 1rem;
 
                 width: 100%;
-                height: 12rem;
+                height: max-content;
+
+                @media screen and (max-width: 856px) {
+                    display: flex;
+                    flex-direction: column;
+
+                    p {
+                        display: none;
+                    }
+                }
 
                 a {
                     color: #191919;
@@ -517,9 +551,17 @@
                 border: 2px solid #191919;
                 padding: 1rem;
 
+                @media screen and (max-width: 856px) {
+                    grid-template-columns: 1fr;
+                }
+
                 header {
                     all: unset;
                     padding: 2pt;
+
+                    @media screen and (max-width: 856px) {
+                        display: none;
+                    }
                 }
 
                 article {
@@ -768,6 +810,22 @@
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         gap: 6pt;
+
+        @media screen and (max-width: 912px) {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        @media screen and (max-width: 812px) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media screen and (max-width: 612px) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media screen and (max-width: 512px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
 
         div {
             height: 12rem;
