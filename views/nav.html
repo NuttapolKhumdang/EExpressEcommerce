@@ -10,7 +10,8 @@
 
     <nav>
         {% if account?._id %}
-        <button class="i" onclick="redirect('/managers')"><span class="material-icons-outlined">shopping_bag</span></button>
+        <button class="i smb" onclick="extendManagersNav()"><span class="material-icons-outlined">menu</span></button>
+        <button class="i" onclick="redirect('/managers')"><span class="material-icons-outlined">store</span></button>
         {% endif %}
         <button class="i" onclick="toggleSearchBox()"><span class="material-icons-outlined">search</span></button>
         <button class="i" onclick="toggleCartview()"><span class="material-icons-outlined">shopping_bag</span></button>

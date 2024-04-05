@@ -11,10 +11,15 @@
     {% include 'nav.html' %}
 
     <main class="my webstatic managers managers-container">
-        <menu>{% include './managers/nav.html' %}</menu>
+        <menu id="managersnav">{% include './managers/nav.html' %}</menu>
         {% include render %}
     </main>
 
+    <script>
+        function extendManagersNav() {
+            document.getElementById("managersnav").classList.toggle("extend");
+        }
+    </script>
     {% include 'cartview.html' %}
 </body>
 
