@@ -368,6 +368,7 @@ form {
             align-items: center;
             justify-content: center;
         }
+
         h1 {
             font-size: 64px;
         }
@@ -1061,6 +1062,12 @@ form {
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 4rem;
+
+    @media screen and (max-width: 856px) {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
 
     .checkout-form {
         fieldset {
