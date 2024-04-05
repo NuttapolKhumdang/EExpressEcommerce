@@ -13,9 +13,6 @@
     --nav-border: #191919;
     --scroll-thumb-background: #191919;
 
-    --banner-dot-color: #F1EF99;
-    --banner-dot-active-color: #D37676;
-
     --button-normal-background: #FFFFFF;
     --button-normal-text: #191919;
     --button-normal-border: #191919;
@@ -54,6 +51,11 @@
     font-family: "Major Mono Display", "Noto Sans Thai", monospace;
     font-weight: 400;
     font-style: normal;
+}
+
+.my {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 button {
@@ -173,7 +175,7 @@ form {
         border: none;
         font-size: 16px;
         border-bottom: 2px solid #191919;
-        
+
         &:invalid {
             border-bottom: 2px solid #D37676;
         }
@@ -315,11 +317,86 @@ form {
     }
 }
 
-.my {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-}
+.webstatic.masterfooter {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
 
+    width: min(1114px, 90vw);
+    padding-left: max((100vw - 1114px) / 2, 5vw);
+    padding-right: max((100vw - 1114px) / 2, 5vw);
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    margin-top: 2rem;
+
+    gap: 4rem;
+    border-top: 2px solid #191919;
+    background-color: #F1EF99;
+
+    header {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+
+        h1 {
+            font-size: 64px;
+        }
+
+        p {
+            font-size: 24px;
+            letter-spacing: 36px;
+            text-transform: uppercase;
+
+            span {
+                letter-spacing: 0;
+            }
+        }
+    }
+
+    section {
+        a {
+            color: #191919;
+            text-decoration: none;
+
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: left;
+
+            width: max-content;
+            padding: 4pt 6pt;
+            transition: 160ms;
+
+            span {
+                width: 0;
+                overflow: hidden;
+                transition: 160ms;
+            }
+
+            p {
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            &:hover {
+                background-color: #000;
+                color: #fff;
+
+                span {
+                    width: 2rem;
+                }
+            }
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            width: max-content;
+        }
+    }
+}
 
 .webstatic.banner-section {
     position: relative;
@@ -1038,7 +1115,7 @@ form {
 .s2loader {
     width: 16px;
     height: 16px;
-    
+
     border-radius: 50%;
     border: 3px solid;
     border-color: #E0E0E0;
