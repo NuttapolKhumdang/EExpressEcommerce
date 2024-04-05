@@ -141,6 +141,27 @@ router.route('/account/add')
         return res.json({ status: 200, account });
     });
 
+router.route('/account/invite')
+    .get(async (req, res, next) => {
+        if (!req.query.id) return res.render('errors/404');
+
+        const profile = await Account.findById(req.query.id);
+        if (!profile) return res.render('errors/404');
+        else if (profile?.password) return res.redirect('/managers');
+        return res.render('managers', { render: 'managers/account-invite.html', profile, AccountRole, Rights });
+    })
+    .post(async (req, res, next) => {
+        if (!req.query.id) return res.render('errors/404');
+        if (!req.body.password || !req.body.passwore || req.body.password !== req.body.passwore)
+            return res.render('errors/400');
+
+        await Account.findByIdAndUpdate(req.query.id, {
+            password: bcrypt.hashSync(req.body.password, 10),
+        });
+
+        return res.redirect('/managers/');
+    });
+
 router.route('/account/:id')
     .get(Access([Rights.ACCOUNT.INFOMATION, Rights.ACCOUNT.MODIFY,]), async (req, res, next) => {
         try {

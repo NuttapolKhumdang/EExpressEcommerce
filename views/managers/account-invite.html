@@ -1,0 +1,43 @@
+<main class="managers-view account">
+    <header>
+        <h1 class="mono">เข้าสู่ระบบ</h1>
+    </header>
+
+    <section>
+        <form action="/managers/account/invite?id={{ profile._id.toString() }}" method="POST" id="fsubm">
+            <fieldset>
+                <label for="email">อีเมล์</label>
+                <input type="text" id="email" name="username" class="snas" placeholder="อีเมล์"
+                    value="{{ profile.email }}">
+            </fieldset>
+
+            <fieldset>
+                <label for="pwd">รหัสผ่าน</label>
+                <input type="password" id="pwd" name="password" class="sans" placeholder="รหัสผ่าน" oninput="cppw()">
+            </fieldset>
+            <fieldset>
+                <label for="pwdc">รหัสผ่าน</label>
+                <input type="password" id="pwdc" name="passwore" class="sans" placeholder="ยืนยันรหัสผ่าน"
+                    oninput="cppw()">
+            </fieldset>
+
+            <script>
+                function cppw() {
+                    const pwd = document.getElementById("pwd");
+                    const pwdc = document.getElementById("pwdc");
+
+                    if (pwd.value !== pwdc.value) return false;
+                    return true;
+                }
+
+                document.getElementById("fsubm").addEventListener("submit", e => {
+                    if (!cppw()) {
+                        e.preventDefault();
+                        new Alert("รหัสผ่านไม่ตรงกัน", AlertType.ERROR, true);
+                    };
+                })
+            </script>
+            <button type="submit">ถัดไป</button>
+        </form>
+    </section>
+</main>
