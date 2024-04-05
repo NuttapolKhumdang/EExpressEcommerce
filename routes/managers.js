@@ -196,6 +196,16 @@ router.route('/account/:id')
         } catch {
             return res.status(500).json({ status: 500, message: 'something wrong with database' });
         }
+    })
+    .delete(Access([Rights.ACCOUNT.REMOVE]), async (req, res, next) => {
+        try {
+            const profile = await Account.findByIdAndUpdate(req.params.id, { deleted: true });
+            await UpdateAction(req.user._id, Action.ACCOUNT.REMOVE, { _id: req.params.id });
+
+            return res.json({ status: 200, message: 'OK', profile });
+        } catch {
+            return res.status(500).json({ status: 500, message: 'something wrong with database' });
+        }
     });
 
 // ?? Authenticate
@@ -207,6 +217,8 @@ router.route('/login')
     .post(passport.authenticate('local', {
         failureRedirect: '/managers',
     }), async (req, res, next) => {
+        if (!req.user.status) return req.logout({}, (err) => { return res.render('errors/account-inactive.html') })
+
         await UpdateAction(req.user._id, Action.SESSION.LOGIN);
         return res.redirect('/managers');
     });

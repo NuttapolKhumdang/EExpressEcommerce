@@ -34,6 +34,7 @@ const Access = {
         ADD: 'ACCOUNT_ADD',
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
+        REMOVE: 'ACCOUNT_REMOVE',
     }
 };
 
@@ -45,6 +46,7 @@ const AccountRole = {
             Access.ACCOUNT.ADD,
             Access.ACCOUNT.INFOMATION,
             Access.ACCOUNT.MODIFY,
+            Access.ACCOUNT.REMOVE,
             Access.CUSTOMER.CONTACT,
             Access.CUSTOMER.INFOMATION,
             Access.MAKET.ANALYSIS,

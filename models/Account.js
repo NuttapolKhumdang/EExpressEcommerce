@@ -9,6 +9,10 @@ const AccountSchema = new Schema({
 
     role: String,
     access: Array,
+    status: {
+        type: Boolean,
+        default: true,
+    },
 }, {
     timestamps: true
 });

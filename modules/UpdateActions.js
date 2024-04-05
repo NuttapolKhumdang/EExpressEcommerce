@@ -23,6 +23,7 @@ const Action = {
         OVERVIEW: 'PRODUCT_OVERVIEW',
         INFOMATION: 'PRODUCT_INFOMATION',
         MODIFY: 'PRODUCT_MODIFY',
+        REMOVE: 'PRODUCT_REMOVE',
     },
 
     ORDER: {
@@ -58,6 +59,7 @@ const Action = {
         OVERVIEW: 'ACCOUNT_OVERVIEW',
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
+        REMOVE: 'ACCOUNT_REMOVE',
     }
 }
 module.exports = { UpdateAction, Action };

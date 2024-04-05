@@ -34,9 +34,9 @@
             </div>
             <div>
                 <p class="sans">สถานะ</p>
-                <select class="sans">
-                    <option value="active">ปกติ</option>
-                    <option value="inactive">ปิดใช้งาน</option>
+                <select class="sans" onchange="onAccountStatusChange(this.value)">
+                    <option value="true">ปกติ</option>
+                    <option value="false" {% if not profile.status %} selected {% endif %}>ปิดใช้งาน</option>
                 </select>
             </div>
         </section>
@@ -115,6 +115,19 @@
                         },
                         method: 'PUT',
                         body: JSON.stringify({ access: access_rights }),
+                    });
+
+                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
+                }
+
+                async function onAccountStatusChange(v) {
+                    const status = (v === "true");
+                    const res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'PUT',
+                        body: JSON.stringify({ status }),
                     });
 
                     if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
