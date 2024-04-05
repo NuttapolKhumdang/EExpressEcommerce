@@ -5,9 +5,10 @@ const multer = require('multer')();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 
-const { Account } = require('../models/Account');
 const Access = require('../modules/Access');
+const { Account } = require('../models/Account');
 const { Rights, AccountRole } = require('../modules/AccessRights');
+const Mailer = require('../modules/Mailer');
 
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
@@ -127,7 +128,17 @@ router.route('/account/add')
         });
 
         await account.save();
-        return res.json({ status: 200, account })
+
+        Mailer('new_account.html', {
+            sender: 'nuttapo.chok@gmail.com',
+            recive: account.email,
+            subject: 'คุณได้รับสิทธิ์ในการจัดการเว็ปไซต์ Express',
+        }, {
+            account,
+            account: { _id: account._id.toString() },
+        });
+
+        return res.json({ status: 200, account });
     });
 
 router.route('/account/:id')
