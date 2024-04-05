@@ -143,17 +143,21 @@ router.route('/checkout/:cart')
     });
 
 router.route('/managers/shop/appearance')
-    .get(async (req, res, next) => {
+    .get(Access([Rights.SHOP.MODIFY]) ,async (req, res, next) => {
         const appearance = await Appearance.find({});
         return res.json({ status: 200, message: 'OK', appearance });
     })
-    .post(async (req, res, next) => {
+    .post(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const appearance = new Appearance(req.body);
         await appearance.save();
         return res.json({ status: 200, message: 'OK', appearance });
     })
-    .put(async (req, res, next) => {
+    .put(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const appearance = await Appearance.findByIdAndUpdate(req.body.id, req.body);
+        return res.json({ status: 200, message: 'OK', appearance });
+    })
+    .delete(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
+        const appearance = await Appearance.findByIdAndDelete(req.body.id);
         return res.json({ status: 200, message: 'OK', appearance });
     });
 

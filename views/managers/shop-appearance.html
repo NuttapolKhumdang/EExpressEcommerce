@@ -18,6 +18,7 @@
 
     <section>
         <form onsubmit="event.preventDefault()">
+            <label for="section-title">ชื่่อส่วน</label>
             <input type="text" class="sans" id="section-title" placeholder="ชื่่อส่วน">
 
             <h3 class="mono">เพิ่มสินค้า</h3>
@@ -219,6 +220,11 @@
                 text: 'แก้ไข',
                 onclick: () => { parent.editTrack(id) }
             },
+            {
+                icon: 'delete',
+                text: 'ลบ',
+                onclick: () => { parent.removeTrack(id) }
+            },
             // {
             //     icon: 'expand_less',
             //     text: 'เลื่อนขึ้น',
@@ -293,6 +299,16 @@
             const track = this.result.filter(e => e._id == id)[0];
             document.body.insertAdjacentElement("beforeend", this.insertTrackTempalte);
             new SectionCreator(this, this.insertTrackTempalte, track._id, track.title, track.products);
+        }
+
+        removeTrack(id) {
+            fetch('/api/managers/shop/appearance', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'DELETE',
+                body: JSON.stringify({ id }),
+            }).then(res => res.json).then(res => this.render(true));
         }
 
         insertContainer(title = '', products = [], id = false) {
