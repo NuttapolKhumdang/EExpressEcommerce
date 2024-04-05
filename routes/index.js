@@ -19,7 +19,7 @@ router.get('/', async (req, res, next) => {
         return result;
     });
 
-    return res.render('index', { products, appearance });
+    return res.render('index', { account: req?.user, products, appearance });
 });
 
 router.get('/tst', async (req, res, next) => {
@@ -27,11 +27,11 @@ router.get('/tst', async (req, res, next) => {
 });
 
 router.get('/checkout', async (req, res, next) => {
-    return res.render('checkout', { thai_provinces });
+    return res.render('checkout', { account: req?.user, thai_provinces });
 });
 
 router.get('/checkout/:id', async (req, res, next) => {
-    return res.render('checkout', {});
+    return res.render('checkout', { account: req?.user, });
 });
 
 router.get('/:id', async (req, res, next) => {
@@ -39,11 +39,11 @@ router.get('/:id', async (req, res, next) => {
     if (!product) return next('route');
 
     const products = await Product.find({});
-    return res.render('view', { products, product, option: req.query.option });
+    return res.render('view', { account: req?.user, products, product, option: req.query.option });
 });
 
 router.get('*', async (req, res, next) => {
-    return res.status(404).json({ status: 404, message: 'this page not found' });
+    return res.status(404).json({ account: req?.user, status: 404, message: 'this page not found' });
 });
 
 
