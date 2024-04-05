@@ -121,5 +121,17 @@
                 }
             </script>
         </section>
+
+        <section>
+            <h3 class="sans">ประวัติการใช้งาน</h3>
+
+            {% for action in actions.action %}
+            <div>
+                <p class="mono">{{ action.action }}: {{ action.info._id }}</p>
+
+                <span class="mono">{{ action.timestamp|date('H:i:s Y.m.d', -420) }}</span>
+            </div>
+            {% endfor %}
+        </section>
     </section>
 </main>

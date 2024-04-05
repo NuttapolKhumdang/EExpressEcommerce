@@ -2,6 +2,7 @@
 const Access = {
     //* Product
     PRODUCT: {
+        ADD: 'PRODUCT_ADD',
         INFOMATION: 'PRODUCT_INFOMATION',
         MODIFY: 'PRODUCT_MODIFY',
     },
@@ -30,6 +31,7 @@ const Access = {
 
     //* Account
     ACCOUNT: {
+        ADD: 'ACCOUNT_ADD',
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
     }
@@ -40,6 +42,7 @@ const AccountRole = {
         Role: 'ALL',
         Name: 'ผู้ใช้สูงสุด',
         Access: [
+            Access.ACCOUNT.ADD,
             Access.ACCOUNT.INFOMATION,
             Access.ACCOUNT.MODIFY,
             Access.CUSTOMER.CONTACT,
@@ -48,6 +51,7 @@ const AccountRole = {
             Access.ORDER.INFOMATION,
             Access.ORDER.MODIFY,
             Access.ORDER.OVERVIEW,
+            Access.PRODUCT.ADD,
             Access.PRODUCT.INFOMATION,
             Access.PRODUCT.MODIFY,
             Access.SHOP.MODIFY,

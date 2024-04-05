@@ -6,6 +6,8 @@ const { Product } = require('../models/Product');
 const Appearance = require('../models/Appearance');
 
 const { Rights, AccountRole } = require('../modules/AccessRights');
+const { UpdateAction, Action } = require('../modules/UpdateActions');
+
 const Access = require('../modules/Access');
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
@@ -33,13 +35,14 @@ router.route('/promocode/:code')
         const promo = await Promotion.findOne({ code: req.params.code, active: true, deleted: false });
         return res.json({ status: 200, message: 'promocode', promo });
     })
-    .post(async (req, res, next) => {
+    .post(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const promo = new Promotion(req.body);
         await promo.save();
 
+        await UpdateAction(req.user._id, Action.PROMOTION.ADD, { _id: promo._id.toString() });
         return res.json({ status: 201, message: 'created', promo });
     })
-    .put(async (req, res, next) => {
+    .put(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         let promo;
         try {
             promo = await Promotion.findByIdAndUpdate(req.params.code, req.body);
@@ -47,15 +50,19 @@ router.route('/promocode/:code')
             return res.json({ status: 500, message: 'something went wrong' });
         }
 
+        await UpdateAction(req.user._id, Action.PROMOTION.UPDATE, { _id: promo._id.toString() });
+
         return res.json({ status: 201, message: 'updated', promo });
     })
-    .delete(async (req, res, next) => {
+    .delete(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         let promo;
         try {
             promo = await Promotion.findByIdAndUpdate(req.params.code, { deleted: true });
         } catch (e) {
             return res.json({ status: 500, message: 'something went wrong' });
         }
+
+        await UpdateAction(req.user._id, Action.PROMOTION.REMOVE, { _id: promo._id.toString() });
         return res.json({ status: 204, message: 'deleted' });
     });
 
@@ -135,6 +142,7 @@ router.route('/checkout/:cart')
     .put(async (req, res, next) => {
         try {
             const order = await Order.findByIdAndUpdate(req.params.cart, req.body);
+            await UpdateAction(req.user._id, Action.ORDER.MODIFY);
             return res.json({ status: 200, message: 'OK', order });
         } catch (e) {
             console.error(e);
@@ -143,21 +151,24 @@ router.route('/checkout/:cart')
     });
 
 router.route('/managers/shop/appearance')
-    .get(Access([Rights.SHOP.MODIFY]) ,async (req, res, next) => {
+    .get(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const appearance = await Appearance.find({});
         return res.json({ status: 200, message: 'OK', appearance });
     })
     .post(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const appearance = new Appearance(req.body);
         await appearance.save();
+        await UpdateAction(req.user._id, Action.SHOP.CREATE, { _id: appearance._id.toString(), appearance });
         return res.json({ status: 200, message: 'OK', appearance });
     })
     .put(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const appearance = await Appearance.findByIdAndUpdate(req.body.id, req.body);
+        await UpdateAction(req.user._id, Action.SHOP.MODIFY, { _id: appearance._id.toString(), appearance });
         return res.json({ status: 200, message: 'OK', appearance });
     })
     .delete(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
         const appearance = await Appearance.findByIdAndDelete(req.body.id);
+        await UpdateAction(req.user._id, Action.SHOP.REMOVE, { _id: appearance._id.toString(), appearance });
         return res.json({ status: 200, message: 'OK', appearance });
     });
 

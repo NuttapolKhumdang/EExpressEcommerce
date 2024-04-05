@@ -15,6 +15,16 @@ const AccountSchema = new Schema({
 
 const AccountModel = mongoose.model('Account', AccountSchema);
 
+const ActionSchema = new Schema({
+    action: Array,
+    id: String,
+}, {
+    timestamps: true,
+});
+
+const ActionModel = mongoose.model('AccountAction', ActionSchema);
+
 module.exports = {
     Account: AccountModel,
+    Actions: ActionModel,
 }

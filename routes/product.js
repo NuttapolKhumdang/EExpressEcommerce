@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
-const {Product,Category} = require('../models/Product');
+const { Product, Category } = require('../models/Product');
+const { UpdateAction, Action } = require('../modules/UpdateActions');
 
 const Image = require('../modules/Images');
 const ParseSearch = require('../modules/ParseSearch');
 
 
-router.get('/id/:id', async (req, res, next)=> res.json(await Product.findOne({search: req.params.id})));
+router.get('/id/:id', async (req, res, next) => res.json(await Product.findOne({ search: req.params.id })));
 router.route('/:id')
     .post(Image.upload.array('images'), async (req, res, next) => {
         const filepath = path.join(__dirname, '../', 'public', 'images');
@@ -64,6 +65,7 @@ router.route('/:id')
         });
 
         await product.save();
+        await UpdateAction(req.user._id, Action.PRODUCT.CREATE, { _id: product._id.toString() });
         return res.json({ status: 200, message: 'ok', product });
     })
 
@@ -108,6 +110,7 @@ router.route('/:id')
             category: category,
         });
 
+        await UpdateAction(req.user._id, Action.PRODUCT.MODIFY, { _id: product._id.toString() });
         return res.json({ status: 200, message: 'ok', product, search });
     });
 
