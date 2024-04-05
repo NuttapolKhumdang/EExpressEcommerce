@@ -183,6 +183,7 @@ router.route('/account/:id')
 // ?? Authenticate
 router.route('/login')
     .get((req, res, next) => {
+        if (req.isAuthenticated()) return res.redirect('/managers');
         return res.render('managers', { render: 'managers/account-login.html', });
     })
     .post(passport.authenticate('local', {
