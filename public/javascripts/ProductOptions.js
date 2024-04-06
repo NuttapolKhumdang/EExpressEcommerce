@@ -103,6 +103,11 @@ class ProductOptions {
 
     getresult() {
         this.update();
-        return this.result;
+        const result = this.result.map(e => {
+            e.imagepreview = '';
+            return e;
+        });
+
+        return result;
     }
 }
