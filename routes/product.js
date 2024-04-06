@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 
+const Access = require('../modules/Access');
+const { Rights } = require('../modules/AccessRights');
+
 const { Product, Category } = require('../models/Product');
 const { UpdateAction, Action } = require('../modules/UpdateActions');
 
@@ -9,9 +12,9 @@ const Image = require('../modules/Images');
 const ParseSearch = require('../modules/ParseSearch');
 
 
-router.get('/id/:id', async (req, res, next) => res.json(await Product.findOne({ search: req.params.id })));
+router.get('/id/:id', async (req, res, next) => res.json(await Product.findOne({ search: req.params.id, deleted: false })));
 router.route('/:id')
-    .post(Image.upload.array('images'), async (req, res, next) => {
+    .post(Access([Rights.PRODUCT.ADD]), Image.upload.array('images'), async (req, res, next) => {
         const filepath = path.join(__dirname, '../', 'public', 'images');
         const images = [];
 
@@ -37,7 +40,6 @@ router.route('/:id')
             category = newcategory._id.toString();
         }
 
-
         const search = ParseSearch(req.body.name);
         const options = JSON.parse(req.body.options);
         const price = {
@@ -62,6 +64,7 @@ router.route('/:id')
             name: req.body.name,
             description: req.body.description,
             category: req.body.category,
+            deleted: false,
         });
 
         await product.save();
@@ -69,7 +72,7 @@ router.route('/:id')
         return res.json({ status: 200, message: 'ok', product });
     })
 
-    .put(Image.upload.array('images'), async (req, res, next) => {
+    .put(Access([Rights.PRODUCT.MODIFY]), Image.upload.array('images'), async (req, res, next) => {
         const original = await Product.findOne({ search: req.params.id });
 
         let category = req.body.category;
@@ -108,10 +111,16 @@ router.route('/:id')
             name: req.body.name,
             description: req.body.description,
             category: category,
+            deleted: false,
         });
 
         await UpdateAction(req.user._id, Action.PRODUCT.MODIFY, { _id: product._id.toString() });
         return res.json({ status: 200, message: 'ok', product, search });
+    })
+
+    .delete(Access([Rights.PRODUCT.REMOVE]), async (req, res, next) => {
+        await Product.findByIdAndUpdate(req.params.id, { deleted: true });
+        return res.json({ status: 204, status: 'OK' });
     });
 
 module.exports = router;
