@@ -22,7 +22,7 @@ router.get('/account/access', Access([Rights.ACCOUNT.MODIFY]), async (req, res, 
 });
 
 router.get('/product', async (req, res, next) => {
-    const query = {};
+    const query = { deleted: false };
     if (req.query.id) query["_id"] = req.query.id;
     if (req.query.q) query["$text"] = { $search: req.query.q };
 

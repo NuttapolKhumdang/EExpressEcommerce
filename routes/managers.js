@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer')();
 
 const passport = require('passport');
 const bcrypt = require('bcrypt');
@@ -15,16 +14,9 @@ const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
 const thai_tambons = require('../modules/address/thai_tambons.json');
 
-const ProductObject = require('../models/Product');
-const Product = ProductObject.Product;
-const Category = ProductObject.Category;
+const { Product, Category } = require('../models/Product');
 
-const OrderObject = require('../models/Order');
-const Address = OrderObject.Address;
-const Promotion = OrderObject.Promotion;
-const Order = OrderObject.Order;
-const OrderStatus = OrderObject.OrderStatus;
-const OrderStatusName = OrderObject.OrderStatusName;
+const { Address, Promotion, Order, OrderStatus, OrderStatusName } = require('../models/Order');
 
 router.get('/', Access(false), (req, res, next) => {
     return res.render('managers', { render: 'managers/home.html', account: req.user, });
@@ -32,7 +24,7 @@ router.get('/', Access(false), (req, res, next) => {
 
 // ?? Shop
 router.get('/shop/appearance', Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
-    const products = await Product.find();
+    const products = await Product.find({ deleted: false });
     return res.render('managers', { render: 'managers/shop-appearance.html', account: req.user, products, });
 });
 
@@ -49,7 +41,7 @@ router.get('/shop/promos/:id', Access([Rights.SHOP.MODIFY]), async (req, res, ne
 
 // ?? Products
 router.get('/product', Access([Rights.PRODUCT.INFOMATION, Rights.PRODUCT.MODIFY]), async (req, res, next) => {
-    const products = await Product.find({});
+    const products = await Product.find({ deleted: false });
     await UpdateAction(req.user._id, Action.PRODUCT.OVERVIEW);
     return res.render('managers', { render: 'managers/product.html', account: req.user, products });
 });
@@ -61,7 +53,7 @@ router.get('/product/create', Access([Rights.PRODUCT.ADD]), async (req, res, nex
 
 router.get('/product/:id', Access([Rights.PRODUCT.INFOMATION]), async (req, res, next) => {
     const category = await Category.find({});
-    const product = await Product.findOne({ search: req.params.id });
+    const product = await Product.findOne({ search: req.params.id, deleted: false  });
     await UpdateAction(req.user._id, Action.PRODUCT.INFOMATION, { _id: product._id.toString() });
 
     return res.render('managers', { render: 'managers/product-create.html', account: req.user, product, category });

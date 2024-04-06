@@ -14,6 +14,11 @@ const ProductSchema = new Schema({
     'price.MIN': Number,
     'price.MAX': Number,
     'price.EQA': Boolean,
+
+    deleted: {
+        type: Boolean,
+        default: false,
+    }
 }, {
     timestamp: true,
 });

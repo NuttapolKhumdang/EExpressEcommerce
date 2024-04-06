@@ -10,7 +10,7 @@ const thai_provinces = require('../modules/address/thai_provinces.json');
 
 router.get('/', async (req, res, next) => {
     const appearances = await Appearance.find({});
-    const products = await Product.find({});
+    const products = await Product.find({ deleted: false, });
 
     const appearance = appearances.map(e => {
         const result = { title: e.title, products: [] };
@@ -35,7 +35,7 @@ router.get('/checkout/:id', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    const product = await Product.findOne({ search: req.params.id });
+    const product = await Product.findOne({ search: req.params.id, deleted: false });
     if (!product) return next('route');
 
     const products = await Product.find({});

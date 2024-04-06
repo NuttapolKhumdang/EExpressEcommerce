@@ -5,6 +5,7 @@ const Access = {
         ADD: 'PRODUCT_ADD',
         INFOMATION: 'PRODUCT_INFOMATION',
         MODIFY: 'PRODUCT_MODIFY',
+        REMOVE: 'PRODUCT_REMOVE',
     },
 
     //* Orders
@@ -56,6 +57,7 @@ const AccountRole = {
             Access.PRODUCT.ADD,
             Access.PRODUCT.INFOMATION,
             Access.PRODUCT.MODIFY,
+            Access.PRODUCT.REMOVE,
             Access.SHOP.MODIFY,
         ]
     },
