@@ -1,6 +1,17 @@
 <main class="managers-view product-create">
     <header>
         <h1 class="mono">เพิ่มสินค้า</h1>
+
+        {% if product?._id %}
+        <button onclick="remove()"><span class="material-icons-outlined">delete</span></button>
+
+        <script>
+            async function remove() {
+                const res = await fetchJson('/product/{{ product._id.toString() }}', { method: 'DELETE' });
+                if (res) redirect('/managers/product');
+            }
+        </script>
+        {% endif %}
     </header>
 
     <form id="product-create">
@@ -306,7 +317,7 @@
             img.addEventListener("click", () => {
                 setOptionImageIndex(id, index);
                 container.remove();
-                
+
                 setTimeout(() => {
                     pOptions.update();
                 }, 160);
