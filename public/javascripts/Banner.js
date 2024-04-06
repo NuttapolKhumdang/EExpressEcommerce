@@ -35,7 +35,7 @@ class Banner {
         const child = this.data.map(e => {
             const div = document.createElement("div");
             const img = document.createElement("img");
-            img.src = e.image;
+            img.src = '/images/' + e;
             div.insertAdjacentElement("beforeend", img);
             return div;
         });
