@@ -38,7 +38,7 @@ router.get('/:id', async (req, res, next) => {
     const product = await Product.findOne({ search: req.params.id, deleted: false });
     if (!product) return next('route');
 
-    const products = await Product.find({});
+    const products = await Product.find({ deleted: false });
     return res.render('view', { account: req?.user, products, product, option: req.query.option });
 });
 

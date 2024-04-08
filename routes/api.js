@@ -139,7 +139,7 @@ router.route('/checkout/:cart')
 
         return res.json({ status: 201, message: 'OK', body: req.body });
     })
-    .put(async (req, res, next) => {
+    .put(Access([Rights.ORDER.MODIFY], true),async (req, res, next) => {
         try {
             const order = await Order.findByIdAndUpdate(req.params.cart, req.body);
             await UpdateAction(req.user._id, Action.ORDER.MODIFY);
