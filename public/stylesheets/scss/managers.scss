@@ -964,6 +964,32 @@
                 }
             }
 
+            section.account-active div {
+                display: grid;
+                grid-template-columns: 4fr max-content;
+                border-bottom: 1px solid #191919;
+
+                @media screen and (max-width: 512px) {
+                    display: flex;
+                    flex-direction: column-reverse;
+                    align-items: flex-start;
+                    justify-content: start;
+
+                    gap: 0;
+
+                    &>span {
+                        font-size: 12px;
+                        color: #A0A0A0;
+                    }
+                }
+
+                &>p>span {
+                    display: flex;
+                    flex-direction: column;
+                    text-indent: 2rem;
+                }
+            }
+
             div.permission-selector {
                 display: flex;
                 flex-direction: column;
