@@ -135,13 +135,16 @@
             </script>
         </section>
 
-        <section>
+        <section class="account-active">
             <h3 class="sans">ประวัติการใช้งาน</h3>
 
             {% for action in actions.action %}
             <div>
-                <p class="mono">{{ action.action }}: {{ action.info._id }}</p>
-
+                <p class="mono">{{ action.action }}
+                    {% if action.info._id %}
+                    <span>&gt; {{ action.info._id }}</span>
+                    {% endif %}
+                </p>
                 <span class="mono">{{ action.timestamp|date('H:i:s Y.m.d', -420) }}</span>
             </div>
             {% endfor %}
