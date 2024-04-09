@@ -134,7 +134,7 @@ router.route('/profile/security/password')
 
             await UpdateAction(req.user._id, Action.PROFILE.PASSWORD_CHANGE);
             return res.redirect('/managers');
-        } else return res.redirect('/managers/profile/security/password?message=old password is not correct');
+        } else return res.redirect('/managers/profile/security/password?message=รหัสผ่านไม่ถูกต้อง');
     });
 
 // ?? Account
@@ -211,7 +211,7 @@ router.route('/account/:id')
         }
     })
     .put(Access([Rights.ACCOUNT.MODIFY]), async (req, res, next) => {
-        if (req.params.id === req.user._id.toString()) return res.status(403).json({ status: 403, message: 'you can not change your rights' });
+        if (req.params.id === req.user._id.toString()) return res.status(403).json({ status: 403, message: 'คุณไม่สามารถเปลี่ยนการตั้งต่าสิทธิ์การเข้าถึงของคุณเองได้' });
 
         try {
             const profile = await Account.findByIdAndUpdate(req.params.id, req.body);
@@ -219,7 +219,7 @@ router.route('/account/:id')
 
             return res.json({ status: 200, message: 'OK', profile });
         } catch {
-            return res.status(500).json({ status: 500, message: 'something wrong with database' });
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
     })
     .delete(Access([Rights.ACCOUNT.REMOVE]), async (req, res, next) => {
@@ -229,7 +229,7 @@ router.route('/account/:id')
 
             return res.json({ status: 200, message: 'OK', profile });
         } catch {
-            return res.status(500).json({ status: 500, message: 'something wrong with database' });
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
     });
 
@@ -257,7 +257,7 @@ router.route('/logout')
         req.logout({}, async (err) => {
             if (err) {
                 console.error("logout", err);
-                return res.status(500).json({ status: 500, message: 'something wrong with server' });
+                return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
             }
 
             await UpdateAction(id, Action.SESSION.LOGOUT);

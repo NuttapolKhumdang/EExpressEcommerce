@@ -47,7 +47,7 @@ router.route('/promocode/:code')
         try {
             promo = await Promotion.findByIdAndUpdate(req.params.code, req.body);
         } catch (e) {
-            return res.json({ status: 500, message: 'something went wrong' });
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
 
         await UpdateAction(req.user._id, Action.PROMOTION.UPDATE, { _id: promo._id.toString() });
@@ -59,7 +59,7 @@ router.route('/promocode/:code')
         try {
             promo = await Promotion.findByIdAndUpdate(req.params.code, { deleted: true });
         } catch (e) {
-            return res.status(500).json({ status: 500, message: 'something went wrong' });
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
 
         await UpdateAction(req.user._id, Action.PROMOTION.REMOVE, { _id: promo._id.toString() });
@@ -134,7 +134,7 @@ router.route('/checkout/:cart')
             await order.save();
         } catch (e) {
             console.error(e);
-            return res.status().json({ status: 500, message: 'something wrong with database' });
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
 
         return res.status(201).json({ status: 201, message: 'OK', body: req.body });
@@ -146,7 +146,7 @@ router.route('/checkout/:cart')
             return res.json({ status: 200, message: 'OK', order });
         } catch (e) {
             console.error(e);
-            return res.status(500).json({ status: 500, message: 'something wrong with database' });
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
     });
 

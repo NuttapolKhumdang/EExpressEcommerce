@@ -20,7 +20,7 @@ router.route('/:id')
 
         const isDuplicate = await Product.findOne({ search: ParseSearch(req.body.name) });
         if (isDuplicate) {
-            return res.json({ status: 409, message: "duplicate product name" });
+            return res.json({ status: 409, message: "ชื้อสินค้านี้ถูกใช้แล้ว" });
         }
 
         for (let i = 0; i < req.files.length; i++) {
