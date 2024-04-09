@@ -15,7 +15,6 @@ const thai_amphures = require('../modules/address/thai_amphures.json');
 const thai_tambons = require('../modules/address/thai_tambons.json');
 
 const { Product, Category } = require('../models/Product');
-
 const { Address, Promotion, Order, OrderStatus, OrderStatusName } = require('../models/Order');
 
 router.get('/', Access(false), (req, res, next) => {
@@ -53,7 +52,7 @@ router.get('/product/create', Access([Rights.PRODUCT.ADD]), async (req, res, nex
 
 router.get('/product/:id', Access([Rights.PRODUCT.INFOMATION]), async (req, res, next) => {
     const category = await Category.find({});
-    const product = await Product.findOne({ search: req.params.id, deleted: false  });
+    const product = await Product.findOne({ search: req.params.id, deleted: false });
     await UpdateAction(req.user._id, Action.PRODUCT.INFOMATION, { _id: product._id.toString() });
 
     return res.render('managers', { render: 'managers/product-create.html', account: req.user, product, category });
@@ -105,6 +104,18 @@ router.get('/order/:id', Access([Rights.ORDER.INFOMATION]), async (req, res, nex
 });
 
 
+// ?? Profile 
+router.get('/profile', Access(false), async (req, res, next) => {
+    const actions = await Actions.findOne({ id: req.user._id.toString() });
+    return res.render('managers', { render: 'managers/profile-personal.html', account: req.user, actions, AccountRole, Rights });
+});
+
+router.route('/profile/security')
+    .get(Access(false), async (req, res, next) => {
+        const actions = await Actions.findOne({ id: req.user._id.toString() });
+        return res.render('managers', { render: 'managers/profile-security.html', account: req.user, actions, Action });
+    });
+
 // ?? Account
 router.get('/account', Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
     const accounts = await Account.find();
@@ -121,6 +132,7 @@ router.route('/account/add')
         const account = new Account({
             fullname: req.body.fullname,
             email: req.body.email,
+            phone: req.body.phone,
             role: req.body.role,
             access: AccountRole[req.body.role].Access,
         });
@@ -136,16 +148,16 @@ router.route('/account/add')
             account: { _id: account._id.toString() },
         });
 
-        await UpdateAction(req.user._id, Action.ACCOUNT.ADD, { _id: account._id });
+        await UpdateAction(req.user._id, Action.ACCOUNT.ADD, account);
         return res.redirect('/managers/account');
     });
 
 router.route('/account/invite')
     .get(async (req, res, next) => {
-        if (!req.query.id) return res.render('errors/404');
+        if (!req.query.id) return res.status(404).render('errors/404');
 
         const profile = await Account.findById(req.query.id);
-        if (!profile) return res.render('errors/404');
+        if (!profile) return res.status(404).render('errors/404');
         else if (profile?.password) return res.redirect('/managers');
 
         return res.render('managers', { render: 'managers/account-invite.html', profile, AccountRole, Rights });
@@ -153,7 +165,7 @@ router.route('/account/invite')
     .post(async (req, res, next) => {
         if (!req.query.id) return res.render('errors/404');
         if (!req.body.password || !req.body.passwore || req.body.password !== req.body.passwore)
-            return res.render('errors/400');
+            return res.status(400).render('errors/400');
 
         await Account.findByIdAndUpdate(req.query.id, {
             password: bcrypt.hashSync(req.body.password, 10),
@@ -182,7 +194,7 @@ router.route('/account/:id')
 
         try {
             const profile = await Account.findByIdAndUpdate(req.params.id, req.body);
-            await UpdateAction(req.user._id, Action.ACCOUNT.MODIFY, { _id: req.params.id });
+            await UpdateAction(req.user._id, Action.ACCOUNT.MODIFY, { _id: req.params.id, update: req.body });
 
             return res.json({ status: 200, message: 'OK', profile });
         } catch {
@@ -209,7 +221,8 @@ router.route('/login')
     .post(passport.authenticate('local', {
         failureRedirect: '/managers',
     }), async (req, res, next) => {
-        if (!req.user.status) return req.logout({}, (err) => { return res.render('errors/account-inactive.html') })
+        if (!req.user.status) return req.logout({}, (err) => { return res.status(403).render('errors/account-inactive.html') });
+        if (req.user.deleted) return req.logout({}, (err) => { return res.status(403).render('errors/account-deleted.html') });
 
         await UpdateAction(req.user._id, Action.SESSION.LOGIN);
         return res.redirect('/managers');
