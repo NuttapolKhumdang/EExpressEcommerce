@@ -42,8 +42,9 @@ router.get('/:id', async (req, res, next) => {
     return res.render('view', { account: req?.user, products, product, option: req.query.option });
 });
 
-router.get('*', async (req, res, next) => {
-    return res.status(404).json({ account: req?.user, status: 404, message: 'this page not found' });
+router.all('*', async (req, res, next) => {
+    // return res.status(404).json({ account: req?.user, status: 404, message: 'this page not found' });
+    return res.status(404).render('errors/404', { account: req?.user });
 });
 
 

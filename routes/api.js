@@ -59,11 +59,11 @@ router.route('/promocode/:code')
         try {
             promo = await Promotion.findByIdAndUpdate(req.params.code, { deleted: true });
         } catch (e) {
-            return res.json({ status: 500, message: 'something went wrong' });
+            return res.status(500).json({ status: 500, message: 'something went wrong' });
         }
 
         await UpdateAction(req.user._id, Action.PROMOTION.REMOVE, { _id: promo._id.toString() });
-        return res.json({ status: 204, message: 'deleted' });
+        return res.status(204).json({ status: 204, message: 'deleted' });
     });
 
 
@@ -134,10 +134,10 @@ router.route('/checkout/:cart')
             await order.save();
         } catch (e) {
             console.error(e);
-            return res.json({ status: 500, message: 'something wrong with database' });
+            return res.status().json({ status: 500, message: 'something wrong with database' });
         }
 
-        return res.json({ status: 201, message: 'OK', body: req.body });
+        return res.status(201).json({ status: 201, message: 'OK', body: req.body });
     })
     .put(Access([Rights.ORDER.MODIFY], true),async (req, res, next) => {
         try {
@@ -146,7 +146,7 @@ router.route('/checkout/:cart')
             return res.json({ status: 200, message: 'OK', order });
         } catch (e) {
             console.error(e);
-            return res.json({ status: 500, message: 'something wrong with database' });
+            return res.status(500).json({ status: 500, message: 'something wrong with database' });
         }
     });
 
