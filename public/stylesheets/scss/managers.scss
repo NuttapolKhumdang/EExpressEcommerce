@@ -486,6 +486,9 @@
             .bold {
                 font-weight: bold;
             }
+            .mono.bold {
+                font-weight: 500;
+            }
 
             select {
                 width: max-content;
@@ -955,12 +958,18 @@
             flex-direction: column;
             gap: 1rem;
 
-            section div {
-                align-items: flex-start;
+            section {
+                display: flex;
+                flex-direction: column;
+                gap: 2pt;
 
-                select {
-                    width: max-content;
-                    text-align: right;
+                div {
+                    align-items: flex-start;
+
+                    select {
+                        width: max-content;
+                        text-align: right;
+                    }
                 }
             }
 
