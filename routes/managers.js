@@ -60,18 +60,17 @@ router.get('/product/:id', Access([Rights.PRODUCT.INFOMATION]), async (req, res,
 
 // ?? Orders
 router.get('/orders', Access([Rights.ORDER.INFOMATION, Rights.ORDER.OVERVIEW]), async (req, res, next) => {
-    const orders = await Order.find({ status: OrderStatus.PROCESSING });
+    const orders = await Order.find({ status: { $nin: [OrderStatus.CANCELLED, OrderStatus.COMPLETED, OrderStatus.REFUNDING] } });
     return res.render('managers', { render: 'managers/orders-order.html', account: req.user, orders, OrderStatus, OrderStatusName });
 });
 
 router.get('/orders/history', Access([Rights.ORDER.INFOMATION]), async (req, res, next) => {
     let query = {
-        status: { $ne: OrderStatus.PROCESSING }
+        status: { $in: [OrderStatus.CANCELLED, OrderStatus.COMPLETED, OrderStatus.REFUNDING] }
     };
 
     if (req.query?.status) query = {
-        status: { $ne: OrderStatus.PROCESSING },
-        status: req.query?.status,
+        status: req.query?.status
     };
 
     const orders = await Order.find(query);

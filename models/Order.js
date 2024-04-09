@@ -85,6 +85,7 @@ module.exports = {
         SHIPPED: 'SHIPPED',
         IN_TRANSIT: 'IN_TRANSIT',
         DELIVERED: 'DELIVERED',
+        COMPLETED: 'COMPLETED',
         CANCELLED: 'CANCELLED',
         // Additional Status
         PENDING_REVIEW: 'PENDING_REVIEW',
@@ -96,11 +97,13 @@ module.exports = {
     OrderStatusName: {
         PENDING_PAYMENT: "รอการชำระเงิน",
         PAID: "ชำระเงินแล้ว",
-        PROCESSING: "รอการจัดส่ง",
+        PROCESSING: "กำลังจัดเตรียมสินค้า",
         SHIPPED: "จัดส่งแล้ว",
         IN_TRANSIT: "กำลังขนส่ง",
-        DELIVERED: "สำเร็จ",
-        CANCELLED: "ยกเลิก",
+        DELIVERED: "ลูกค้าได้รับสินค้า",
+        COMPLETED: "สิ้นสุดการขาย",
+        CANCELLED: "ยกเลิกการสั่งซื้อ",
+        // Additional Status
         PENDING_REVIEW: "รอตรวจสอบ",
         PREPARING: "กำลังเตรียมสินค้า",
         DELIVERY_FAILED: "จัดส่งไม่สำเร็จ",

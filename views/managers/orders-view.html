@@ -32,37 +32,64 @@
             </div>
         </section>
 
-        <section>
+        <section class="update-order-status">
             <h3 class="sans">อัพเดทสถานะ</h3>
 
             <div>
-                <select class="sans full" id="update-status-select">
-                    {% for status in OrderStatus %}
-                    <option value="{{ status }}" {% if order.status==status %} selected {% endif %}>
-                        {{ OrderStatusName[status] }}</option>
-                    {% endfor %}
-                </select>
+                <p class="sans">
+                    <span id="ors-current"></span>
+                    {% if order.status === OrderStatus.IN_TRANSIT
+                    or order.status === OrderStatus.CANCELLED
+                    or order.status === OrderStatus.COMPLETED
+                    or order.status === OrderStatus.REFUNDING
+                    %}{% else %}
+                    <span class="material-icons-outlined">arrow_right_alt</span>
+                    <span id="ors-next"></span>
+                    {% endif %}
+                </p>
 
+                {%
+                if order.status === OrderStatus.IN_TRANSIT
+                or order.status === OrderStatus.CANCELLED
+                or order.status === OrderStatus.COMPLETED
+                or order.status === OrderStatus.REFUNDING
+                %}{% else %}
                 <button class="sans" onclick="updateOrderStatus()">ยืนยัน</button>
             </div>
-
+            {% endif %}
+            
             <script>
                 const order_status = "{{ order.status }}";
+                const all_status = [
+                    // {% for os in OrderStatus %} 
+                    "{{ os }}", // {% endfor %}
+                ];
+
+                const all_status_name = {
+                    // {% for osn in Object.keys(OrderStatusName) %} 
+                    '{{osn}}': "{{ OrderStatusName[osn] }}", // {% endfor %}
+                };
+
+                const status_index = all_status.findIndex(e => e == order_status);
+                const next_status = all_status[status_index + 1];
+                document.getElementById("ors-current").innerHTML = all_status_name[order_status];
+                document.getElementById("ors-next").innerHTML = all_status_name[next_status];
+            </script>
+
+
+            <script>
                 async function updateOrderStatus() {
                     if (order_status == "DELIVERED" || order_status == "CANCELLED")
                         return new Alert("การจัดการสินค้าสิ้นสุดแล้ว", AlertType.INFO, true);
 
-                    const status = document.getElementById('update-status-select').value;
-                    if (order_status == status) return;
-                    
                     const res = await fetchJson('/api/checkout/{{ order._id.toString() }}', {
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         method: 'PUT',
                         body: JSON.stringify({
-                            status,
-                            $push: { update: { status, timestamp: new Date() } }
+                            status: next_status,
+                            $push: { update: { status: next_status, timestamp: new Date() } }
                         }),
                     });
 

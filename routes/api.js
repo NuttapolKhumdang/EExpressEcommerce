@@ -139,10 +139,10 @@ router.route('/checkout/:cart')
 
         return res.status(201).json({ status: 201, message: 'OK', body: req.body });
     })
-    .put(Access([Rights.ORDER.MODIFY], true),async (req, res, next) => {
+    .put(Access([Rights.ORDER.MODIFY], true), async (req, res, next) => {
         try {
             const order = await Order.findByIdAndUpdate(req.params.cart, req.body);
-            await UpdateAction(req.user._id, Action.ORDER.MODIFY);
+            await UpdateAction(req.user._id, Action.ORDER.MODIFY, { _id: order._id.toString(), update: req.body });
             return res.json({ status: 200, message: 'OK', order });
         } catch (e) {
             console.error(e);
