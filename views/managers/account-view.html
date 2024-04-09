@@ -75,7 +75,7 @@
                 async function onAccountRoleChange(role) {
                     access_rights = account_role[role].Access;
 
-                    await fetchJson('/managers/account/{{ profile._id.toString() }}', {
+                    const res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
                         headers: { 'Content-Type': 'application/json' },
                         method: 'PUT',
                         body: JSON.stringify({
@@ -84,7 +84,8 @@
                         }),
                     });
 
-                    renderRoleSelector();
+                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
+                    else renderRoleSelector();
                 }
             </script>
 
@@ -138,6 +139,10 @@
         <section class="account-active">
             <h3 class="sans">ประวัติการใช้งาน</h3>
 
+            {% if actions.action.length === 0 or not actions.action %}
+            <h4 class="sans">ไม่พบข้อมูลการใช้งาน</h4>
+            {% endif %}
+
             {% for action in actions.action %}
             <div>
                 <p class="mono">{{ action.action }}
@@ -145,7 +150,7 @@
                     <span>&gt; {{ action.info._id }}</span>
                     {% endif %}
                 </p>
-                <span class="mono">{{ action.timestamp|date('H:i:s Y.m.d', -420) }}</span>
+                <span class="mono">{{ action.timestamp|date('Y.m.d H:i:s', -420) }}</span>
             </div>
             {% endfor %}
         </section>
