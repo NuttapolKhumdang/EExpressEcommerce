@@ -116,6 +116,27 @@ router.route('/profile/security')
         return res.render('managers', { render: 'managers/profile-security.html', account: req.user, actions, Action });
     });
 
+router.route('/profile/security/password')
+    .get(Access(false), async (req, res, next) => {
+        return res.render('managers', { render: 'managers/profile-security-password.html', account: req.user, q: req.query });
+    })
+    .post(Access(false), async (req, res, next) => {
+        if (bcrypt.compareSync(req.body.pw0, req.user.password)) {
+            await Account.findByIdAndUpdate(req.user._id, {
+                password: bcrypt.hashSync(req.body.pw1, 10),
+                $push: {
+                    passwordChange: {
+                        pwd: req.user.password,
+                        timestamp: new Date(),
+                    }
+                }
+            });
+
+            await UpdateAction(req.user._id, Action.PROFILE.PASSWORD_CHANGE);
+            return res.redirect('/managers');
+        } else return res.redirect('/managers/profile/security/password?message=old password is not correct');
+    });
+
 // ?? Account
 router.get('/account', Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
     const accounts = await Account.find();

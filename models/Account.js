@@ -13,6 +13,8 @@ const AccountSchema = new Schema({
         type: Boolean,
         default: true,
     },
+    
+    passwordChange: Array,
 }, {
     timestamps: true
 });

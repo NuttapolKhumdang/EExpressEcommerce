@@ -1,0 +1,49 @@
+<main class="managers-view account">
+    <header>
+        <h1 class="mono">ความปลอดภัย</h1>
+    </header>
+
+    <section class="account-view">
+        <section>
+            <h3 class="sans">อีเมล์</h3>
+
+            <div>
+                <p class="sans">อีเมล์</p>
+                <span class="mono bold">{{ account.email }}</span>
+            </div>
+        </section>
+
+        <section>
+            <h3 class="sans">รหัสผ่าน</h3>
+
+            <div>
+                <p class="sans">เปลี่ยนรหัสผ่าน</p>
+                <button class="sans" onclick="redirect('/managers/profile/security/password')">เปลี่ยน</button>
+            </div>
+            <div>
+                <p class="sans">เปลี่ยนครั้งล่าสุด</p>
+                <span class="mono bold">{{ account.passwordChange.reverse()[0].timestamp|date('Y.m.d H:i', -420)}}</span>
+            </div>
+        </section>
+
+        <section class="account-active">
+            <h3 class="sans">ประวัติการเข้าสู่ระบบ</h3>
+            {% if actions.action.length === 0 or not actions.action %}
+            <h4 class="sans">ไม่พบข้อมูล</h4>
+            {% endif %}
+
+            {% for action in actions.action %}
+            {% if action.action === Action.SESSION.LOGIN %}
+            <div>
+                <p class="mono">{{ action.action }}
+                    {% if action.info._id %}
+                    <span>&gt; {{ action.info._id }}</span>
+                    {% endif %}
+                </p>
+                <span class="mono">{{ action.timestamp|date('Y.m.d H:i:s', -420) }}</span>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </section>
+    </section>
+</main>

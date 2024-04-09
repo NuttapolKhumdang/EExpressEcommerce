@@ -60,6 +60,10 @@ const Action = {
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
         REMOVE: 'ACCOUNT_REMOVE',
+    },
+
+    PROFILE: {
+        PASSWORD_CHANGE: 'PROFILE_PASSWORD_CHANGE'
     }
 }
 module.exports = { UpdateAction, Action };
