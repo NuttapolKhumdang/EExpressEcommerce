@@ -1,4 +1,19 @@
 {% if account?._id %}
+<p class="mono">โปรไฟล์</p>
+<a href="/managers/profile">
+    <span class="material-icons-outlined">person</span>
+    <p class="sans">บัญชีของฉัน</p>
+</a>
+<a href="/managers/profile/security">
+    <span class="material-icons-outlined">lock</span>
+    <p class="sans">ความปลอดภัย</p>
+</a>
+<a href="/managers/logout">
+    <span class="material-icons-outlined">logout</span>
+    <p class="sans">ออกจากระบบ</p>
+</a>
+
+<!-- ? -->
 <p class="mono">การสั่งซื้อ</p>
 <a href="/managers/orders">
     <span class="material-icons-outlined">receipt_long</span>
@@ -32,7 +47,7 @@
 </a>
 
 <!-- ? -->
-<p class="mono">บัญชี</p>
+<p class="mono">บัญชีผู้ใช้</p>
 <a href="/managers/account">
     <span class="material-icons-outlined">manage_accounts</span>
     <p class="sans">จัดการบัญชี</p>
@@ -41,10 +56,13 @@
     <span class="material-icons-outlined">person_add</span>
     <p class="sans">เพิ่มบัญชี</p>
 </a>
-
-<a href="/managers/logout">
-    <span class="material-icons-outlined">logout</span>
-    <p class="sans">ออกจากระบบ</p>
+<a href="/managers/account/inactive">
+    <span class="material-icons-outlined">person_off</span>
+    <p class="sans">บัญชีที่ถูกปิดใช้งาน</p>
+</a>
+<a href="/managers/account/deleted">
+    <span class="material-icons-outlined">person_remove</span>
+    <p class="sans">บัญชีที่ถูกลบ</p>
 </a>
 
 <!-- ? -->

@@ -22,7 +22,7 @@
             </div>
             <div>
                 <p class="sans">เปลี่ยนครั้งล่าสุด</p>
-                <span class="mono bold">{{ account.passwordChange.reverse()[0].timestamp|date('Y.m.d H:i', -420)}}</span>
+                <span class="mono bold">{{ account.passwordChange.reverse()[0]?.timestamp|date('Y.m.d H:i', -420)|default('ไม่มีการเปลี่ยนรหัสผ่าน')}}</span>
             </div>
         </section>
 
