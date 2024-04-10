@@ -1,6 +1,12 @@
 <main class="managers-view account">
     <header>
         <h1 class="mono">รายละเอียดบัญชี</h1>
+
+        {% if profile.deleted %}
+        <button onclick="onAccountDelete(false)"><span class="material-icons-outlined">restore</span></button>
+        {% else %}
+        <button onclick="onAccountDelete(true)"><span class="material-icons-outlined">delete</span></button>
+        {% endif%}
     </header>
 
     <section class="account-view">
@@ -132,6 +138,19 @@
                     });
 
                     if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
+                }
+
+                async function onAccountDelete(status = true) {
+                    let res;
+                    if (status) res = await fetchJson('/managers/account/{{ profile._id.toString() }}', { method: 'DELETE' });
+                    else res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
+                        headers: { 'Content-Type': 'application/json' },
+                        method: 'PUT',
+                        body: JSON.stringify({ deleted: false })
+                    });
+
+                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
+                    else return redirect('/managers/account');
                 }
             </script>
         </section>

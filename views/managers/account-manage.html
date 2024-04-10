@@ -1,9 +1,13 @@
 <main class="managers-view account">
     <header>
-        <h1 class="mono">จัดการบัญชี</h1>
+        <h1 class="mono">{{ heading|default('จัดการบัญชี') }}</h1>
     </header>
 
     <section class="account-list">
+        {% if not accounts or accounts.length === 0 %}
+        <h4 class="sans">ไม่พบข้อมูล</h4>
+        {% endif %}
+
         {% for profile in accounts %}
         <a href="/managers/account/{{ profile._id.toString() }}">
             <div>
@@ -21,6 +25,10 @@
             <div>
                 <p class="sans">ตำแหน่ง</p>
                 <span class="sans">{{ AccountRole[profile.role].Name }}</span>
+            </div>
+            <div>
+                <p class="sans">สถานะ</p>
+                <span class="sans">{% if profile.status %} ปกติ {% else %} ปิดใช้งาน {% endif %}</span>
             </div>
             <div>
                 <p class="sans">สิทธิ์การเข้าถึง</p>
