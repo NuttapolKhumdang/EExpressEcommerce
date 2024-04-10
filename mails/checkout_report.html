@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .mailbody {
+            margin: 2rem;
+            display: block;
+        }
+
+        .display {
+            font-family: "Major Mono Display", monospace;
+        }
+
+        .sans {
+            font-family: "Noto Sans Thai", sans-serif;
+        }
+
+        .mono {
+            font-family: "DM Mono", monospace;
+        }
+
+        .header {
+            font-weight: normal;
+            color: #191919;
+            font-size: 24px;
+            border-bottom: 2px solid #191919;
+
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .inner {
+            flex-basis: 0;
+            flex-grow: 1;
+
+            width: 5rem;
+            height: 5rem;
+            object-fit: cover;
+        }
+
+        .outer {
+            width: 5rem;
+            height: 5rem;
+            background: #191919;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        table.price {
+            width: 100%;
+        }
+
+        .price div {
+            text-align: center;
+            width: 100%;
+        }
+
+        .price p {
+            padding: 0;
+            line-height: 1;
+            font-size: 14px;
+            color: #525252;
+            text-align: center;
+        }
+
+        .price span {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        table.info {
+            width: 100%;
+        }
+
+        table.info tr td:last-child {
+            text-align: right;
+            line-height: 1.5;
+        }
+
+        table.product {
+            width: 100%;
+            padding: 0;
+            border-spacing: 6pt;
+        }
+
+        table.product h4 {
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .alink {
+            color: #191919;
+            text-decoration: none;
+        }
+
+        .alink div {
+            margin: 1rem 0;
+            padding: 1rem 0;
+            border: 2px solid #191919;
+            text-align: center;
+        }
+
+        .logo-warp {
+            width: 100%;
+        }
+
+        .logo {
+            width: 100%;
+            height: max-content;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="mailbody">
+        <div class="logo-warp">
+            <img class="logo" src="https://shop.nuttapolkhumdang.work/static/web-mailheading.png" alt="eexpress logo">
+        </div>
+
+        <h3 class="sans">รายละเอียดคำสั่งซื้อ</h3>
+        <table class="info">
+            <tr>
+                <td class="sans">ชื่อผู้สั่งซื้อ</td>
+                <td class="sans">{{ order.fullname }}</td>
+            </tr>
+            <tr>
+                <td class="sans">ที่อยู่จัดส่ง</td>
+                <td class="sans">
+                    {{ address.address }}
+                    {{ addresses.subdistrict.name_th }}
+                    {{ addresses.district.name_th }}
+                    {{ addresses.province.name_th }}
+                    {{ address.postalCode }}
+                </td>
+            </tr>
+            <tr>
+                <td class="sans">วันที่สั่งซื้อ</td>
+                <td class="mono">{{ order.createdAt }}</td>
+            </tr>
+        </table>
+
+        <a class="alink sans" href="https://shop.nuttapolkhumdang.work/checkout/detail/{{ order._id }}">
+            <div>รายละเพิ่มเติม</div>
+        </a>
+
+        <h3 class="sans">สินค้าทั้งหมด</h3>
+        <table class="product">
+            <tr>
+                <th style="width: 5rem;"></th>
+                <th style="width: 80%;"></th>
+                <th style="width: 6rem;"></th>
+            </tr>
+
+            {{#each products as | p |}}
+            <tr>
+                <th style="width: 5rem;" class="outer">
+                    <img src="https://shop.nuttapolkhumdang.work/images/{{lookup product.images option.imageindex}}"
+                        width="1" height="1" class="inner">
+                </th>
+                <th style="width: 80%;">
+                    <a class="alink" href="https://shop.nuttapolkhumdang.work/{{product.search}}?option={{option.id}}">
+                        <h4 class="sans">{{product.name}} - {{option.title}}</h4>
+                    </a>
+                </th>
+                <th style="width: 6rem;" class="display">{{quantity}} x {{option.price}}</th>
+            </tr>
+            {{/each}}
+        </table>
+
+        <table class="price">
+            <tr>
+                <td>
+                    <div>
+                        <p class="sans">ราคาสินค้า</p>
+                        <span class="display">{{ order.bill.subtotal }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <p class="sans">ส่วนลด</p>
+                        <span class="display">- {{ order.bill.discount }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <p class="sans">ค่าขนส่ง</p>
+                        <span class="display">+ {{ order.bill.shipping }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <p class="sans">รวม</p>
+                        <span class="display">{{ order.bill.total }}</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html amp4email data-css-strict>
+
+<head>
+    <meta charset="utf-8">
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <style amp4email-boilerplate>
+        body {
+            visibility: hidden
+        }
+    </style>
+    <style amp-custom>
+        .mailbody {
+            margin: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .display {
+            font-family: "Major Mono Display", monospace;
+        }
+
+        .sans {
+            font-family: "Noto Sans Thai", sans-serif;
+        }
+
+        .mono {
+            font-family: "DM Mono", monospace;
+        }
+
+        .header {
+            font-weight: normal;
+            color: #191919;
+            font-size: 24px;
+            border-bottom: 2px solid #191919;
+
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .table {
+            display: flex;
+            flex-direction: column;
+            gap: 2pt;
+        }
+
+        .table .item {
+            display: grid;
+            grid-template-columns: 5rem 1fr 6rem;
+            place-items: left;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .table .item p {
+            font-size: 24px;
+        }
+
+        .info {
+            width: 100%;
+
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info div {
+            width: 100%;
+            height: max-content;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+        }
+
+        @media screen and (max-width: 512px) {
+            .info div {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+
+            }
+
+            .info div p {
+                font-size: 14px;
+                color: #9a9a9a;
+            }
+        }
+
+
+        .info p,
+        .info span {
+            margin: 0;
+            height: max-content;
+            line-height: 1.4;
+        }
+
+        .info.price div {
+            align-items: last baseline;
+        }
+
+        @media screen and (max-width: 512px) {
+            .info.price div {
+                align-items: flex-end;
+            }
+        }
+
+        .info.price span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .img {
+            object-fit: cover;
+        }
+
+        .inner {
+            flex-basis: 0;
+            flex-grow: 1;
+        }
+
+        .outer {
+            width: 5rem;
+            height: 5rem;
+            background: #191919;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="mailbody">
+        <h1 class="header display">EExpress</h1>
+
+        <div class="info">
+            <h3 class="sans">รายละเอียดคำสั่งซื้อ</h3>
+            <div>
+                <p class="sans">ชื่อผู้สั่งซื้อ</p>
+                <span class="sans">{{ order.fullname }}</span>
+            </div>
+            <div>
+                <p class="sans">ที่อยู่จัดส่ง</p>
+                <span class="sans">
+                    {{ address.address }}
+                    {{ addresses.subdistrict.name_th }}
+                    {{ addresses.district.name_th }}
+                    {{ addresses.province.name_th }}
+                    {{ address.postalCode }}
+                </span>
+            </div>
+            <div>
+                <p class="sans">วันที่สั่งซื้อ</p>
+                <span class="mono">{{ order.createdAt }}</span>
+            </div>
+        </div>
+
+        <div class="table">
+            {{#each products as | p |}}
+            <div class="item">
+                <div class="outer">
+                    <amp-img src="https://shop.nuttapolkhumdang.work/images/{{lookup product.images option.imageindex}}"
+                        width="1" height="1" layout="responsive" class="inner"></amp-img>
+                </div>
+                <h4 class="sans">{{product.name}} - {{option.title}}</h4>
+                <p class="display">{{quantity}} x {{option.price}}</p>
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="info price">
+            <div>
+                <p class="sans">ราคาสินค้า</p>
+                <span class="display">{{ order.bill.subtotal }}</span>
+            </div>
+            <div>
+                <p class="sans">ส่วนลด</p>
+                <span class="display">- {{ order.bill.discount }}</span>
+            </div>
+            <div>
+                <p class="sans">ค่าขนส่ง</p>
+                <span class="display">+ {{ order.bill.shipping }}</span>
+            </div>
+            <div>
+                <p class="sans">รวม</p>
+                <span class="display">{{ order.bill.total }}</span>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
