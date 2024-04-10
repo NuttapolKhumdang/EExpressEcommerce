@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@handlebars/allow-prototype-access": "^1.0.5",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "consolidate": "^1.0.3",
