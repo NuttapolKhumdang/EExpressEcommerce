@@ -7,6 +7,7 @@ const Appearance = require('../models/Appearance');
 
 const { Rights, AccountRole } = require('../modules/AccessRights');
 const { UpdateAction, Action } = require('../modules/UpdateActions');
+const { MailCheckout } = require('../modules/Mailer');
 
 const Access = require('../modules/Access');
 const thai_provinces = require('../modules/address/thai_provinces.json');
@@ -132,6 +133,8 @@ router.route('/checkout/:cart')
 
             await address.save();
             await order.save();
+
+            await MailCheckout(order, address);
         } catch (e) {
             console.error(e);
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });

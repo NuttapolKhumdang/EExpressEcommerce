@@ -1,11 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer')();
+
+const path = require('path');
+const fs = require('fs');
 
 const Appearance = require('../models/Appearance');
 const { Product, Category } = require('../models/Product');
+const { Order, Address } = require('../models/Order');
 
 const thai_provinces = require('../modules/address/thai_provinces.json');
+const thai_amphures = require('../modules/address/thai_amphures.json');
+const thai_tambons = require('../modules/address/thai_tambons.json');
 
 
 router.get('/', async (req, res, next) => {
