@@ -13,7 +13,11 @@ const AccountSchema = new Schema({
         type: Boolean,
         default: true,
     },
-    
+    deleted: {
+        type: Boolean,
+        default: false,
+    },
+
     passwordChange: Array,
 }, {
     timestamps: true

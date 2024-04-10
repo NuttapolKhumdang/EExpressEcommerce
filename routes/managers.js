@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const Access = require('../modules/Access');
 const { Account, Actions } = require('../models/Account');
 const { Rights, AccountRole } = require('../modules/AccessRights');
-const Mailer = require('../modules/Mailer');
+const { Mailer } = require('../modules/Mailer');
 
 const { UpdateAction, Action } = require('../modules/UpdateActions');
 const thai_provinces = require('../modules/address/thai_provinces.json');
@@ -138,8 +138,18 @@ router.route('/profile/security/password')
 
 // ?? Account
 router.get('/account', Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
-    const accounts = await Account.find();
+    const accounts = await Account.find({ status: true, deleted: false });
     return res.render('managers', { render: 'managers/account-manage.html', account: req.user, accounts, AccountRole });
+});
+
+router.get('/account/inactive', Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
+    const accounts = await Account.find({ status: false, deleted: false });
+    return res.render('managers', { render: 'managers/account-manage.html', account: req.user, accounts, AccountRole, heading: 'บัญชีที่ถูกปิดใช้งาน' });
+});
+
+router.get('/account/deleted', Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
+    const accounts = await Account.find({ deleted: true });
+    return res.render('managers', { render: 'managers/account-manage.html', account: req.user, accounts, AccountRole, heading: 'บัญชีที่ลบแล้ว' });
 });
 
 router.route('/account/add')
@@ -155,17 +165,18 @@ router.route('/account/add')
             phone: req.body.phone,
             role: req.body.role,
             access: AccountRole[req.body.role].Access,
+            status: true,
+            deleted: false,
         });
 
         await account.save();
 
         Mailer('new_account.html', {
-            sender: 'nuttapo.chok@gmail.com',
             recive: account.email,
             subject: 'คุณได้รับสิทธิ์ในการจัดการเว็ปไซต์ Express',
         }, {
-            account,
             account: { _id: account._id.toString() },
+            account,
         });
 
         await UpdateAction(req.user._id, Action.ACCOUNT.ADD, account);

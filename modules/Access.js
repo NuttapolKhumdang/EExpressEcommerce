@@ -1,7 +1,7 @@
 function access(rights = [], json = false) {
     return (req, res, next) => {
         if ((!rights && req.isAuthenticated())) return next();
-        else if (rights && req?.user?.role) {
+        else if (rights && req?.user?.role && !req?.user?.deleted && req?.user?.status) {
             const isAccessable = req?.user?.access.filter(e => rights.includes(e)).length !== 0;
 
             if (isAccessable) return next();
