@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'resource')));
 
 app.use(
     session({
@@ -60,10 +60,12 @@ const apiRouter = require('./routes/api');
 const indexRouter = require('./routes/index');
 const productRouter = require('./routes/product');
 const managersRouter = require('./routes/managers');
+const testsRouter = require('./routes/test');
 
 app.use('/api', apiRouter);
 app.use('/managers', managersRouter);
 app.use('/product', productRouter);
+app.use('/test', testsRouter);
 app.use('/', indexRouter);
 
 module.exports = app;
