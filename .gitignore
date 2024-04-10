@@ -132,3 +132,5 @@ public/images
 views/test.html
 public/stylesheets/managers.css
 public/stylesheets/style.css
+routes/test.js
+mails/test.html
