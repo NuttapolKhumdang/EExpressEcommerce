@@ -209,7 +209,7 @@
             {% for update in order.update %}
             <div>
                 <p class="sans">{{ OrderStatusName[update.status] }}</p>
-                <p class="mono">{{ update.timestamp|date('Y.m.d H:i', -420) }}</p>
+                <p class="mono">{{ update.timestamp|date('Y.m.d H:i:s', -420) }}</p>
             </div>
             {% endfor %}
         </section>
