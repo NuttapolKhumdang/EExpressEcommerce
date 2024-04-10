@@ -56,6 +56,7 @@ const Action = {
     },
 
     ACCOUNT: {
+        ADD: 'ACCOUNT_ADD',
         OVERVIEW: 'ACCOUNT_OVERVIEW',
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
