@@ -158,20 +158,7 @@
         <section class="account-active">
             <h3 class="sans">ประวัติการใช้งาน</h3>
 
-            {% if actions.action.length === 0 or not actions.action %}
-            <h4 class="sans">ไม่พบข้อมูลการใช้งาน</h4>
-            {% endif %}
-
-            {% for action in actions.action %}
-            <div>
-                <p class="mono">{{ action.action }}
-                    {% if action.info._id %}
-                    <span>&gt; {{ action.info._id }}</span>
-                    {% endif %}
-                </p>
-                <span class="mono">{{ action.timestamp|date('Y.m.d H:i:s', -420) }}</span>
-            </div>
-            {% endfor %}
+            {% include 'action-history.html' %}
         </section>
     </section>
 </main>

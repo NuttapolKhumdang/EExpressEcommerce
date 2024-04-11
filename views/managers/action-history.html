@@ -1,0 +1,26 @@
+{% if actions.action.length === 0 or not actions.action %}
+<h4 class="sans">ไม่พบข้อมูลการใช้งาน</h4>
+{% endif %}
+
+{% for action in actions.action %}
+<div>
+    <p class="mono">{{ action.action }}
+        {% if action.info._id %}
+        <span>ID: {{ action.info._id.toString() }}</span>
+        {% endif %}
+
+        {% if action.info.update %}
+        {% for u in Object.keys(action.info.update) %}
+        <span>Update <b>{{ u|upper }}</b>: {{ action.info.update[u] }}</span>
+        {% endfor %}
+        {% endif %}
+
+        {% if action.info.appearance %}
+        {% for u in Object.keys(action.info.appearance) %}
+        <span>Update <b>{{ u|upper }}</b>: {{ action.info.appearance[u] }}</span>
+        {% endfor %}
+        {% endif %}
+    </p>
+    <span class="mono">{{ action.timestamp|date('Y.m.d H:i:s', -420) }}</span>
+</div>
+{% endfor %}
