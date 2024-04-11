@@ -171,7 +171,7 @@ router.route('/account/add')
 
         await account.save();
 
-        Mailer('new_account.html', {
+        Mailer('account_new.html', {
             recive: account.email,
             subject: 'คุณได้รับสิทธิ์ในการจัดการเว็ปไซต์ Express',
         }, {
@@ -179,7 +179,7 @@ router.route('/account/add')
             account,
         });
 
-        await UpdateAction(req.user._id, Action.ACCOUNT.ADD, account);
+        await UpdateAction(req.user._id, Action.ACCOUNT.ADD, { _id: account._id.toString(), account });
         return res.redirect('/managers/account');
     });
 

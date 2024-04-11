@@ -40,7 +40,7 @@ router.route('/promocode/:code')
         const promo = new Promotion(req.body);
         await promo.save();
 
-        await UpdateAction(req.user._id, Action.PROMOTION.ADD, { _id: promo._id.toString() });
+        await UpdateAction(req.user._id, Action.PROMOTION.ADD, { _id: promo._id.toString(), promo });
         return res.json({ status: 201, message: 'created', promo });
     })
     .put(Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
@@ -51,7 +51,7 @@ router.route('/promocode/:code')
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
 
-        await UpdateAction(req.user._id, Action.PROMOTION.UPDATE, { _id: promo._id.toString() });
+        await UpdateAction(req.user._id, Action.PROMOTION.UPDATE, { _id: promo._id.toString(), promo });
 
         return res.json({ status: 201, message: 'updated', promo });
     })
@@ -63,7 +63,7 @@ router.route('/promocode/:code')
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
 
-        await UpdateAction(req.user._id, Action.PROMOTION.REMOVE, { _id: promo._id.toString() });
+        await UpdateAction(req.user._id, Action.PROMOTION.REMOVE, { _id: promo._id.toString(), promo });
         return res.status(204).json({ status: 204, message: 'deleted' });
     });
 

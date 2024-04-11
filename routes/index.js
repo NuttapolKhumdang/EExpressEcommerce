@@ -3,7 +3,7 @@ const router = express.Router();
 
 const path = require('path');
 const fs = require('fs');
-
+const sharp = require('sharp');
 const Appearance = require('../models/Appearance');
 const { Product, Category } = require('../models/Product');
 const { Order, Address } = require('../models/Order');
@@ -25,6 +25,18 @@ router.get('/', async (req, res, next) => {
     });
 
     return res.render('index', { account: req?.user, products, appearance });
+});
+
+router.get('/images/:filename', async (req, res, next) => {
+    const file = fs.readFileSync(path.join(__dirname, '../', 'public', 'image', req.params.filename));
+    sharp(file)
+        .webp()
+        .resize(512, 512, {
+            fit: sharp.fit.inside,
+            withoutEnlargement: true
+        })
+        .toBuffer()
+        .then(data => res.type('png').send(data));
 });
 
 router.get('/tst', async (req, res, next) => {
