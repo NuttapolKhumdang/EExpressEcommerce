@@ -4,35 +4,17 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--scroll-thumb-background);
+    background-color: var(--dark);
 }
 
 :root {
-    --nav-background: #FFFFFF;
-    --banner-background: #191919;
-    --nav-border: #191919;
-    --scroll-thumb-background: #191919;
+    --dark: #191919;
+    --white: #FFFFFF;
 
-    --button-normal-background: #FFFFFF;
-    --button-normal-text: #191919;
-    --button-normal-border: #191919;
-    --button-normal-hover-text: #FFFFFF;
-    --button-normal-hover-background: #191919;
-
-    --button-red-background: #FFFFFF;
-    --button-red-text: #191919;
-    --button-red-border: #191919;
-    --button-red-hover-text: #FFFFFF;
-    --button-red-hover-background: #D37676;
-
-    --notify-backgound: #D37676;
+    --red: #D37676;
+    --yellow: #F1EF99;
+    --green: #99B898;
     --button-action-transition: 160ms;
-
-    --normal-text: #191919;
-
-    --cartview-background: #FFFFFF;
-    --cartview-text: #191919;
-
 }
 
 * {
@@ -59,9 +41,9 @@
 }
 
 button {
-    border: 2px solid var(--button-normal-border);
-    background-color: var(--button-normal-background);
-    color: var(--button-normal-text);
+    border: 2px solid var(--dark);
+    background-color: var(--white);
+    color: var(--dark);
     transition: var(--button-action-transition);
 
     display: flex;
@@ -69,14 +51,14 @@ button {
     align-items: center;
 
     &:hover {
-        background-color: var(--button-normal-hover-background);
-        color: var(--button-normal-hover-text);
+        background-color: var(--dark);
+        color: var(--white);
     }
 }
 
 :is(a, button, input, select, textarea) {
     outline-offset: 4px;
-    outline-style: #191919;
+    outline-style: var(--dark);
 }
 
 body {
@@ -127,16 +109,6 @@ form {
             display: flex;
             justify-content: center;
             align-items: center;
-
-            border: 2px solid var(--button-normal-border);
-            background-color: var(--button-normal-background);
-            color: var(--button-normal-text);
-            transition: var(--button-action-transition);
-
-            &:hover {
-                background-color: var(--button-normal-hover-background);
-                color: var(--button-normal-hover-text);
-            }
         }
     }
 
@@ -162,7 +134,7 @@ form {
 
 
     label {
-        border-bottom: 1px solid #191919;
+        border-bottom: 1px solid var(--dark);
     }
 
     input,
@@ -174,10 +146,10 @@ form {
 
         border: none;
         font-size: 16px;
-        border-bottom: 2px solid #191919;
+        border-bottom: 2px solid var(--dark);
 
         &:invalid {
-            border-bottom: 2px solid #D37676;
+            border-bottom: 2px solid var(--red);
         }
     }
 
@@ -200,8 +172,8 @@ form {
     left: 0;
     z-index: 200;
 
-    background-color: #fff;
-    border-bottom: 2px solid #191919;
+    background-color: var(--white);
+    border-bottom: 2px solid var(--dark);
 
     transition: 360ms;
 
@@ -223,14 +195,12 @@ form {
             font-size: 16px;
             font-weight: normal;
 
-            border: 2px solid #191919;
+            border: 2px solid var(--dark);
         }
 
         button {
             width: 3rem;
             height: 3rem;
-
-            border: 2px solid #191919;
         }
     }
 }
@@ -248,8 +218,8 @@ form {
     left: 0;
     z-index: 100;
 
-    background-color: var(--nav-background);
-    border-bottom: 2px solid var(--nav-border);
+    background-color: var(--white);
+    border-bottom: 2px solid var(--dark);
     // padding-top: 1rem;
     // padding-bottom: 1rem;
 
@@ -302,12 +272,12 @@ form {
             width: 8px;
             height: 8px;
             border-radius: 100%;
-            background-color: var(--notify-backgound);
+            background-color: var(--red);
         }
 
         &:hover {
-            background-color: #000;
-            color: #fff;
+            background-color: var(--dark);
+            color: var(--white);
         }
     }
 
@@ -335,8 +305,8 @@ form {
     margin-top: 2rem;
 
     gap: 4rem;
-    border-top: 2px solid #191919;
-    background-color: #F1EF99;
+    border-top: 2px solid var(--dark);
+    background-color: var(--yellow);
 
     main {
         display: grid;
@@ -350,7 +320,7 @@ form {
     }
 
     &>p {
-        border-top: 1px solid #000;
+        border-top: 1px solid var(--dark);
         padding: 6pt 0;
     }
 
@@ -391,7 +361,7 @@ form {
 
     section {
         a {
-            color: #191919;
+            color: var(--dark);
             text-decoration: none;
 
             display: inline-flex;
@@ -415,8 +385,8 @@ form {
             }
 
             &:hover {
-                background-color: #000;
-                color: #fff;
+                background-color: var(--dark);
+                color: var(--white);
 
                 span {
                     width: 2rem;
@@ -454,7 +424,7 @@ form {
         align-items: flex-end;
 
         div {
-            background-color: #fff;
+            background-color: var(--white);
             backdrop-filter: blur(2pt);
             width: 4rem;
             height: 100%;
@@ -469,8 +439,8 @@ form {
             user-select: none;
 
             &:hover {
-                color: #fff;
-                background-color: #000;
+                color: var(--white);
+                background-color: var(--dark);
             }
         }
 
@@ -489,10 +459,10 @@ form {
                 height: 8px;
 
                 border-radius: 100%;
-                background-color: var(--banner-dot-color);
+                background-color: var(--dark);
 
                 &.a {
-                    background-color: var(--banner-dot-active-color);
+                    background-color: var(--red);
                 }
             }
         }
@@ -584,7 +554,7 @@ form {
 
             .title {
                 text-decoration: none;
-                color: var(--normal-text);
+                color: var(--dark);
 
                 line-height: 1.4;
                 font-size: 16px;
@@ -718,8 +688,8 @@ form {
                 font-weight: bold;
 
                 &.selected {
-                    background-color: var(--button-normal-hover-background);
-                    color: var(--button-normal-hover-text);
+                    background-color: var(--dark);
+                    color: var(--white);
                 }
             }
         }
@@ -756,8 +726,8 @@ form {
                     border: none;
 
                     &:hover {
-                        background-color: #191919;
-                        color: #ffff;
+                        background-color: var(--dark);
+                        color: var(--white);
                     }
                 }
             }
@@ -774,7 +744,7 @@ form {
                 height: calc(100% - 4px);
                 padding: 0;
 
-                border: 2px solid #191919;
+                border: 2px solid var(--dark);
                 font-size: 36px;
                 font-weight: bold;
                 text-align: center;
@@ -823,13 +793,13 @@ form {
     right: 0;
     z-index: 200;
 
-    background-color: var(--cartview-background);
+    background-color: var(--white);
 
     height: calc(100vh - 4rem);
     width: 24rem;
     padding: 0 2rem;
 
-    border: 2px solid var(--button-normal-border);
+    border: 2px solid var(--dark);
     border-right: 0;
     border-bottom: 0;
 
@@ -869,7 +839,7 @@ form {
 
         max-height: 50vh;
         padding-right: 1rem;
-        border-bottom: 2px solid var(--button-normal-border);
+        border-bottom: 2px solid var(--dark);
 
         overflow-y: scroll;
 
@@ -953,13 +923,13 @@ form {
                     align-items: center;
                     cursor: pointer;
 
-                    color: var(--button-red-text);
-                    background-color: var(--button-red-background);
+                    color: var(--white);
+                    background-color: var(--white);
                     transition: var(--button-action-transition);
 
                     &:hover {
-                        background-color: var(--button-red-hover-background);
-                        color: var(--button-red-hover-text);
+                        background-color: var(--red);
+                        color: var(--white);
                     }
                 }
             }
@@ -1013,11 +983,11 @@ form {
     }
 
     &.ERROR {
-        background-color: #D37676;
+        background-color: var(--red);
     }
 
     &.INFO {
-        background-color: #99B898;
+        background-color: var(--green);
     }
 
     display: grid;
@@ -1029,14 +999,14 @@ form {
         justify-content: center;
         align-items: center;
 
-        color: #ffff;
+        color: var(--white);
         font-size: 16px;
         font-weight: bold;
     }
 
     a {
-        text-decoration: 2px underline #fff;
-        color: #ffff;
+        text-decoration: 2px underline var(--white);
+        color: var(--white);
     }
 
     button {
@@ -1047,13 +1017,13 @@ form {
         justify-content: center;
         align-items: center;
 
-        color: #fff;
+        color: var(--white);
         border: none;
         background-color: transparent;
 
         &:hover {
-            background-color: #fff;
-            color: #000;
+            background-color: var(--white);
+            color: var(--dark);
         }
     }
 }
@@ -1094,7 +1064,7 @@ form {
 
         select.incorrect,
         input.incorrect {
-            border-color: #D37676;
+            border-color: var(--red);
         }
 
         menu {
@@ -1115,7 +1085,7 @@ form {
                 &.primary {
                     padding: 0 2rem;
 
-                    border: 2px solid var(--button-normal-border);
+                    border: 2px solid var(--dark);
                     font-weight: bold;
                 }
 
@@ -1175,8 +1145,8 @@ form {
 
     border-radius: 50%;
     border: 3px solid;
-    border-color: #E0E0E0;
-    border-right-color: #000000;
+    border-color: var(--white);
+    border-right-color: var(--dark);
     animation: s2 680ms infinite linear;
 }
 
