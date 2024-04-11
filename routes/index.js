@@ -13,6 +13,10 @@ const thai_amphures = require('../modules/address/thai_amphures.json');
 const thai_tambons = require('../modules/address/thai_tambons.json');
 
 
+router.get('/tst', async (req, res, next) => { // !! test route
+    return res.render('test');
+});
+
 router.get('/', async (req, res, next) => {
     const appearances = await Appearance.find({});
     const products = await Product.find({ deleted: false, });
@@ -37,18 +41,6 @@ router.get('/images/:filename', async (req, res, next) => {
         })
         .toBuffer()
         .then(data => res.type('png').send(data));
-});
-
-router.get('/tst', async (req, res, next) => {
-    return res.render('test');
-});
-
-router.get('/checkout', async (req, res, next) => {
-    return res.render('checkout', { account: req?.user, thai_provinces });
-});
-
-router.get('/checkout/:id', async (req, res, next) => {
-    return res.render('checkout', { account: req?.user, });
 });
 
 router.get('/:id', async (req, res, next) => {

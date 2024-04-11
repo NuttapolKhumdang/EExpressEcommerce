@@ -58,11 +58,13 @@ app.use(passport.session());
 
 const apiRouter = require('./routes/api');
 const indexRouter = require('./routes/index');
+const checkoutRouter = require('./routes/checkout');
 const productRouter = require('./routes/product');
 const managersRouter = require('./routes/managers');
 const testsRouter = require('./routes/test');
 
 app.use('/api', apiRouter);
+app.use('/checkout', checkoutRouter);
 app.use('/managers', managersRouter);
 app.use('/product', productRouter);
 app.use('/test', testsRouter);
