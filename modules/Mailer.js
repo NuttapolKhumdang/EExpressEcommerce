@@ -73,7 +73,7 @@ async function sendOrderCheckout(order, address) {
         subdistrict: thai_tambons.filter(e => e.id == address.subdistrict)[0],
     }
 
-    sendMailTemplate('checkout_report.html', {
+    sendMailTemplate('order_checkout.html', {
         recive: order.email,
         subject: 'รายละเอียดคำสั่งซื้อหมายเลข ' + order._id.toString(),
     }, { order, products, address, addresses });
