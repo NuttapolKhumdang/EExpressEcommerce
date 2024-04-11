@@ -1,11 +1,11 @@
 {% macro ptableitem(link, image, title, price)%}
 <section>
     <a href="{{ link }}">
-        <img src="/images/{{ image }}" loading="lazy" alt="">
+        <img src="/images/{{ image }}" alt="{{ title }} picture">
     </a>
 
     <article>
-        <a href="{{ link }}" class="sans title">{{ title}}</a>
+        <a href="{{ link }}" class="sans title" aria-label="more detail about {{ title }}">{{ title }}</a>
 
         {% if price %}
         <div>
