@@ -127,10 +127,14 @@ dist
 .pnp.*
 
 
-public/images
+public/image
 # other file
 views/test.html
 public/stylesheets/managers.css
 public/stylesheets/style.css
 routes/test.js
 mails/test.html
+mails/bin/*
+modules/Mailer.js
+public/stylesheets/min.managers.css
+public/stylesheets/min.style.css
