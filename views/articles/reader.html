@@ -1,0 +1,19 @@
+<main class="articles article-reader">
+    <header class="article-heading">
+        <h1 class="sans title">{{ article.title }}</h1>
+        <p class="sans">{{ article.description }}</p>
+    </header>
+</main>
+
+
+<main class="articles article-reader">
+    <article>
+        {% for block in article.content %}
+
+        {% if block.style.startsWith('heading') %}<h1 class="{{ block.style }}">{{ block.text }}</h1>
+        {% elif block.style.startsWith('paragraph') %}<p class="{{ block.style }}">{{ block.text }}</p>
+        {% endif %}
+
+        {% endfor %}
+    </article>
+</main>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/stylesheets/articles.css">
+    <title>{{ title }} &mdash; EExpress</title>
+</head>
+
+<body>
+    {% include 'nav.html' %}
+
+    <main class="article-writer writer-container">
+        <article id="writer">
+            <header class="article-heading">
+                <textarea type="text" id="article-title" class="sans title"
+                    placeholder="หัวข้อบทความ">{{ article.title }}</textarea>
+                <textarea type="text" id="article-description" class="sans"
+                    placeholder="คำอธิบาย">{{ article.description }}</textarea>
+            </header>
+
+            {% for block in article.content %}
+            <textarea class="{{ block.style }}">{{ block.text }}</textarea>
+            {% endfor %}
+        </article>
+
+        <section class="element-config">
+            <h4 class="sans">รูปแบบตัวอักษร</h4>
+            <div class="gt-21">
+                <select onchange="writer.set_style('FONT_WEIGHT', this.value)" class="sans">
+                    <option value="weight-normal" selected>หนาปกติ</option>
+                    <option value="weight-bold">หนามาก</option>
+                </select>
+
+                <select onchange="writer.set_style('FONT_SIZE', this.value)" class="sans">
+                    <option value="size-small">ขนาดเล็ก</option>
+                    <option value="size-normal" selected>ขนาดปกติ</option>
+                    <option value="size-large">ขนาดใหญ่</option>
+                </select>
+            </div>
+
+            <h4 class="sans">เพิ่มส่วน</h4>
+            <div class="gt-1">
+                <button class="sans" onclick="writer.insertText('heading')">หัวข้อ</button>
+                <button class="sans" onclick="writer.insertText('paragraph')">เนื้อความ</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const writer_container = document.getElementById('writer');
+        class Writer {
+            constructor(container = document.getElementById()) {
+                this.container = container;
+                this.select = null;
+
+                this.update_timeout = 2000;
+                this.timeout_object = setTimeout(() => { }, this.update_timeout);
+
+                this.container.querySelectorAll("textarea").forEach(e => { this.initTextInput(e) });
+            }
+
+            initTextInput(obj = document.getElementById()) {
+                obj.setAttribute("style", "height:" + (obj.scrollHeight) + "px;overflow-y:hidden;");
+                obj.addEventListener("input", OnTextInput, false);
+                obj.addEventListener("keydown", OnKeydown, false);
+                obj.addEventListener("focus", e => { this.select = obj });
+
+                obj.addEventListener("keypress", () => this.update(), false);
+            }
+
+            createTextInput(template) {
+                const template_title = {
+                    heading: 'หัวข้อ',
+                    paragraph: 'เนื้อความ',
+                }
+
+                const textarea = document.createElement("textarea");
+                textarea.classList.add(template, 'sans');
+                textarea.setAttribute('placeholder', template_title[template]);
+                this.initTextInput(textarea);
+
+                return textarea;
+            }
+
+            insertText(template = 'paragraph') {
+                if (this.select.parentElement.tagName !== "ARTICLE") return;
+
+                const text_input = this.createTextInput(template);
+                this.select
+                    ? this.select.insertAdjacentElement("afterend", text_input)
+                    : this.container.insertAdjacentElement("beforeend", text_input);
+                focus(text_input);
+            }
+
+            set_style(k, v) {
+                if (this.select.classList.contains('heading')) return;
+
+                const FONT_WEIGHT = ['weight-normal', 'weight-bold'];
+                const FONT_SIZE = ['size-small', 'size-normal', 'size-large'];
+                const STYLE = { FONT_WEIGHT, FONT_SIZE };
+
+                STYLE[k].forEach(e => this.select.classList.remove(e));
+                this.select.classList.add(v);
+
+                this.update();
+            }
+
+            content() {
+                const title = document.getElementById("article-title").value;
+                const description = document.getElementById("article-description").value;
+                const content = [];
+
+                for (let child of this.container.children) {
+                    if (child.tagName !== "TEXTAREA") continue;
+                    const data = {
+                        style: child.classList.toString(),
+                        text: child.value,
+                    }
+
+                    content.push(data);
+                }
+
+                return { title, description, content };
+            }
+
+            update() {
+                clearTimeout(this.timeout_object);
+                this.timeout_object = setTimeout(() => fetch('/article/writer/{{ article._id.toString() }}', {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'PUT',
+                    body: JSON.stringify(this.content())
+                }).then(res => res.json()).then(res => {
+                    if (res.status !== 200) new Alert(res.message, AlertType.ERROR, true);
+                }).catch(e => {
+                    console.error(e);
+                    new Alert('something wrong with server', AlertType.ERROR, true);
+                }), this.update_timeout);
+            }
+        }
+
+        function OnKeydown(k = new KeyboardEvent()) {
+            if (k.code == "Backspace" && !this.value) {
+                k.preventDefault();
+                if (writer.container.children.length - 1 > 1 && writer.select.parentElement.tagName == "ARTICLE") {
+                    let currentIndex = 0;
+                    for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
+                    focus(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0]);
+
+                    this.remove();
+                }
+            }
+
+            if (k.code == 'Enter') {
+                k.preventDefault();
+                writer.insertText();
+            }
+
+            if (k.code == "ArrowUp" && this.selectionStart == 0 || (k.ctrlKey && k.code == "ArrowUp")) {
+                let currentIndex = 0;
+                for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
+                focus(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0]);
+            }
+
+            if (k.code == "ArrowDown" && (this.selectionStart == this.value.length) || (k.ctrlKey && k.code == "ArrowDown")) {
+                let currentIndex = 0;
+                for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
+                focus(writer.container.children[currentIndex + 1 >= writer.container.children.length - 1 ? writer.container.children.length - 1 : currentIndex + 1]);
+            }
+        }
+
+        function OnTextInput() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + "px";
+        }
+
+        function focus(obj = document.getElementById()) {
+            return obj.focus();
+        }
+    </script>
+
+    <script>const writer = new Writer(writer_container)</script>
+
+    {% if article.content.length === 0 %}
+    <script>writer.insertText();</script>
+    {% if endif %}
+
+    {% include 'cartview.html' %}
+    {% include 'footer.html' %}
+</body>
+
+</html>
