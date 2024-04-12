@@ -1,0 +1,18 @@
+{% import './components.html' as template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/stylesheets/articles.css">
+    <title>{{ title }} &mdash; EExpress</title>
+</head>
+
+<body>
+    {% include 'nav.html' %}
+    {% include render %}
+    {% include 'cartview.html' %}
+    {% include 'footer.html' %}
+</body>
+
+</html>
