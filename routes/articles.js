@@ -1,11 +1,17 @@
 const express = require('express');
 const router = express.Router();
 
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
+
+const { upload, Resize } = require('../modules/Images');
 const { Article } = require('../models/Article');
 const parseSearch = require('../modules/ParseSearch');
 
 router.get('/', async (req, res, next) => {
-    return res.render('articles', { render: 'articles/reader.html' });
+    const article = await Article.find();
+    return res.render('articles', { render: 'articles/article.html', title: 'บทความของเรา', article });
 });
 
 router.get('/new', async (req, res, next) => {
@@ -18,6 +24,33 @@ router.get('/r/:id', async (req, res, next) => {
     const article = await Article.findById(req.params.id);
     return res.json(article);
 });
+
+router.route('/image/:filename')
+    .get(async (req, res, next) => {
+        try {
+            const file = fs.readFileSync(path.join(__dirname, '../', 'resource', 'articles', 'images', req.params.filename));
+            sharp(file)
+                .webp()
+                .resize(512, 512, {
+                    fit: sharp.fit.inside,
+                    withoutEnlargement: true
+                })
+                .toBuffer()
+                .then(data => res.type('png').send(data));
+        } catch (e) {
+            console.error(e);
+            return res.status(404).json({ status: 404, message: 'file not found' });
+        }
+    })
+    .post(upload.single('image'), async (req, res, next) => {
+        const filepath = path.join(__dirname, '../', 'resource', 'articles', 'images');
+        if (!fs.existsSync(filepath)) fs.mkdirSync(filepath, { recursive: true });
+
+        const upload = new Resize(filepath);
+        const filename = await upload.save(req.file.buffer);
+
+        return res.json({ status: 201, message: 'OK', filename });
+    });
 
 router.route('/writer/:id')
     .get(async (req, res, next) => {

@@ -126,15 +126,10 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
+# --
 public/image
-# other file
-views/test.html
-public/stylesheets/managers.css
-public/stylesheets/style.css
-routes/test.js
-mails/test.html
+public/stylesheets/*.css
+resource/articles/*
 mails/bin/*
-modules/Mailer.js
-public/stylesheets/min.managers.css
-public/stylesheets/min.style.css
+routes/test.*
+test.*

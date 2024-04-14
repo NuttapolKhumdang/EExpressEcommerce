@@ -10,6 +10,8 @@
 :root {
     --dark: #191919;
     --white: #FFFFFF;
+    --border: #191919;
+    --body: #FFFFFF;
 
     --red: #D37676;
     --yellow: #F1EF99;
@@ -41,7 +43,7 @@
 }
 
 button {
-    border: 2px solid var(--dark);
+    border: 2px solid var(--border);
     background-color: var(--white);
     color: var(--dark);
     transition: var(--button-action-transition);
@@ -62,6 +64,7 @@ button {
 }
 
 body {
+    background-color: var(--body);
     overflow-x: hidden;
     cursor: default;
 }
@@ -134,7 +137,7 @@ form {
 
 
     label {
-        border-bottom: 1px solid var(--dark);
+        border-bottom: 1px solid var(--border);
     }
 
     input,
@@ -146,7 +149,7 @@ form {
 
         border: none;
         font-size: 16px;
-        border-bottom: 2px solid var(--dark);
+        border-bottom: 2px solid var(--border);
 
         &:invalid {
             border-bottom: 2px solid var(--red);
@@ -173,7 +176,7 @@ form {
     z-index: 200;
 
     background-color: var(--white);
-    border-bottom: 2px solid var(--dark);
+    border-bottom: 2px solid var(--border);
 
     transition: 360ms;
 
@@ -195,7 +198,7 @@ form {
             font-size: 16px;
             font-weight: normal;
 
-            border: 2px solid var(--dark);
+            border: 2px solid var(--border);
         }
 
         button {
@@ -219,7 +222,7 @@ form {
     z-index: 100;
 
     background-color: var(--white);
-    border-bottom: 2px solid var(--dark);
+    border-bottom: 2px solid var(--border);
     // padding-top: 1rem;
     // padding-bottom: 1rem;
 
@@ -305,7 +308,7 @@ form {
     margin-top: 2rem;
 
     gap: 4rem;
-    border-top: 2px solid var(--dark);
+    border-top: 2px solid var(--border);
     background-color: var(--yellow);
 
     main {
@@ -320,7 +323,7 @@ form {
     }
 
     &>p {
-        border-top: 1px solid var(--dark);
+        border-top: 1px solid var(--border);
         padding: 6pt 0;
     }
 
@@ -744,7 +747,7 @@ form {
                 height: calc(100% - 4px);
                 padding: 0;
 
-                border: 2px solid var(--dark);
+                border: 2px solid var(--border);
                 font-size: 36px;
                 font-weight: bold;
                 text-align: center;
@@ -791,7 +794,7 @@ form {
     position: fixed;
     top: 4rem;
     right: 0;
-    z-index: 200;
+    z-index: 98;
 
     background-color: var(--white);
 
@@ -799,7 +802,7 @@ form {
     width: 24rem;
     padding: 0 2rem;
 
-    border: 2px solid var(--dark);
+    border: 2px solid var(--border);
     border-right: 0;
     border-bottom: 0;
 
@@ -839,7 +842,7 @@ form {
 
         max-height: 50vh;
         padding-right: 1rem;
-        border-bottom: 2px solid var(--dark);
+        border-bottom: 2px solid var(--border);
 
         overflow-y: scroll;
 
@@ -1085,7 +1088,7 @@ form {
                 &.primary {
                     padding: 0 2rem;
 
-                    border: 2px solid var(--dark);
+                    border: 2px solid var(--border);
                     font-weight: bold;
                 }
 
@@ -1099,6 +1102,8 @@ form {
 
     // ? Override "webstatic cartview-container"
     .cartview-container {
+        min-height: unset;
+        height: max-content;
         width: 100%;
         padding: 0;
 
@@ -1139,6 +1144,50 @@ form {
     }
 }
 
+.webstatic.checkout-finish {
+    main {
+        width: 100%;
+        min-height: calc(100vh - 10rem);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h1 {
+            font-size: 64px;
+            line-height: 1.8;
+        }
+
+        menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+
+            padding: 2rem 0;
+
+
+            a {
+                text-decoration: none;
+                color: var(--dark);
+
+                &:hover {
+                    text-decoration: 1px underline;
+                }
+            }
+
+            button {
+                height: 3rem;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 0 2rem;
+            }
+        }
+    }
+}
+
+
 .s2loader {
     width: 16px;
     height: 16px;
@@ -1146,7 +1195,7 @@ form {
     border-radius: 50%;
     border: 3px solid;
     border-color: var(--white);
-    border-right-color: var(--dark);
+    border-right-color: var(--border);
     animation: s2 680ms infinite linear;
 }
 

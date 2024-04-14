@@ -8,10 +8,22 @@
 
 <main class="articles article-reader">
     <article>
+        {{ article._id.toString() }}
         {% for block in article.content %}
 
-        {% if block.style.startsWith('heading') %}<h1 class="{{ block.style }}">{{ block.text }}</h1>
-        {% elif block.style.startsWith('paragraph') %}<p class="{{ block.style }}">{{ block.text }}</p>
+        {% if block.tag == 'ul' or block.tag == 'ol' %}
+        <{{block.tag}}>
+            {% for li in block.content %}
+            <li class="{{ style }}">{{ li.text }}</li>
+            {% endfor %}
+        </{{block.tag}}>
+
+        {% elif block.tag == 'img'%}
+        <img src="/article/image/{{ block.src }}" class="{{block.styel}}" alt="{{ article.title }}'s insert image">
+
+        {% elif block.style.startsWith('heading') %}<h1 class="{{ block.style }}">{{ block.text }}</h1>
+        {% elif block.style.startsWith('paragraph') %}
+        <pre class="{{ block.style }}">{{ block.text }}</pre>
         {% endif %}
 
         {% endfor %}

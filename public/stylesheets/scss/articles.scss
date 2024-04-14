@@ -10,14 +10,82 @@ main.articles {
     margin-right: max((100vw - 720px) / 2, 5vw);
 }
 
-
 .articles.article-reader article {
     padding-top: 4rem;
     padding-bottom: 4rem;
 
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 6pt;
+}
+
+.articles.article-reader article,
+.article-writer.writer-container {
+    pre {
+        white-space: pre-wrap;
+    }
+
+    h1,
+    pre,
+    input,
+    textarea {
+        &.heading {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        &.weight-nomal {
+            font-weight: normal;
+        }
+
+        &.weight-bold {
+            font-weight: bold;
+        }
+
+        &.size-small {
+            font-size: 14px;
+        }
+
+        &.size-normal {
+            font-size: 16px;
+        }
+
+        &.size-large {
+            font-size: 20px;
+        }
+
+        &.align-left {
+            text-align: left;
+        }
+
+        &.align-center {
+            text-align: center;
+        }
+
+        &.align-right {
+            text-align: right;
+        }
+    }
+
+    :is(h1, pre) {
+        &.space-before {
+            padding-top: 1rem;
+        }
+
+        &.space-after {
+            padding-bottom: 1rem;
+        }
+    }
+
+    :is(input, textarea) {
+        &.space-before {
+            border-top: 2px solid var(--dark);
+        }
+
+        &.space-after {
+            border-bottom: 2px solid var(--dark);
+        }
+    }
 }
 
 .article-writer .article-heading,
@@ -53,7 +121,6 @@ main.articles {
         padding-bottom: 1rem;
     }
 
-
     section {
         display: flex;
         flex-direction: column;
@@ -66,9 +133,16 @@ main.articles {
         padding: 6pt;
 
         position: sticky;
-        top: 6rem;
+        top: calc(6rem + 2px);
         right: 0;
         z-index: 90;
+
+        hr {
+            border: none;
+            border-top: 2px solid var(--border);
+            border-radius: 0;
+            margin: 6pt 0;
+        }
 
         select {
             width: 100%;
@@ -83,21 +157,9 @@ main.articles {
             width: 100%;
         }
 
-        .gt-1 {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 6pt;
-        }
-
-        .gt-21 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-        }
-
-
         button {
             width: 100%;
-            min-height: 3rem;
+            height: 3rem;
 
             display: flex;
             flex-direction: row;
@@ -107,6 +169,45 @@ main.articles {
 
             font-size: 16px;
             font-weight: bold;
+        }
+
+        .section-insert {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 6pt;
+        }
+
+        .text-format {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 6pt;
+        }
+
+        .alignment-container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 6pt;
+
+            .spacing,
+            .alignment {
+                display: flex;
+                flex-direction: row;
+
+                button {
+                    height: 2rem;
+
+                    border-right: 0;
+                    border-left: 0;
+
+                    &:first-child {
+                        border-left: 2px solid var(--border);
+                    }
+
+                    &:last-child {
+                        border-right: 2px solid var(--border);
+                    }
+                }
+            }
         }
     }
 
@@ -118,12 +219,30 @@ main.articles {
         gap: 1rem;
     }
 
+    ol>li,
+    ul>li {
+        display: list-item;
+        align-items: center;
+
+        textarea {
+            min-height: 2rem;
+            height: 2rem;
+        }
+    }
+
+    img {
+        width: 100%;
+        height: auto;
+
+        object-fit: contain;
+    }
+
     textarea,
     input {
         width: calc(100% - 1rem);
         border: none;
 
-        min-height: 3rem;
+        height: 2rem;
         resize: none;
 
         font-size: 16px;
@@ -134,34 +253,6 @@ main.articles {
     textarea {
         padding-top: 1rem;
         padding-bottom: 0;
-    }
-
-    input,
-    textarea {
-        &.heading {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        &.weight-nomal {
-            font-weight: normal;
-        }
-
-        &.weight-bold {
-            font-weight: bold;
-        }
-
-        &.size-small {
-            font-size: 14px;
-        }
-
-        &.size-normal {
-            font-size: 16px;
-        }
-
-        &.size-large {
-            font-size: 20px;
-        }
     }
 }
 
@@ -181,4 +272,33 @@ main.articles {
 
     background-color: var(--white);
     border-bottom: 2px solid var(--border);
+}
+
+.articles.article-table {
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+
+    a {
+        text-decoration: none;
+        color: var(--dark);
+
+        font-size: 16px;
+        padding: 1rem 0;
+
+        min-height: 4rem;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+
+        border-bottom: 2px solid transparent;
+        transition: var(--button-action-transition);
+
+        &:hover {
+            border-bottom: 2px solid var(--dark);
+        }
+    }
 }

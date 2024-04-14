@@ -1,0 +1,18 @@
+<main class="articles article-reader">
+    <header class="article-heading">
+        <h1 class="sans title">บทความของเรา</h1>
+        <p class="sans">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Praesentium voluptatum maiores ipsa
+            neque suscipit minima a, placeat, quaerat omnis optio doloribus dolorem tenetur similique dignissimos magni
+            odio itaque alias nam!</p>
+    </header>
+</main>
+
+
+<main class="articles article-table">
+    {% for block in article %}
+    <a href="/article/{{ block.search }}">
+        <h2 class="sans">{{ block.title }}</h2>
+        <span class="mono">{{ block.updatedAt|date('Y.m.d')}}</span>
+    </a>
+    {% endfor%}
+</main>
