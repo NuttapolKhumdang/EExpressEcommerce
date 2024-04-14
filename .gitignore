@@ -133,3 +133,5 @@ resource/articles/*
 mails/bin/*
 routes/test.*
 test.*
+mails/amp_checkout_.html
+views/test.html
