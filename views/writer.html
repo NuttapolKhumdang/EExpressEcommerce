@@ -20,35 +20,98 @@
             </header>
 
             {% for block in article.content %}
-            <textarea class="{{ block.style }}">{{ block.text }}</textarea>
+            {% if block.tag == 'ul' or block.tag == 'ol' %}
+
+            <{{block.tag}}>
+                {% for li in block.content %}
+                <li><textarea class="{{ li.style }}" placeholder="เนื้อความ">{{ li.text }}</textarea></li>
+                {% endfor %}
+            </{{block.tag}}>
+
+            {% elif block.tag == 'img'%} <img src="/article/image/{{ block.src }}" class="{{ block.style }}">
+            {% else %}<textarea class="{{ block.style }}" placeholder="เนื้อความ">{{ block.text }}</textarea>{%
+            endif %}
             {% endfor %}
         </article>
 
         <section class="element-config">
             <h4 class="sans">รูปแบบตัวอักษร</h4>
-            <div class="gt-21">
-                <select onchange="writer.set_style('FONT_WEIGHT', this.value)" class="sans">
-                    <option value="weight-normal" selected>หนาปกติ</option>
+            <div class="text-format">
+                <select id="FONT_WEIGHT" onchange="writer.set_style(this.id, this.value)" , class="sans">
+                    <option value="weight-normal">หนาปกติ</option>
                     <option value="weight-bold">หนามาก</option>
                 </select>
 
-                <select onchange="writer.set_style('FONT_SIZE', this.value)" class="sans">
+                <select id="FONT_SIZE" , onchange="writer.set_style(this.id, this.value)" class="sans">
                     <option value="size-small">ขนาดเล็ก</option>
-                    <option value="size-normal" selected>ขนาดปกติ</option>
+                    <option value="size-normal">ขนาดปกติ</option>
                     <option value="size-large">ขนาดใหญ่</option>
                 </select>
             </div>
 
+            <h4 class="sans">รูปแบบการจัดวาง</h4>
+            <div class="alignment-container">
+                <div class="alignment">
+                    <button class="sans" id="align-left" onclick="writer.set_style('TEXT_ALIGN', this.id)">
+                        <span class="material-icons-outlined">format_align_left</span>
+                    </button>
+                    <button class="sans" id="align-center" onclick="writer.set_style('TEXT_ALIGN', this.id)">
+                        <span class="material-icons-outlined">format_align_center</span>
+                    </button>
+                    <button class="sans" id="align-right" onclick="writer.set_style('TEXT_ALIGN', this.id)">
+                        <span class="material-icons-outlined">format_align_right</span>
+                    </button>
+                </div>
+
+                <div class="spacing">
+                    <button class="sans" id="space-before" onclick="writer.set_style('SPACE', this.id, true)">
+                        <span class="material-icons-outlined">vertical_align_top</span>
+                    </button>
+                    <button class="sans" id="space-after" onclick="writer.set_style('SPACE', this.id, true)">
+                        <span class="material-icons-outlined">vertical_align_bottom</span>
+                    </button>
+                </div>
+            </div>
+
             <h4 class="sans">เพิ่มส่วน</h4>
-            <div class="gt-1">
-                <button class="sans" onclick="writer.insertText('heading')">หัวข้อ</button>
-                <button class="sans" onclick="writer.insertText('paragraph')">เนื้อความ</button>
+            <div class="section-insert">
+                <button class="sans" onclick="writer.insert('heading')">หัวข้อ</button>
+                <button class="sans" onclick="writer.insert('paragraph')">เนื้อความ</button>
+
+                <hr>
+                <button class="sans" onclick="writer.insert('ol')">รายการแบบลำดับ</button>
+                <button class="sans" onclick="writer.insert('ul')">รายการแบบไม่มีลำดับ</button>
+
+                <hr>
+                <button class="sans" onclick="writer.insert('image')">รูปภาพ</button>
             </div>
         </section>
     </main>
 
     <script>
         const writer_container = document.getElementById('writer');
+
+        class WriterGetImage {
+            constructor(callback = (filename = String) => { }) {
+                const input = document.createElement("input");
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+
+                input.onchange = async e => {
+                    const fd = new FormData();
+                    fd.append('image', e.target.files[0]);
+                    const res = await fetchJson('/article/image/new', {
+                        method: 'POST',
+                        body: fd,
+                    });
+
+                    console.log(res);
+                    return callback(res.filename);
+                }
+                input.click();
+            }
+        }
+
         class Writer {
             constructor(container = document.getElementById()) {
                 this.container = container;
@@ -60,13 +123,44 @@
                 this.container.querySelectorAll("textarea").forEach(e => { this.initTextInput(e) });
             }
 
+            textFormatStyle() {
+                const FONT_WEIGHT = ['weight-normal', 'weight-bold'];
+                const FONT_SIZE = ['size-small', 'size-normal', 'size-large'];
+                const TEXT_ALIGN = ['align-left', 'align-center', 'align-right'];
+                const SPACE = ['space-before', 'space-after'];
+                const STYLE = { FONT_WEIGHT, FONT_SIZE, TEXT_ALIGN, SPACE };
+
+                return { FONT_WEIGHT, FONT_SIZE, TEXT_ALIGN, SPACE, STYLE };
+            }
+
             initTextInput(obj = document.getElementById()) {
                 obj.setAttribute("style", "height:" + (obj.scrollHeight) + "px;overflow-y:hidden;");
-                obj.addEventListener("input", OnTextInput, false);
+                obj.addEventListener("textarea", OnTextInput, false);
                 obj.addEventListener("keydown", OnKeydown, false);
                 obj.addEventListener("focus", e => { this.select = obj });
 
                 obj.addEventListener("keypress", () => this.update(), false);
+            }
+
+            createListObject(template) {
+                let container;
+
+                if (['ol', 'ul'].includes(template)) {
+                    container = document.createElement(template);
+                    container.insertAdjacentElement("afterbegin", this.createListObject('li'));
+                }
+
+                if (template == 'li') {
+                    container = document.createElement("li");
+
+                    const textarea = document.createElement("textarea");
+                    textarea.classList.add('sans');
+                    textarea.setAttribute('placeholder', 'ข้อความ');
+                    this.initTextInput(textarea);
+
+                    container.insertAdjacentElement("afterbegin", textarea);
+                }
+                return container;
             }
 
             createTextInput(template) {
@@ -83,25 +177,46 @@
                 return textarea;
             }
 
-            insertText(template = 'paragraph') {
-                if (this.select.parentElement.tagName !== "ARTICLE") return;
+            replaceImage(obj) {
 
-                const text_input = this.createTextInput(template);
-                this.select
-                    ? this.select.insertAdjacentElement("afterend", text_input)
-                    : this.container.insertAdjacentElement("beforeend", text_input);
-                focus(text_input);
             }
 
-            set_style(k, v) {
-                if (this.select.classList.contains('heading')) return;
+            createImage() {
+                new WriterGetImage((filename) => {
+                    const object = document.createElement("img");
+                    object.setAttribute('src', '/article/image/' + filename);
 
-                const FONT_WEIGHT = ['weight-normal', 'weight-bold'];
-                const FONT_SIZE = ['size-small', 'size-normal', 'size-large'];
-                const STYLE = { FONT_WEIGHT, FONT_SIZE };
+                    this.select
+                        ? this.select.insertAdjacentElement("afterend", object)
+                        : this.container.insertAdjacentElement("beforeend", object);
+                    this.update();
+                });
+            }
 
-                STYLE[k].forEach(e => this.select.classList.remove(e));
-                this.select.classList.add(v);
+            insert(template) {
+                if (this.select && !['ARTICLE', 'OL', 'UL', 'LI'].includes(this.select.parentElement.tagName)) return;
+                let object;
+
+                if (['paragraph', 'heading'].includes(template)) object = this.createTextInput(template);
+                if (['ol', 'ul', 'li'].includes(template)) object = this.createListObject(template);
+                if (template == 'image') return this.createImage();
+
+                if (template == 'li') this.select.parentElement.insertAdjacentElement("afterend", object);
+                else this.select
+                    ? this.select.insertAdjacentElement("afterend", object)
+                    : this.container.insertAdjacentElement("beforeend", object);
+                focus(object);
+            }
+
+            set_style(k, v, toggle = false) {
+                if (k !== 'SPACE' && this.select.classList.contains('heading')) return;
+
+                if (!toggle) {
+                    this.textFormatStyle().STYLE[k].forEach(e => this.select.classList.remove(e));
+                    this.select.classList.add(v);
+                } else {
+                    this.select.classList.toggle(v);
+                }
 
                 this.update();
             }
@@ -112,15 +227,39 @@
                 const content = [];
 
                 for (let child of this.container.children) {
-                    if (child.tagName !== "TEXTAREA") continue;
-                    const data = {
-                        style: child.classList.toString(),
-                        text: child.value,
+                    let data;
+
+                    if (child.tagName == "TEXTAREA" && child.value) {
+                        data = {
+                            style: child.classList.toString(),
+                            text: child.value,
+                        }
                     }
+
+                    else if (child.tagName == "IMG" && child.src) {
+                        data = {
+                            tag: 'img',
+                            style: child.classList.toString(),
+                            src: child.src.split('/').reverse()[0],
+                        }
+                    }
+
+                    else if (['OL', 'UL'].includes(child.tagName)) {
+                        data = {
+                            tag: child.tagName.toLowerCase(),
+                            content: []
+                        }
+
+                        for (let li of child.children) {
+                            const textarea = li.querySelector("textarea");
+                            data.content.push({ style: textarea.classList.toString(), text: textarea.value });
+                        }
+                    } else continue;
 
                     content.push(data);
                 }
 
+                console.log(content);
                 return { title, description, content };
             }
 
@@ -140,7 +279,9 @@
                 }), this.update_timeout);
             }
         }
+    </script>
 
+    <script>
         function OnKeydown(k = new KeyboardEvent()) {
             if (k.code == "Backspace" && !this.value) {
                 k.preventDefault();
@@ -151,16 +292,30 @@
 
                     this.remove();
                 }
+
+                if (writer.select.parentElement.tagName == "LI") {
+                    if (writer.select.parentElement.parentElement.children.length <= 1) {
+                        writer.select.parentElement.parentElement.remove();
+                    }
+
+                    writer.select.parentElement.remove();
+                }
+
+                writer.update();
             }
 
             if (k.code == 'Enter') {
                 k.preventDefault();
-                writer.insertText();
+
+                console.log(writer.select.parentElement.tagName);
+                if (writer.select.parentElement.tagName == "ARTICLE") writer.insert('paragraph');
+                if (writer.select.parentElement.tagName == "LI") writer.insert('li');
             }
 
             if (k.code == "ArrowUp" && this.selectionStart == 0 || (k.ctrlKey && k.code == "ArrowUp")) {
                 let currentIndex = 0;
                 for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
+                if (['UL', 'OL'].includes(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0].tagName)) currentIndex++;
                 focus(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0]);
             }
 
@@ -183,8 +338,8 @@
 
     <script>const writer = new Writer(writer_container)</script>
 
-    {% if article.content.length === 0 %}
-    <script>writer.insertText();</script>
+    {% if !article.content or article.content.length == 0 %}
+    <script>writer.insert();</script>
     {% if endif %}
 
     {% include 'cartview.html' %}
