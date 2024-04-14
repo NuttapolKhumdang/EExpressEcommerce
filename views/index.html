@@ -10,6 +10,8 @@
 <body>
     {% include 'nav.html' %}
 
+    {% if banner %}
+    <!--
     <main class=" webstatic banner-section" id="banner">
         <menu>
             <div id="b_left">
@@ -29,6 +31,8 @@
 
         bbanner.render()
     </script>
+    -->
+    {% endif %}
 
     {% for placement in appearance %}
     <main class="my webstatuc heading">
@@ -44,6 +48,7 @@
     </main>
     {% endfor %}
 
+    {% if a %}
     <main class="my webstatuc heading">
         <div>
             <h2 class="sans">สินค้าทั้งหมด</h2>
@@ -55,6 +60,7 @@
         {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
         {% endfor %}
     </main>
+    {% endif %}
 
     {% include 'cartview.html' %}
     {% include 'footer.html' %}
