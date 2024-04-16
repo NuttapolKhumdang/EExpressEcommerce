@@ -31,16 +31,20 @@ router.get('/', async (req, res, next) => {
     return res.render('index', { account: req?.user, products, appearance });
 });
 
-router.get('/images/:filename', async (req, res, next) => {
-    const file = fs.readFileSync(path.join(__dirname, '../', 'public', 'image', req.params.filename));
-    sharp(file)
-        .webp()
-        .resize(512, 512, {
-            fit: sharp.fit.inside,
-            withoutEnlargement: true
-        })
-        .toBuffer()
-        .then(data => res.type('png').send(data));
+router.get('/images/:source/:filename', async (req, res, next) => {
+    try {
+        const file = fs.readFileSync(path.join(__dirname, '../', req.params.source, 'images', req.params.filename));
+        sharp(file)
+            .webp()
+            .resize(512, 512, {
+                fit: sharp.fit.inside,
+                withoutEnlargement: true
+            })
+            .toBuffer()
+            .then(data => res.type('png').send(data));
+    } catch {
+        return next('route');
+    }
 });
 
 router.get('/:id', async (req, res, next) => {

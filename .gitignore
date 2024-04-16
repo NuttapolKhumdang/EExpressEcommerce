@@ -135,3 +135,4 @@ routes/test.*
 test.*
 mails/amp_checkout_.html
 views/test.html
+resource/products/images/*

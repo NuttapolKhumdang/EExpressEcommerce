@@ -26,22 +26,6 @@ router.get('/r/:id', async (req, res, next) => {
 });
 
 router.route('/image/:filename')
-    .get(async (req, res, next) => {
-        try {
-            const file = fs.readFileSync(path.join(__dirname, '../', 'resource', 'articles', 'images', req.params.filename));
-            sharp(file)
-                .webp()
-                .resize(512, 512, {
-                    fit: sharp.fit.inside,
-                    withoutEnlargement: true
-                })
-                .toBuffer()
-                .then(data => res.type('png').send(data));
-        } catch (e) {
-            console.error(e);
-            return res.status(404).json({ status: 404, message: 'file not found' });
-        }
-    })
     .post(upload.single('image'), async (req, res, next) => {
         const filepath = path.join(__dirname, '../', 'resource', 'articles', 'images');
         if (!fs.existsSync(filepath)) fs.mkdirSync(filepath, { recursive: true });

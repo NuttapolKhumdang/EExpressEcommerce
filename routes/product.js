@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const fs = require('fs');
 
 const Access = require('../modules/Access');
 const { Rights } = require('../modules/AccessRights');
@@ -15,7 +16,9 @@ const ParseSearch = require('../modules/ParseSearch');
 router.get('/id/:id', async (req, res, next) => res.json(await Product.findOne({ search: req.params.id, deleted: false })));
 router.route('/:id')
     .post(Access([Rights.PRODUCT.ADD]), Image.upload.array('images'), async (req, res, next) => {
-        const filepath = path.join(__dirname, '../', 'public', 'images');
+        const filepath = path.join(__dirname, '../', 'products', 'images');
+        if (!fs.existsSync(filepath)) fs.mkdirSync(filepath, { recursive: true });
+        
         const images = [];
 
         const isDuplicate = await Product.findOne({ search: ParseSearch(req.body.name) });
