@@ -1,8 +1,8 @@
-function loadimage(index) {
-    return '/images/' + imagefile[index];
+function loadimage(pid, index) {
+    return `/images/products/${pid}/${imagefile[index]}`;
 }
 
-function createOptionTemplate(index = 0, title = "", price = "", optionId = uuidv4(), imageindex = "", imagepreview = null) {
+function createOptionTemplate(pid = "", index = 0, title = "", price = "", optionId = uuidv4(), imageindex = "", imagepreview = null) {
     return /*html*/`
         <div class="options" id="${optionId}">
             <button type="button" onclick="pOptions.removeOption('${optionId}')"><span class="material-icons-outlined">delete</span></button>
@@ -10,7 +10,7 @@ function createOptionTemplate(index = 0, title = "", price = "", optionId = uuid
                 <header class="mono">ตัวเลือก ${index + 1}</header>
                 <menu>
                     ${imageindex
-            ? /*html*/`<img src="${imagepreview ?? loadimage(imageindex)}" onclick="selectOptionImage('${optionId}')">`
+            ? /*html*/`<img src="${imagepreview ?? loadimage(pid, imageindex)}" onclick="selectOptionImage('${optionId}')">`
             : /*html*/`<button type="button" onclick="selectOptionImage('${optionId}')">
                     <span class="material-icons-outlined">art_track</span>
                     <p class="sans">เลือกรูปภาพสินค้า</p>
@@ -29,12 +29,13 @@ function createOptionTemplate(index = 0, title = "", price = "", optionId = uuid
 }
 
 class ProductOptions {
-    constructor(container) {
+    constructor(container, product_id) {
         this.container = container;
         this.index = 0;
         this.result = [];
         this.timeout = 100;
         this.inputTimeout = setTimeout(() => { }, 0);
+        this.product_id = product_id;
 
         this.update();
         this.listen();
@@ -52,7 +53,7 @@ class ProductOptions {
     }
 
     insertOption() {
-        const template = createOptionTemplate(this.index);
+        const template = createOptionTemplate(this.product_id, this.index);
         this.container.insertAdjacentHTML("beforeend", template);
         this.index++;
         this.update();
@@ -71,7 +72,7 @@ class ProductOptions {
         this.container.innerHTML = "";
 
         this.result.forEach((e, index) => {
-            const template = createOptionTemplate(index, e?.title, e?.price, e.id, e.imageindex, e.imagepreview);
+            const template = createOptionTemplate(this.product_id, index, e?.title, e?.price, e.id, e.imageindex, e.imagepreview);
             this.container.insertAdjacentHTML("beforeend", template);
         });
         this.update();

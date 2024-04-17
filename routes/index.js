@@ -31,9 +31,9 @@ router.get('/', async (req, res, next) => {
     return res.render('index', { account: req?.user, products, appearance });
 });
 
-router.get('/images/:source/:filename', async (req, res, next) => {
+router.get('/static/:filename', async (req, res, next) => {
     try {
-        const file = fs.readFileSync(path.join(__dirname, '../', req.params.source, 'images', req.params.filename));
+        const file = fs.readFileSync(path.join(__dirname, '../', 'resource', 'static', req.params.filename));
         sharp(file)
             .webp()
             .resize(512, 512, {
@@ -42,7 +42,25 @@ router.get('/images/:source/:filename', async (req, res, next) => {
             })
             .toBuffer()
             .then(data => res.type('png').send(data));
-    } catch {
+    } catch (e) {
+        console.error(e);
+        return next('route');
+    }
+});
+
+router.get('/images/:source/:oid/:filename', async (req, res, next) => {
+    try {
+        const file = fs.readFileSync(path.join(__dirname, '../', 'resource', req.params.source, 'images', req.params.oid, req.params.filename));
+        sharp(file)
+            .webp()
+            .resize(1200, 1200, {
+                fit: sharp.fit.inside,
+                withoutEnlargement: true
+            })
+            .toBuffer()
+            .then(data => res.type('png').send(data));
+    } catch (e) {
+        console.error(e);
         return next('route');
     }
 });

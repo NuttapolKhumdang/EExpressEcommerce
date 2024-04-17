@@ -16,12 +16,12 @@
     <main class="my webstatic view-product">
         <section class="product picture">
             <div class="image">
-                <img src="/images/{{ product.images[0] }}" id="renderview-image" alt="product preview image">
+                <img src="/images/products/{{ product._id.toString() }}/{{ product.images[0] }}" id="renderview-image" alt="product preview image">
             </div>
 
             <div class="itable" id="itable">
                 {% for image in product.images %}
-                <img src="/images/{{ image }}" loading="lazy" alt="product image {{ loop.index}}"
+                <img src="/images/products/{{ product._id.toString() }}/{{ image }}" loading="lazy" alt="product image {{ loop.index}}"
                     onclick="previewImage(this.src)">
                 {% endfor %}
             </div>
@@ -109,7 +109,7 @@
 
                     selectOption = option;
                     pdprice.innerHTML = option.price;
-                    previewImage('/images/' + images[option.imageindex !== "" ? option.imageindex : 0]);
+                    previewImage('/images/products/{{ product._id.toString() }}/' + images[option.imageindex !== "" ? option.imageindex : 0]);
 
                     isAlreadyInCart = getLocalStorage("cart", true).filter(e => e.option.id == selectOption.id)[0];
                     btn_addtocart.querySelector("span").innerHTML = isAlreadyInCart ? "check" : 'shopping_bag';
@@ -208,7 +208,7 @@
             </article>
         </section> -->
         {% for product in products %}
-        {{ template.ptableitem(product.search, product.images[0], product.name) }}
+        {{ template.ptableitem(product._id.toString() ,product.search, product.images[0], product.name) }}
         {% endfor %}
     </main>
 

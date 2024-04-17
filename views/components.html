@@ -1,7 +1,7 @@
-{% macro ptableitem(link, image, title, price)%}
+{% macro ptableitem(id, link, image, title, price)%}
 <section>
     <a href="{{ link }}">
-        <img src="/images/{{ image }}" alt="{{ title }} picture">
+        <img src="/images/products/{{ id }}/{{ image }}" alt="{{ title }} picture">
     </a>
 
     <article>

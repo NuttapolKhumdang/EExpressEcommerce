@@ -43,7 +43,7 @@
 
     <main class="webstatic ptable">
         {% for product in placement.products %}
-        {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
+        {{ template.ptableitem(product._id.toString(), product.search, product.images[0], product.name, product.price) }}
         {% endfor %}
     </main>
     {% endfor %}
@@ -57,7 +57,7 @@
 
     <main class="webstatic ptable">
         {% for product in products %}
-        {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
+        {{ template.ptableitem(product._id.toString(), product.search, product.images[0], product.name, product.price) }}
         {% endfor %}
     </main>
     {% endif %}

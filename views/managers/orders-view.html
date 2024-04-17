@@ -57,7 +57,7 @@
                 <button class="sans" onclick="updateOrderStatus()">ยืนยัน</button>
             </div>
             {% endif %}
-            
+
             <script>
                 const order_status = "{{ order.status }}";
                 const all_status = [
@@ -103,7 +103,8 @@
             <article>
                 {% for p in products %}
                 <div>
-                    <img src="/images/{{ p.product.images[p.option.imageindex|default(0)] }}" loading="lazy">
+                    <img src="/images/products/{{ p.product.id }}/{{ p.product.images[p.option.imageindex|default(0)] }}"
+                        loading="lazy">
 
                     <h4 class="sans">
                         <a href="/{{ p.product.search }}?option={{ p.option.id }}">

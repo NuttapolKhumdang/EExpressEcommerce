@@ -115,7 +115,7 @@
             container.setAttribute("id", product._id);
             container.classList.add("pitem");
 
-            img.setAttribute("src", '/images/' + product?.images[0]);
+            img.setAttribute("src", `/images/products/${String(product._id)}/${product?.images[0]}`);
             p.insertAdjacentText("beforeend", product.name);
             p.classList.add("sans");
 
