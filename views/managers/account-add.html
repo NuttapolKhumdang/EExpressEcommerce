@@ -1,36 +1,75 @@
-<main class="managers-view account">
-    <header>
-        <h1 class="mono">เพิ่มบัญชี</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">เพิ่มบัญชี</h1>
+  </header>
 
-    <section>
-        <form action="/managers/account/add" method="POST">
-            <fieldset>
-                <label for="fullname">ชื่อ - สกุล</label>
-                <input type="text" id="fullname" name="fullname" class="sans" placeholder="ชื่อ - สกุล" required>
-            </fieldset>
+  <section>
+    <form
+      action="/managers/account/add"
+      method="POST"
+      class="grid grid-cols-1 gap-4"
+    >
+      <fieldset
+        class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4 *:grid *:grid-cols-1 *:gap-2"
+      >
+        <label for="fullname">
+          <span class="w-max font-mono text-sm underline">ชื่อ - สกุล</span>
+          <input
+            type="text"
+            id="fullname"
+            name="fullname"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ชื่อ - สกุล"
+            required
+          />
+        </label>
 
-            <fieldset>
-                <label for="email">อีเมล์</label>
-                <input type="text" id="email" name="email" class="sans" placeholder="อีเมล์" required>
-            </fieldset>
+        <label for="email">
+          <span class="w-max font-mono text-sm underline">อีเมล์</span>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="อีเมล์"
+            required
+          />
+        </label>
 
-            <fieldset>
-                <label for="phone">โทรศัพท์</label>
-                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" class="sans" placeholder="โทรศัพท์">
-            </fieldset>
+        <label for="phone">
+          <span class="w-max font-mono text-sm underline">โทรศัพท์</span>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            pattern="[0-9]{10}"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="โทรศัพท์"
+          />
+        </label>
 
-            <fieldset>
-                <label for="role">สถานะ</label>
-                <select name="role" id="role" required>
-                    <option disabled selected>สถานะ</option>
-                    {% for role in AccountRole %}
-                    <option value="{{ role.Role }}">{{ role.Name }}</option>
-                    {% endfor %}
-                </select>
-            </fieldset>
+        <label for="role" class="">
+          <span class="w-max font-mono text-sm underline">สถานะ</span>
+          <select
+            name="role"
+            id="role"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            required
+          >
+            <option disabled selected>สถานะ</option>
+            {% for role in AccountRole %}
+            <option value="{{ role.Role }}">{{ role.Name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </fieldset>
 
-            <button type="submit">ยืนยัน</button>
-        </form>
-    </section>
+      <button
+        type="submit"
+        class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ยืนยัน
+      </button>
+    </form>
+  </section>
 </main>

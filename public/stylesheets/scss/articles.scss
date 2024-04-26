@@ -295,7 +295,7 @@ main.articles {
         justify-content: center;
 
         border-bottom: 2px solid transparent;
-        transition: var(--button-action-transition);
+        transition: var(--transition);
 
         &:hover {
             border-bottom: 2px solid var(--dark);

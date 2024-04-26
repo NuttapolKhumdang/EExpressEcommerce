@@ -1,332 +1,546 @@
-<main class="managers-view shop-appearance">
-    <header>
-        <h1 class="mono">รูปแบบและการจัดวาง</h1>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รูปแบบและการจัดวาง</h1>
 
-        <button onclick="appearance.createInsertTrack()"><span class="material-icons-outlined">add</span></button>
-    </header>
+    <button
+      class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+      onclick="appearance.createInsertTrack()"
+    >
+      <span class="material-icons-outlined">add</span>
+    </button>
+  </header>
 
-    <article id="appearance-placement-container">
-        <h3 class="sans">ยังไม่มีการจัดวางใดๆ</h3>
-    </article>
+  <article id="appearance-placement-container" class="flex flex-col gap-4">
+    <h3 class="font-bold">ยังไม่มีการจัดวางใดๆ</h3>
+  </article>
 </main>
 
-<header class="shop-appearance-insert-track" id="shop-appearance-insert-track">
-    <header class="sans">
-        เพิ่มส่วน
-        <button id="close"><span class="material-icons-outlined">close</span></button>
+<header
+  id="shop-appearance-insert-track"
+  class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg"
+>
+  <div
+    class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 border-2 border-gray-950 bg-white p-4"
+  >
+    <header class="flex h-max w-full flex-row items-center justify-between">
+      <h1 class="font-sans text-2xl font-bold">เพิ่มส่วน</h1>
+
+      <button
+        id="close"
+        class="flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        <span class="material-icons-outlined">close</span>
+      </button>
     </header>
 
     <section>
-        <form onsubmit="event.preventDefault()">
-            <label for="section-title">ชื่่อส่วน</label>
-            <input type="text" class="sans" id="section-title" placeholder="ชื่่อส่วน">
+      <form onsubmit="event.preventDefault()" class="flex flex-col gap-4">
+        <label for="section-title" class="grid grid-cols-1 gap-2">
+          <span class="w-max font-mono text-sm underline">ชื่่อส่วน</span>
 
-            <h3 class="mono">เพิ่มสินค้า</h3>
+          <input
+            type="text"
+            id="section-title"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ชื่่อส่วน"
+          />
+        </label>
 
-            <main class="product-selector">
-                <section class="plist" id="product-selector-selected">
-                    <h4 class="sans">ยังไม่เลือกสินค้า</h4>
-                </section>
+        <h3 class="py-2 font-mono text-lg">เพิ่มสินค้า</h3>
 
-                <section class="search">
-                    <input type="text" id="search" placeholder="ค้นหาสินค้า" oninput="SC.search(this.value)">
-                    <button type="button" id="clearseach"><span class="material-icons-outlined">close</span></button>
-                </section>
+        <main class="flex flex-col gap-4">
+          <section class="plist" id="product-selector-selected">
+            <h4 class="font-sans font-bold">ยังไม่เลือกสินค้า</h4>
+          </section>
 
-                <section class="plist" id="product-selector-filtered">
-                    <div class="s2loader"></div>
-                </section>
-            </main>
-        </form>
+          <section class="grid grid-cols-[1fr_3rem]">
+            <input
+              type="text"
+              id="search"
+              placeholder="ค้นหาสินค้า"
+              class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+              oninput="sectionCreator.search(this.value)"
+            />
+            <button
+              id="clearseach"
+              class="flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+            >
+              <span class="material-icons-outlined">close</span>
+            </button>
+          </section>
+
+          <section class="plist" id="product-selector-filtered">
+            <div
+              class="my-2 h-6 w-6 animate-spin rounded-full border-2 border-gray-950 border-t-gray-300"
+            ></div>
+          </section>
+        </main>
+      </form>
     </section>
+  </div>
 </header>
 
 <script>
-    class SectionCreator {
-        constructor(parent = new AppearancePlacement(), container = document.getElementById(), id = false, title = '', result = []) {
-            this.parent = parent;
-            this.container = container;
+  var sectionCreator;
+  class SectionCreator {
+    constructor(
+      parent = new AppearancePlacement(),
+      container = document.getElementById(),
+      id = false,
+      title = "",
+      result = [],
+    ) {
+      this.parent = parent;
+      this.container = container;
 
-            this.submitButton = document.createElement("button");
-            this.submitButton.classList.add("sans", "hide");
-            this.submitButton.setAttribute("type", "submit");
-            this.submitButton.insertAdjacentText("beforeend", "ยืนยัน");
-            this.submitButton.onclick = () => this.submit();
+      this.submitButton = document.createElement("button");
+      this.submitButton.classList.add(
+        "flex",
+        "h-12",
+        "w-full",
+        "items-center",
+        "justify-center",
+        "border-2",
+        "border-gray-950",
+        "font-bold",
+        "duration-100",
+        "hover:bg-gray-950",
+        "hover:text-white",
+      );
+      this.submitButton.setAttribute("type", "submit");
+      this.submitButton.insertAdjacentText("beforeend", "ยืนยัน");
+      this.submitButton.onclick = () => this.submit();
 
-            this.container.querySelector("button#close").addEventListener("click", () => this.close());
-            this.container.querySelector("button#clearseach").addEventListener("click", () => {
-                this.container.querySelector("input#search").value = '';
-                this.loadProduct();
-            });
-
-            this.selectedContainer = container.querySelector("section#product-selector-selected");
-            this.filteredContainer = container.querySelector("section#product-selector-filtered");
-            this.selectedContainer.insertAdjacentElement("afterend", this.submitButton);
-
-            this.selectedContainerDefault = `<h4 class="sans">ยังไม่เลือกสินค้า</h4>`;
-            this.filteredContainerDefault = `<div class="s2loader"></div>`;
-
-            this.search_timeout = 1000;
-            this.search_timeout_object = setTimeout(() => { }, this.search_timeout);
-
-            this.clearRendered();
-            this.container.querySelector("input#section-title").value = title;
-            this.id = id;
-            this.result = result;
-            this.product = [];
-
-            this.loadProduct();
-        }
-
-        clearRendered() {
-            this.filteredContainer.innerHTML = this.filteredContainerDefault;
-            this.selectedContainer.innerHTML = this.selectedContainerDefault;
-        }
-
-        loadProduct() {
-            fetch('/api/product').then(res => res.json()).then(json => {
-                this.product = json.result;
-                this.renderFiltered(this.product);
-                if (this.result.length !== 0) this.renderSelected();
-            }).catch(e => { console.error(e); new Alert("เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง", AlertType.ERROR, true) });
-        }
-
-        search(keyword) {
-            clearTimeout(this.search_timeout_object)
-            this.search_timeout_object = setTimeout(() => {
-                fetch('/api/product?q=' + keyword).then(res => res.json()).then(json => {
-                    this.product = json.result;
-                    this.renderFiltered(json.result)
-                }).catch(e => new Alert("เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง", AlertType.ERROR, true))
-            }, this.search_timeout);
-        }
-
-        createProductTemplate(product = {}, selected = false) {
-            if (!product?.images) {
-                product = this.product.filter(e => e._id === product._id)[0];
-            }
-
-            const container = document.createElement("div");
-            const img = document.createElement("img");
-            const p = document.createElement("p");
-
-            container.insertAdjacentElement("beforeend", img);
-            container.insertAdjacentElement("beforeend", p);
-            container.setAttribute("id", product._id);
-            container.classList.add("pitem");
-
-            img.setAttribute("src", '/images/' + product?.images[0]);
-            p.insertAdjacentText("beforeend", product.name);
-            p.classList.add("sans");
-
-            if (!selected) container.onclick = () => this.insertSelected(product);
-            else container.onclick = () => this.removeSelected(product._id);
-            return container;
-        }
-
-        renderFiltered(result = []) {
-            this.filteredContainer.innerHTML = '';
-            if (result.length === 0) this.filteredContainer.innerHTML = this.filteredContainerDefault;
-
-            const template = result.map(e => this.createProductTemplate(e, false));
-            template.forEach(e => this.filteredContainer.insertAdjacentElement("beforeend", e));
-        }
-
-        renderSelected() {
-            this.selectedContainer.innerHTML = '';
-            if (this.result.length === 0) {
-                this.selectedContainer.innerHTML = this.selectedContainerDefault;
-                this.submitButton.classList.add("hide");
-            } else this.submitButton.classList.remove("hide");
-
-            const template = this.result.map(e => this.createProductTemplate(e, true));
-            template.forEach(e => this.selectedContainer.insertAdjacentElement("beforeend", e));
-        }
-
-        insertSelected(product) {
-            const filter = this.result.filter(e => e._id === product._id);
-            if (filter.length !== 0) return false;
-
-            this.result.push(product);
-            this.renderSelected();
-        }
-
-        removeSelected(id) {
-            this.result = this.result.filter(e => e._id != id);
-            this.renderSelected();
-        }
-
-        submit() {
-            const title = this.container.querySelector("input#section-title").value;
-            const products = this.result.map(e => { return { _id: e._id, name: e.name } });
-            this.parent.insertContainer(title, products, this.id);
-            this.submitButton.remove();
-            this.close();
-        }
-
-        close() {
-            this.submitButton.remove();
-            this.container.remove();
-        }
-    }
-</script>
-
-<script>
-    const sait = document.getElementById("shop-appearance-insert-track");
-    sait.remove();
-</script>
-
-<script>
-    function createAppearancePlacementTemplate(parent = new AppearancePlacement(), id = uuidv4(), title = '', products = []) {
-        const productTemaplate = products.map(e => {
-            const div = document.createElement("div");
-            const a = document.createElement("a");
-
-            a.classList.add('sans', 'title');
-            a.insertAdjacentText("beforeend", e.name);
-            div.insertAdjacentElement("afterbegin", a);
-
-            return div;
+      this.container
+        .querySelector("button#close")
+        .addEventListener("click", () => this.close());
+      this.container
+        .querySelector("button#clearseach")
+        .addEventListener("click", () => {
+          this.container.querySelector("input#search").value = "";
+          this.loadProduct();
         });
 
-        const container = document.createElement("section");
-        const header = document.createElement("header");
-        const h2 = document.createElement("h2");
-        h2.classList.add("sans");
-        h2.insertAdjacentText("beforeend", title);
+      this.selectedContainer = container.querySelector(
+        "section#product-selector-selected",
+      );
+      this.filteredContainer = container.querySelector(
+        "section#product-selector-filtered",
+      );
+      this.selectedContainer.insertAdjacentElement(
+        "afterend",
+        this.submitButton,
+      );
 
-        container.insertAdjacentElement("afterbegin", header);
-        header.insertAdjacentElement("afterbegin", h2);
+      this.selectedContainerDefault = `<h4 class="font-sans font-bold">ยังไม่เลือกสินค้า</h4>`;
+      this.filteredContainerDefault = `<div class="w-6 h-6 rounded-full border-2 border-gray-950 border-t-gray-300 animate-spin my-2"></div>`;
 
-        const menu = document.createElement("div");
-        menu.classList.add("hv");
-        const menu_button = document.createElement("button");
-        menu_button.onclick = () => menu_button.parentElement.classList.toggle("expand");
+      this.search_timeout = 1000;
+      this.search_timeout_object = setTimeout(() => {}, this.search_timeout);
 
-        const menu_button_icon = document.createElement("span");
-        menu_button_icon.classList.add("material-icons-outlined");
-        menu_button_icon.insertAdjacentText("afterbegin", 'more_vert');
+      this.clearRendered();
+      this.container.querySelector("input#section-title").value = title;
+      this.id = id;
+      this.result = result;
+      this.product = [];
 
-        menu.insertAdjacentElement("afterbegin", menu_button);
-        menu_button.insertAdjacentElement("afterbegin", menu_button_icon);
-        header.insertAdjacentElement("beforeend", menu);
+      this.loadProduct();
+    }
 
-        const menu_nav = document.createElement("nav");
-        menu_nav.classList.add("hvnav");
+    clearRendered() {
+      this.filteredContainer.innerHTML = this.filteredContainerDefault;
+      this.selectedContainer.innerHTML = this.selectedContainerDefault;
+    }
 
-        const menunav_list = [
-            {
-                icon: 'edit',
-                text: 'แก้ไข',
-                onclick: () => { parent.editTrack(id) }
-            },
-            {
-                icon: 'delete',
-                text: 'ลบ',
-                onclick: () => { parent.removeTrack(id) }
-            },
-            // {
-            //     icon: 'expand_less',
-            //     text: 'เลื่อนขึ้น',
-            //     onclick: () => { }
-            // },
-            // {
-            //     icon: 'expand_more',
-            //     text: 'เลื่อนลง',
-            //     onclick: () => { }
-            // },
-        ];
-
-        const menulist = menunav_list.map(e => {
-            const a = document.createElement("a");
-            const icon = document.createElement("span");
-            const text = document.createElement("p");
-
-            icon.classList.add("material-icons-outlined");
-            text.classList.add("sans");
-
-            icon.insertAdjacentText("beforeend", e.icon);
-            text.insertAdjacentText("beforeend", e.text);
-            a.onclick = e.onclick;
-
-            a.insertAdjacentElement("beforeend", icon);
-            a.insertAdjacentElement("beforeend", text);
-            return a;
+    loadProduct() {
+      fetch("/api/product")
+        .then((res) => res.json())
+        .then((json) => {
+          this.product = json.result;
+          this.renderFiltered(this.product);
+          if (this.result.length !== 0) this.renderSelected();
+        })
+        .catch((e) => {
+          console.error(e);
+          new Alert(
+            "เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง",
+            AlertType.ERROR,
+            true,
+          );
         });
-        menulist.forEach(e => menu_nav.insertAdjacentElement("beforeend", e));
-        menu.insertAdjacentElement("beforeend", menu_nav);
-
-        const app = document.createElement("div");
-        app.classList.add("appearance-product-placement");
-        productTemaplate.forEach(e => app.insertAdjacentElement("beforeend", e));
-        container.insertAdjacentElement("beforeend", app);
-
-        return container;
     }
+
+    search(keyword) {
+      clearTimeout(this.search_timeout_object);
+      this.search_timeout_object = setTimeout(() => {
+        fetch("/api/product?q=" + keyword)
+          .then((res) => res.json())
+          .then((json) => {
+            this.product = json.result;
+            this.renderFiltered(json.result);
+          })
+          .catch(
+            (e) =>
+              new Alert(
+                "เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง",
+                AlertType.ERROR,
+                true,
+              ),
+          );
+      }, this.search_timeout);
+    }
+
+    createProductTemplate(product = {}, selected = false) {
+      if (!product?.images) {
+        product = this.product.filter((e) => e._id === product._id)[0];
+      }
+
+      const container = document.createElement("div");
+      const img = document.createElement("img");
+      const p = document.createElement("p");
+
+      img.classList.add("h-12", "w-12", "object-cover");
+      p.classList.add("font-bold");
+
+      container.insertAdjacentElement("beforeend", img);
+      container.insertAdjacentElement("beforeend", p);
+      container.setAttribute("id", product._id);
+      container.classList.add(
+        "flex",
+        "flex-row",
+        "h-12",
+        "w-full",
+        "gap-4",
+        "cursor-pointer",
+      );
+
+      img.setAttribute(
+        "src",
+        `/images/products/${String(product._id)}/${product?.images[0]}`,
+      );
+      p.insertAdjacentText("beforeend", product.name);
+      p.classList.add("sans");
+
+      if (!selected) container.onclick = () => this.insertSelected(product);
+      else container.onclick = () => this.removeSelected(product._id);
+      return container;
+    }
+
+    renderFiltered(result = []) {
+      this.filteredContainer.innerHTML = "";
+      if (result.length === 0)
+        this.filteredContainer.innerHTML = this.filteredContainerDefault;
+
+      const template = result.map((e) => this.createProductTemplate(e, false));
+      template.forEach((e) =>
+        this.filteredContainer.insertAdjacentElement("beforeend", e),
+      );
+    }
+
+    renderSelected() {
+      this.selectedContainer.innerHTML = "";
+      if (this.result.length === 0) {
+        this.selectedContainer.innerHTML = this.selectedContainerDefault;
+        this.submitButton.classList.add("hide");
+      } else this.submitButton.classList.remove("hide");
+
+      const template = this.result.map((e) =>
+        this.createProductTemplate(e, true),
+      );
+      template.forEach((e) =>
+        this.selectedContainer.insertAdjacentElement("beforeend", e),
+      );
+    }
+
+    insertSelected(product) {
+      const filter = this.result.filter((e) => e._id === product._id);
+      if (filter.length !== 0) return false;
+
+      this.result.push(product);
+      this.renderSelected();
+    }
+
+    removeSelected(id) {
+      this.result = this.result.filter((e) => e._id != id);
+      this.renderSelected();
+    }
+
+    submit() {
+      const title = this.container.querySelector("input#section-title").value;
+      const products = this.result.map((e) => {
+        return { _id: e._id, name: e.name };
+      });
+      this.parent.insertContainer(title, products, this.id);
+      this.submitButton.remove();
+      this.close();
+    }
+
+    close() {
+      this.submitButton.remove();
+      this.container.remove();
+    }
+  }
 </script>
 
 <script>
-    class AppearancePlacement {
-        constructor(container = document.getElementById(), insertTrackTempalte = document.getElementById()) {
-            this.container = container;
-            this.containerDefault = this.container.innerHTML;
-            this.insertTrackTempalte = insertTrackTempalte;
-            this.result = [];
-            this.render(true);
-        }
-
-        renderResult() {
-            this.container.innerHTML = '';
-            if (this.result.length === 0) this.container.innerHTML = this.containerDefault;
-
-            this.result.forEach(e => {
-                const template = createAppearancePlacementTemplate(this, e._id, e.title, e.products);
-                this.container.insertAdjacentElement("beforeend", template);
-            });
-        }
-
-        render(refetch = false) {
-            if (refetch) fetch('/api/managers/shop/appearance').then(res => res.json()).then(res => { this.result = res.appearance; this.renderResult() });
-            else this.renderResult();
-        }
-
-        createInsertTrack() {
-            document.body.insertAdjacentElement("beforeend", this.insertTrackTempalte);
-            new SectionCreator(this, this.insertTrackTempalte);
-        }
-
-        editTrack(id) {
-            const track = this.result.filter(e => e._id == id)[0];
-            document.body.insertAdjacentElement("beforeend", this.insertTrackTempalte);
-            new SectionCreator(this, this.insertTrackTempalte, track._id, track.title, track.products);
-        }
-
-        removeTrack(id) {
-            fetch('/api/managers/shop/appearance', {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'DELETE',
-                body: JSON.stringify({ id }),
-            }).then(res => res.json).then(res => this.render(true));
-        }
-
-        insertContainer(title = '', products = [], id = false) {
-            fetch('/api/managers/shop/appearance', {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: id ? 'PUT' : 'POST',
-                body: JSON.stringify({ id, title, products }),
-            }).then(res => res.json).then(res => this.render(true));
-        }
-
-        getResult() {
-            return this.result;
-        }
-    }
+  const sait = document.getElementById("shop-appearance-insert-track");
+  sait.remove();
 </script>
+
 <script>
-    const appearanceplacementcontainer = document.getElementById("appearance-placement-container");
-    const appearance = new AppearancePlacement(appearanceplacementcontainer, sait);
+  function createAppearancePlacementTemplate(
+    parent = new AppearancePlacement(),
+    id = uuidv4(),
+    title = "",
+    products = [],
+  ) {
+    const productTemaplate = products.map((e) => {
+      const div = document.createElement("div");
+      const a = document.createElement("a");
+
+      a.insertAdjacentText("beforeend", e.name);
+      div.insertAdjacentElement("afterbegin", a);
+      div.classList.add(
+        "w-full",
+        "border-b",
+        "border-gray-950",
+        "font-bold",
+        "py-1",
+      );
+
+      return div;
+    });
+
+    const container = document.createElement("section");
+    container.classList.add(
+      "flex",
+      "flex-col",
+      "gap-4",
+      "border-2",
+      "border-gray-950",
+      "p-4",
+    );
+
+    const header = document.createElement("header");
+    header.classList.add(
+      "flex",
+      "w-full",
+      "flex-row",
+      "items-center",
+      "justify-between",
+    );
+
+    const h2 = document.createElement("h2");
+    h2.classList.add("font-sans", "text-2xl");
+    h2.insertAdjacentText("beforeend", title);
+
+    container.insertAdjacentElement("afterbegin", header);
+    header.insertAdjacentElement("afterbegin", h2);
+
+    const menu = document.createElement("div");
+    menu.classList.add("relative");
+
+    const menu_button = document.createElement("button");
+    menu_button.classList.add(
+      "flex",
+      "h-8",
+      "w-8",
+      "items-center",
+      "justify-center",
+      "duration-100",
+      "hover:bg-gray-950",
+      "hover:text-white",
+    );
+
+    menu_button.onclick = () => {
+      const check = menu_button.parentElement.querySelector(
+        "input[type=checkbox]",
+      );
+      check.checked = check.checked != true ? true : false;
+    };
+    const menu_button_icon = document.createElement("span");
+    menu_button_icon.classList.add("material-icons-outlined");
+    menu_button_icon.insertAdjacentText("afterbegin", "more_vert");
+    menu_button.insertAdjacentElement("afterbegin", menu_button_icon);
+    menu.insertAdjacentElement("afterbegin", menu_button);
+
+    const menu_open_nav = document.createElement("input");
+    menu_open_nav.setAttribute("type", "checkbox");
+    menu_open_nav.classList.add("peer", "hidden");
+    menu.insertAdjacentElement("afterbegin", menu_open_nav);
+
+    const menu_nav = document.createElement("nav");
+    menu_nav.classList.add(
+      "absolute",
+      "right-0",
+      "top-8",
+      "hidden",
+      "w-max",
+      "min-w-36",
+      "flex-col",
+      "border-2",
+      "border-gray-950",
+      "bg-white",
+      "peer-checked:flex",
+    );
+
+    header.insertAdjacentElement("beforeend", menu);
+
+    const menunav_list = [
+      {
+        icon: "edit",
+        text: "แก้ไข",
+        onclick: () => {
+          parent.editTrack(id);
+        },
+      },
+      {
+        icon: "delete",
+        text: "ลบ",
+        onclick: () => {
+          parent.removeTrack(id);
+        },
+      },
+    ];
+
+    const menulist = menunav_list.map((e) => {
+      const a = document.createElement("a");
+      const icon = document.createElement("span");
+      const text = document.createElement("p");
+
+      icon.classList.add("material-icons-outlined");
+      icon.style.fontSize = "20px";
+      icon.insertAdjacentText("beforeend", e.icon);
+      text.insertAdjacentText("beforeend", e.text);
+      a.onclick = e.onclick;
+
+      a.insertAdjacentElement("beforeend", icon);
+      a.insertAdjacentElement("beforeend", text);
+      a.classList.add(
+        "flex",
+        "h-max",
+        "flex-row",
+        "items-center",
+        "gap-2",
+        "px-4",
+        "py-2",
+        "duration-100",
+        "hover:bg-gray-950",
+        "hover:text-white",
+      );
+      return a;
+    });
+
+    menulist.forEach((e) => menu_nav.insertAdjacentElement("beforeend", e));
+    menu.insertAdjacentElement("beforeend", menu_nav);
+
+    const app = document.createElement("div");
+    app.classList.add("appearance-product-placement");
+    productTemaplate.forEach((e) => app.insertAdjacentElement("beforeend", e));
+    container.insertAdjacentElement("beforeend", app);
+    return container;
+  }
+</script>
+
+<script>
+  class AppearancePlacement {
+    constructor(
+      container = document.getElementById(),
+      insertTrackTempalte = document.getElementById(),
+    ) {
+      this.container = container;
+      this.containerDefault = this.container.innerHTML;
+      this.insertTrackTempalte = insertTrackTempalte;
+      this.result = [];
+      this.render(true);
+    }
+
+    renderResult() {
+      this.container.innerHTML = "";
+      if (this.result.length === 0)
+        this.container.innerHTML = this.containerDefault;
+
+      this.result.forEach((e) => {
+        const template = createAppearancePlacementTemplate(
+          this,
+          e._id,
+          e.title,
+          e.products,
+        );
+        this.container.insertAdjacentElement("beforeend", template);
+      });
+    }
+
+    render(refetch = false) {
+      if (refetch)
+        fetch("/api/managers/shop/appearance")
+          .then((res) => res.json())
+          .then((res) => {
+            this.result = res.appearance;
+            this.renderResult();
+          });
+      else this.renderResult();
+    }
+
+    createInsertTrack() {
+      document.body.insertAdjacentElement(
+        "beforeend",
+        this.insertTrackTempalte,
+      );
+      sectionCreator = new SectionCreator(this, this.insertTrackTempalte);
+    }
+
+    editTrack(id) {
+      const track = this.result.filter((e) => e._id == id)[0];
+      document.body.insertAdjacentElement(
+        "beforeend",
+        this.insertTrackTempalte,
+      );
+      sectionCreator = new SectionCreator(
+        this,
+        this.insertTrackTempalte,
+        track._id,
+        track.title,
+        track.products,
+      );
+    }
+
+    removeTrack(id) {
+      fetch("/api/managers/shop/appearance", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      })
+        .then((res) => res.json)
+        .then((res) => this.render(true));
+    }
+
+    insertContainer(title = "", products = [], id = false) {
+      fetch("/api/managers/shop/appearance", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: id ? "PUT" : "POST",
+        body: JSON.stringify({ id, title, products }),
+      })
+        .then((res) => res.json)
+        .then((res) => this.render(true));
+    }
+
+    getResult() {
+      return this.result;
+    }
+  }
+</script>
+
+<script>
+  const appearanceplacementcontainer = document.getElementById(
+    "appearance-placement-container",
+  );
+  const appearance = new AppearancePlacement(
+    appearanceplacementcontainer,
+    sait,
+  );
 </script>

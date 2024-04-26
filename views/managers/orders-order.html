@@ -1,59 +1,68 @@
-<main class="managers-view orders">
-    <header>
-        <h1 class="mono">รายการสั่งซื้อ</h1>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รายการสั่งซื้อ</h1>
 
-        {% if filter %}
-        <div class="view-options">
-            <span class="material-icons-outlined">filter_alt</span>
-            <select name="" id="" class="sans" onchange="redirect('/managers/orders/history?' + this.value)">
-                <option disabled selected>ตัวกรอง</option>
-                <option value="">ทั้งหมด</option>
-                <hr>
-                <option disabled>สถานะ</option>
-                {% for status in OrderStatus %}
-                <option value="status={{ status }}">{{ OrderStatusName[status] }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        {% endif %}
-    </header>
-
-    <section class="my orders-viewlist">
-        {% if orders.length === 0 %}
-        <h3 class="sans">ยังไม่มีการทำรายการใดๆ</h3>
-        {% endif %}
-
-        {% for order in orders %}
-        <a href="/managers/order/{{ order._id.toString() }}">
-            <header>
-                <h1 class="display">{{ loop.index}}</h1>
-            </header>
-
-            <article>
-                <h2 class="mono">{{ order._id.toString() }}</h2>
-
-                <div>
-                    <p class="sans">จำนวนสินค้า</p>
-                    <span class="mono">{{ order.product.length }}</span>
-                </div>
-                <div>
-                    <p class="sans">ราคาสินค้า</p>
-                    <span class="mono">{{ order.bill.total }}</span>
-                </div>
-                <div>
-                    <p class="sans">วันที่สั่งซื้อ</p>
-                    <span class="mono">{{ order.createdAt|date('Y.m.d H:i', -420) }}</span>
-                </div>
-                <div>
-                    <p class="sans">วันที่เปลี่ยนแปลงล่าสุด</p>
-                    <span class="mono">{{ order.updatedAt|date('Y.m.d H:i', -420) }}</span>
-                </div>
-                <div>
-                    <p class="sans">สถานะ</p>
-                    <span class="mono">{{ OrderStatusName[order.status] }}</span>
-                </div>
-            </article>
-        </a>
+    {% if filter %}
+    <div class="flex w-max flex-row items-center">
+      <span class="material-icons-outlined">filter_alt</span>
+      <select
+        class="sans"
+        onchange="redirect('/managers/orders/history?' + this.value)"
+      >
+        <option disabled selected>ตัวกรอง</option>
+        <option value="">ทั้งหมด</option>
+        <hr />
+        <option disabled>สถานะ</option>
+        {% for status in OrderStatus %}
+        <option value="status={{ status }}">
+          {{ OrderStatusName[status] }}
+        </option>
         {% endfor %}
-    </section>
+      </select>
+    </div>
+    {% endif %}
+  </header>
+
+  <section class="flex flex-col gap-2">
+    {% if orders.length === 0 %}
+    <h3 class="font-font-sans py-2 text-xl font-bold">
+      ยังไม่มีการทำรายการใดๆ
+    </h3>
+    {% endif %}
+    <!--  -->
+
+    {% for order in orders %}
+    <a
+      href="/managers/order/{{ order._id.toString() }}"
+      class="grid grid-cols-[4rem_1fr] gap-4 border-2 border-gray-950 p-4"
+    >
+      <header class="w-full text-center">
+        <h1 class="font-display text-4xl">{{ loop.index}}</h1>
+      </header>
+
+      <article class="flex flex-col">
+        <h2 class="font-mono">{{ order._id.toString() }}</h2>
+
+        <div class="flex flex-row items-center justify-between">
+          <p class="font-sans">จำนวนสินค้า</p>
+          <span class="font-mono">{{ order.product.length }}</span>
+        </div>
+        <div class="flex flex-row items-center justify-between">
+          <p class="font-sans">ราคาสินค้า</p>
+          <span class="font-mono">{{ order.bill.total }}</span>
+        </div>
+        <div class="flex flex-row items-center justify-between">
+          <p class="font-sans">วันที่สั่งซื้อ</p>
+          <span class="font-mono">
+            {{ order.createdAt|date('Y.m.d H:i', -420) }}
+          </span>
+        </div>
+        <div class="flex flex-row items-center justify-between">
+          <p class="font-sans">สถานะ</p>
+          <span class="font-sans">{{ OrderStatusName[order.status] }}</span>
+        </div>
+      </article>
+    </a>
+    {% endfor %}
+  </section>
 </main>

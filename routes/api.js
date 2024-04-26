@@ -81,6 +81,12 @@ router.route('/checkout/:cart')
         const _bill = {};
         const product = [];
 
+        const token = (function () {
+            let s = '';
+            for (let i = 0; i < 128; i++) s += (Math.random() * 16 | 0).toString(16); 
+            return s;
+        })();
+
         _product.forEach(e => {
             _bill['subtotal'] = Number(_bill['subtotal'] ?? 0) + (Number(e?.option?.price ?? 0) * e.quantity);
             _p = {
@@ -102,6 +108,7 @@ router.route('/checkout/:cart')
         try {
             const address = new Address(_address);
             const order = new Order({
+                token,
                 fullname,
                 product,
 
@@ -135,12 +142,11 @@ router.route('/checkout/:cart')
             await order.save();
 
             await MailCheckout(order, address);
+            return res.status(201).json({ status: 201, message: 'OK', order: order._id.toString() });
         } catch (e) {
             console.error(e);
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
-
-        return res.status(201).json({ status: 201, message: 'OK', body: req.body });
     })
     .put(Access([Rights.ORDER.MODIFY], true), async (req, res, next) => {
         try {

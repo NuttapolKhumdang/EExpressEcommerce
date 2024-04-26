@@ -18,7 +18,7 @@ const { Product, Category } = require('../models/Product');
 const { Address, Promotion, Order, OrderStatus, OrderStatusName } = require('../models/Order');
 
 router.get('/', Access(false), (req, res, next) => {
-    return res.render('managers', { render: 'managers/home.html', account: req.user, });
+    return res.render('managers', { render: 'managers/profile-personal.html', account: req.user, AccountRole, Rights });
 });
 
 // ?? Shop
@@ -105,8 +105,7 @@ router.get('/order/:id', Access([Rights.ORDER.INFOMATION]), async (req, res, nex
 
 // ?? Profile 
 router.get('/profile', Access(false), async (req, res, next) => {
-    const actions = await Actions.findOne({ id: req.user._id.toString() });
-    return res.render('managers', { render: 'managers/profile-personal.html', account: req.user, actions, AccountRole, Rights });
+    return res.render('managers', { render: 'managers/profile-personal.html', account: req.user, AccountRole, Rights });
 });
 
 router.route('/profile/security')

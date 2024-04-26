@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     const y = [
         { id: 1, t: -0 },
         { id: 2, t: -0 },
@@ -10,4 +10,20 @@
     });
 
     console.log(x);
-</script>
+</script> -->
+<head>
+  {% include 'head.html' %}
+</head>
+
+<body>
+  <header class="flex h-max w-full items-center justify-center  text-white bg-rose-500 sticky top-16">
+    <div class="grid w-full max-w-6xl grid-cols-[1fr_2rem] min-h-8 place-items-center">
+      <p class="font-sans font-bold">
+        ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์
+        และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp;
+        <a href="/docs/about-this-project">ข้อมูลเพิ่มเติม</a>
+      </p>
+      <button class="h-8 w-8 hover:bg-white hover:text-gray-950 duration-100"><span class="material-icons-outlined">close</span></button>
+    </div>
+  </header>
+</body>

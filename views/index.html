@@ -1,16 +1,15 @@
 {% import './components.html' as template %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     {% include 'head.html' %}
     <title>EExpress</title>
-</head>
+  </head>
 
-<body>
-    {% include 'nav.html' %}
-
-    {% if banner %}
+  <body
+    class="grid grid-cols-1 place-items-center items-center overflow-x-hidden"
+  >
+    {% include 'nav.html' %} {% if banner %}
     <!--
     <main class=" webstatic banner-section" id="banner">
         <menu>
@@ -33,37 +32,43 @@
     </script>
     -->
     {% endif %}
-
+    <!--  -->
     {% for placement in appearance %}
-    <main class="my webstatuc heading">
-        <div>
-            <h2 class="sans">{{ placement.title }}</h2>
-        </div>
+    <header
+      class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold"
+    >
+      {{ placement.title }}
+    </header>
+
+    <main
+      class="grid w-full max-w-6xl gap-4 px-12 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
+      {% for product in placement.products %}
+      <!--  -->
+      {{ template.ptableitem(product._id.toString(),
+      product.search,product.images[0], product.name, product.price) }}
+      <!--  -->
+      {% endfor %}
     </main>
 
-    <main class="webstatic ptable">
-        {% for product in placement.products %}
-        {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
-        {% endfor %}
-    </main>
     {% endfor %}
-
+    <!--  -->
     {% if a %}
     <main class="my webstatuc heading">
-        <div>
-            <h2 class="sans">สินค้าทั้งหมด</h2>
-        </div>
+      <div>
+        <h2 class="sans">สินค้าทั้งหมด</h2>
+      </div>
     </main>
 
     <main class="webstatic ptable">
-        {% for product in products %}
-        {{ template.ptableitem(product.search, product.images[0], product.name, product.price) }}
-        {% endfor %}
+      {% for product in products %} {{
+      template.ptableitem(product._id.toString(), product.search,
+      product.images[0], product.name, product.price) }} {% endfor %}
     </main>
     {% endif %}
-
+    <!--  -->
     {% include 'cartview.html' %}
-    {% include 'footer.html' %}
-</body>
-
+    <!--  -->
+     {% include 'footer.html' %}
+  </body>
 </html>

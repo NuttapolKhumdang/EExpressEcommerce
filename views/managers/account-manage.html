@@ -1,48 +1,45 @@
-<main class="managers-view account">
-    <header>
-        <h1 class="mono">{{ heading|default('จัดการบัญชี') }}</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">{{ heading|default('จัดการบัญชี') }}</h1>
+  </header>
 
-    <section class="account-list">
-        {% if not accounts or accounts.length === 0 %}
-        <h4 class="sans">ไม่พบข้อมูล</h4>
+  <section class="flex flex-col gap-2">
+    {% if not accounts or accounts.length === 0 %}
+    <h4 class="font-sans font-bold">ไม่พบข้อมูล</h4>
+
+    {% else %}
+    <div
+      class="grid h-max w-full grid-cols-[1fr_8rem_6rem_2rem] gap-4 px-4 py-2 font-sans font-bold"
+    >
+      <p class="w-full text-left">ชื่อผู้ใช้</p>
+      <p class="w-full text-center">ตำแหน่ง</p>
+      <p class="w-full text-center">สถานะ</p>
+    </div>
+    {% endif %}
+    <!--  -->
+
+    {% for profile in accounts %}
+    <a
+      href="/managers/account/{{ profile._id.toString() }}"
+      class="group grid h-max grid-cols-[1fr_8rem_6rem_2rem] place-items-center gap-4 border-2 border-gray-950 p-4 font-sans duration-100 hover:bg-gray-950 hover:text-white"
+    >
+      <p class="w-full text-left">{{ profile.fullname }}</p>
+      <p class="w-full text-center">{{ AccountRole[profile.role].Name }}</p>
+      <p class="w-full text-center">
+        {% if not profile.deleted %}
+        <!--  -->
+        {% if profile.status %} ปกติ {% else %} ปิดใช้งาน {% endif %}
+        <!--  -->
+        {% else %} บัญชีถูกลบ
+        <!--  -->
         {% endif %}
+      </p>
 
-        {% for profile in accounts %}
-        <a href="/managers/account/{{ profile._id.toString() }}">
-            <div>
-                <p class="sans">ชื่อผู้ใช้</p>
-                <span class="sans">{{ profile.fullname }}</span>
-            </div>
-            <div>
-                <p class="sans">อีเมล์</p>
-                <span class="mono">{{ profile.email }}</span>
-            </div>
-            <div>
-                <p class="sans">โทรศัพท์</p>
-                <span class="mono">{{ profile.phone|default('-') }}</span>
-            </div>
-            <div>
-                <p class="sans">ตำแหน่ง</p>
-                <span class="sans">{{ AccountRole[profile.role].Name }}</span>
-            </div>
-            <div>
-                <p class="sans">สถานะ</p>
-                <span class="sans">{% if profile.status %} ปกติ {% else %} ปิดใช้งาน {% endif %}</span>
-            </div>
-            <div>
-                <p class="sans">สิทธิ์การเข้าถึง</p>
-                <fieldset>
-                    {% for access in profile.access %}
-                    <span class="mono">{{ access|replace('_', ' ', 'g') }}</span>
-                    {% endfor %}
-                </fieldset>
-            </div>
-            <div>
-                <p class="sans">วันที่เพิ่ม</p>
-                <span class="mono">{{ profile.createdAt|date('Y.m.d') }}</span>
-            </div>
-        </a>
-        {% endfor%}
-    </section>
+      <span
+        class="material-icons-outlined text-white opacity-0 duration-100 group-hover:opacity-100"
+        >chevron_right</span
+      >
+    </a>
+    {% endfor%}
+  </section>
 </main>

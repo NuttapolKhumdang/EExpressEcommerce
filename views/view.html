@@ -2,181 +2,247 @@
 
 <!-- ผลไม้ลูกสีขาวทอง สว่างไสวเป็นประกายอยู่บนท้องฟ้า ความมืดครึ้มได้ปกคลุมลงบนเมฆขาว ต้นหญ้สูงใหญ่ปลิวไหวตามสายลม เม็ดฝนโปรยปรายกลางสายน้ำ พัดพาสรรพสิ่งพัดปลิว ล่องลอยสู่เมฆา -->
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     {% include 'head.html' %}
     <title>{{ product.name }} &mdash; EExpress</title>
-</head>
+  </head>
 
-<body>
+  <body class="flex flex-col items-center overflow-x-hidden">
     {% include 'nav.html' %}
+    <!--  -->
 
-    <main class="my webstatic view-product">
-        <section class="product picture">
-            <div class="image">
-                <img src="/images/{{ product.images[0] }}" id="renderview-image" alt="product preview image">
+    <main
+      class="grid w-full max-w-6xl grid-cols-1 gap-4 px-12 py-8 lg:h-max lg:grid-cols-2"
+    >
+      <section class="flex h-max flex-col gap-4">
+        <img
+          class="h-full max-h-96 object-contain"
+          src="/images/products/{{ product._id.toString() }}/{{ product.images[0] }}"
+          id="renderview-image"
+          alt="product preview image"
+        />
+
+        <div class="flex flex-row gap-2" id="itable">
+          {% for image in product.images %}
+          <img
+            class="max-h-12 w-12 cursor-pointer object-cover"
+            src="/images/products/{{ product._id.toString() }}/{{ image }}"
+            loading="lazy"
+            alt="product image {{ loop.index}}"
+            onclick="previewImage(this.src)"
+          />
+          {% endfor %}
+        </div>
+
+        <script>
+          const renderviewimage = document.getElementById("renderview-image");
+          function previewImage(src = "") {
+            renderviewimage.src = src;
+          }
+        </script>
+      </section>
+
+      <header class="flex h-max flex-col gap-4">
+        <h1 class="font-sans text-4xl font-bold">{{ product.name }}</h1>
+        <pre class="whitespace-pre-wrap font-sans text-lg">
+{{ product.description }}</pre
+        >
+
+        <div class="flex w-full flex-row items-baseline justify-end gap-2">
+          <span class="font-sans text-sm">ราคา</span>
+          <p class="font-display text-2xl font-bold" id="pdprice">
+            {{ product.options[0].price }}
+          </p>
+        </div>
+
+        {%if product.options.length > 1 %}
+        <b class="font-sans">ตัวเลือกสินค้า</b>
+        <div class="flex flex-row flex-wrap gap-4" id="options-container">
+          {% for option in product.options %}
+          <button
+            class="{% if option.id == option %}text-white bg-gray-950{% endif %} border-2 border-gray-950 px-4 py-2 font-sans font-bold duration-100 hover:bg-gray-950 hover:text-white"
+            id="{{option.id}}"
+            onclick="optionSelect(this, { id: '{{option.id}}', title: '{{option.title}}', price: '{{option.price}}', imageindex: '{{option.imageindex}}' })"
+          >
+            {{ option.title }}
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <script>
+          const itable = document.getElementById("itable");
+          const images = [];
+          itable
+            .querySelectorAll("img")
+            .forEach((e) => images.push(e.src.split("/").reverse()[0]));
+        </script>
+
+        <div class="flex w-full flex-row gap-4">
+          <menu class="flex min-w-24 flex-1 flex-row">
+            <div class="grid grid-cols-1 grid-rows-2 place-items-center">
+              <button
+                onclick="qinc()"
+                class="flex h-full w-full items-center justify-center px-2 py-1 duration-100 hover:bg-gray-950 hover:text-white"
+              >
+                <span class="material-icons-outlined">add</span>
+              </button>
+              <button
+                onclick="qdec()"
+                class="flex h-full w-full items-center justify-center px-2 py-1 duration-100 hover:bg-gray-950 hover:text-white"
+              >
+                <span class="material-icons-outlined">remove</span>
+              </button>
             </div>
 
-            <div class="itable" id="itable">
-                {% for image in product.images %}
-                <img src="/images/{{ image }}" loading="lazy" alt="product image {{ loop.index}}"
-                    onclick="previewImage(this.src)">
-                {% endfor %}
-            </div>
+            <input
+              type="text"
+              disabled
+              class="w-full border-2 border-gray-950 bg-white text-center font-display text-3xl font-bold"
+              value="1"
+              id="incv"
+            />
+          </menu>
 
-            <script>
-                const renderviewimage = document.getElementById("renderview-image");
-                function previewImage(src = "") {
-                    renderviewimage.src = src;
-                }
-            </script>
-        </section>
+          <button
+            onclick="checkout()"
+            class="w-64 shrink border-2 border-gray-950 font-sans text-2xl font-bold duration-100 hover:bg-gray-950 hover:text-white"
+          >
+            ซื้อ
+          </button>
 
-        <header>
-            <h1 class="sans">{{ product.name }}</h1>
-            <p class="sans">{{ product.description }}</p>
+          <button
+            id="addtocart"
+            onclick="addToCart()"
+            class="w-20 shrink-0 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+          >
+            <span class="material-icons-outlined">shopping_bag</span>
+          </button>
+        </div>
+        <script>
+          const btn_addtocart = document.getElementById("addtocart");
+          const incv = document.getElementById("incv");
+          function qinc() {
+            quantity = ++incv.value;
+          }
+          function qdec() {
+            if (incv.value > 1) quantity = --incv.value;
+          }
+        </script>
 
-            <div class="price">
-                <span class="sans">ราคา</span>
-                <p class="display" id="pdprice">{{ product.options[0].price }}</p>
-            </div>
+        <script>
+          const optionscontainer = document.getElementById("options-container");
+          const pdprice = document.getElementById("pdprice");
 
-            {%if product.options.length > 1 %}
-            <p class="sans"><b>ตัวเลือกสินค้า</b></p>
-            <div class="options" id="options-container">
-                {% for option in product.options %}
-                <button class="sans {% if option.id == option %} selected {% endif %}" id="{{option.id}}"
-                    onclick="optionSelect(this, { id: '{{option.id}}', title: '{{option.title}}', price: '{{option.price}}', imageindex: '{{option.imageindex}}' })">
-                    {{ option.title }}
-                </button>
-                {% endfor %}
-            </div>
-            {% endif %}
+          const product = {
+            id: "{{ product.id }}",
+            name: "{{ product.name }}",
+            images: [
+              //{% for i in product.images %}
+              "{{ i }}",
+              //{% endfor %}
+            ],
 
-            <script>
-                const itable = document.getElementById("itable");
-                const images = [];
-                itable.querySelectorAll("img").forEach(e => images.push(e.src.split('/').reverse()[0]));
-            </script>
+            search: "{{ product.search }}",
+          };
 
-            <div class="qbuy">
-                <menu>
-                    <div>
-                        <button onclick="qinc()"><span class="material-icons-outlined">add</span></button>
-                        <button onclick="qdec()"><span class="material-icons-outlined">remove</span></button>
-                    </div>
+          let selectOption = null;
+          let isAlreadyInCart = false;
+          let quantity = 1;
 
-                    <input type="number" class="display" value="1" id="incv">
-                </menu>
+          function optionSelect(
+            obj = document.getElementById(),
+            option = { id, title, price, imageindex },
+          ) {
+            if (typeof obj === "string") obj = document.getElementById(obj);
+            for (let e of optionscontainer.children) {
+              e.classList.remove("bg-gray-950", "text-white");
+              e.classList.add("bg-white", "text-black");
+            }
+            obj.classList.remove("bg-white", "text-black");
+            obj.classList.add("bg-gray-950", "text-white");
 
-                <button onclick="checkout()" class="sans">ซื้อ</button>
-                <button id="addtocart" onclick="addToCart()"><span
-                        class="material-icons-outlined">shopping_bag</span></button>
-            </div>
-            <script>
-                const btn_addtocart = document.getElementById("addtocart");
-                const incv = document.getElementById("incv");
-                function qinc() { quantity = ++incv.value; };
-                function qdec() { if (incv.value > 1) quantity = --incv.value; };
-            </script>
+            selectOption = option;
+            pdprice.innerHTML = option.price;
+            previewImage(
+              "/images/products/{{ product._id.toString() }}/" +
+                images[option.imageindex !== "" ? option.imageindex : 0],
+            );
 
-            <script>
-                const optionscontainer = document.getElementById("options-container");
-                const pdprice = document.getElementById("pdprice");
+            isAlreadyInCart = getLocalStorage("cart", true).filter(
+              (e) => e.option.id == selectOption.id,
+            )[0];
+            btn_addtocart.querySelector("span").innerHTML = isAlreadyInCart
+              ? "check"
+              : "shopping_bag";
+          }
 
-                const product = {
-                    id: '{{ product.id }}',
-                    name: '{{ product.name }}',
-                    images: [
-                        //{% for i in product.images %}
-                        '{{ i }}',
-                        //{% endfor %}
-                    ],
+          function addToCart(force = false) {
+            if (isAlreadyInCart && !force) {
+              btn_addtocart.querySelector("span").innerHTML = "shopping_bag";
+              cart.remove(isAlreadyInCart.id);
+              isAlreadyInCart = false;
+              return false;
+            }
 
-                    search: '{{ product.search }}',
-                }
+            if (!selectOption) {
+              new Alert(
+                "เลือกตัวเลือกสินค้าก่อนดำเนินการต่อ",
+                AlertType.ERROR,
+                true,
+              );
+              return false;
+            }
 
-                let selectOption = null;
-                let isAlreadyInCart = false;
-                let quantity = 1;
+            if (force && isAlreadyInCart) return true;
 
-                function optionSelect(obj = document.getElementById(), option = { id, title, price, imageindex }) {
-                    if (typeof obj === "string") obj = document.getElementById(obj);
-                    for (let e of optionscontainer.children) { e.classList.remove("selected") }
-                    obj.classList.add("selected");
+            btn_addtocart.querySelector("span").innerHTML = "check";
+            isAlreadyInCart = cart.add(product, selectOption, quantity);
+            return true;
+          }
+        </script>
 
-                    selectOption = option;
-                    pdprice.innerHTML = option.price;
-                    previewImage('/images/' + images[option.imageindex !== "" ? option.imageindex : 0]);
+        {% if option %}{% for options in product.options %}{% if options.id ==
+        option %}
+        <script>
+          selectOption = {
+            id: "{{ options.id }}",
+            title: "{{ options.title }}",
+            price: "{{ options.price }}",
+            imageindex: "{{ options.imageindex }}",
+          };
 
-                    isAlreadyInCart = getLocalStorage("cart", true).filter(e => e.option.id == selectOption.id)[0];
-                    btn_addtocart.querySelector("span").innerHTML = isAlreadyInCart ? "check" : 'shopping_bag';
-                }
+          if (selectOption) {
+            optionSelect("{{ options.id }}", selectOption);
+            btn_addtocart.querySelector("span").innerHTML = "check";
+          }
+        </script>
+        {% endif %}{% endfor %}{% endif %} {% if product.options.length == 1%}
+        <script>
+          selectOption = {
+            id: "{{ product.options[0].id }}",
+            title: "{{ product.options[0].title }}",
+            price: "{{ product.options[0].price }}",
+            imageindex: "{{ product.options[0].imageindex }}",
+          };
 
-                function addToCart(force = false) {
-                    if (isAlreadyInCart && !force) {
-                        btn_addtocart.querySelector("span").innerHTML = 'shopping_bag';
-                        cart.remove(isAlreadyInCart.id);
-                        isAlreadyInCart = false;
-                        return false;
-                    };
+          if (selectOption) {
+            optionSelect("{{ options.id }}", selectOption);
+            btn_addtocart.querySelector("span").innerHTML = "check";
+          }
+        </script>
+        {% endif %}
 
-                    if (!selectOption) {
-                        new Alert("เลือกตัวเลือกสินค้าก่อนดำเนินการต่อ", AlertType.ERROR, true)
-                        return false;
-                    };
-
-                    if (force && isAlreadyInCart) return true;
-
-                    btn_addtocart.querySelector("span").innerHTML = 'check';
-                    isAlreadyInCart = cart.add(product, selectOption, quantity);
-                    return true;
-                }
-            </script>
-
-            {% if option %}{% for options in product.options %}{% if options.id == option %}
-            <script>
-                selectOption = {
-                    id: '{{ options.id }}',
-                    title: '{{ options.title }}',
-                    price: '{{ options.price }}',
-                    imageindex: '{{ options.imageindex }}',
-                }
-
-                if (selectOption) {
-                    optionSelect('{{ options.id }}', selectOption);
-                    btn_addtocart.querySelector("span").innerHTML = "check";
-                };
-            </script>
-            {% endif %}{% endfor %}{% endif %}
-
-            {% if product.options.length == 1%}
-            <script>
-                selectOption = {
-                    id: '{{ product.options[0].id }}',
-                    title: '{{ product.options[0].title }}',
-                    price: '{{ product.options[0].price }}',
-                    imageindex: '{{ product.options[0].imageindex }}',
-                }
-
-                if (selectOption) {
-                    optionSelect('{{ options.id }}', selectOption);
-                    btn_addtocart.querySelector("span").innerHTML = "check";
-                };
-            </script>
-            {% endif %}
-
-            <script>
-                function checkout() {
-                    const isSuccess = addToCart(true);
-                    if (!isSuccess) return;
-                    redirect('/checkout');
-                }
-
-            </script>
-        </header>
+        <script>
+          function checkout() {
+            const isSuccess = addToCart(true);
+            if (!isSuccess) return;
+            redirect("/checkout");
+          }
+        </script>
+      </header>
     </main>
 
     <!-- <main class="webstatic product-detail">
@@ -193,27 +259,25 @@
         </article>
     </main> -->
 
-    <header class="my webstatic heading">
-        <div>
-            <h2 class="sans">สินค้าที่คุณอาจสนใจ</h2>
-        </div>
+    <header
+      class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold"
+    >
+      สินค้าที่คุณอาจสนใจ
     </header>
 
-    <main class="webstatic ptable">
-        <!-- <section>
-            <img src="/images/{{ product.images[0] }}" alt="picture of {{ product.title }}">
-
-            <article>
-                <a href="/p/{{ product.search}}" class="sans title">{{ product.name }}</a>
-            </article>
-        </section> -->
-        {% for product in products %}
-        {{ template.ptableitem(product.search, product.images[0], product.name) }}
-        {% endfor %}
+    <main
+      class="grid w-full max-w-6xl grid-cols-1 gap-4 px-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
+      {% for product in products %}
+      <!--  -->
+      {{ template.ptableitem(product._id.toString() ,product.search,
+      product.images[0], product.name) }}
+      <!--  -->
+      {% endfor %}
     </main>
 
     {% include 'cartview.html' %}
+    <!--  -->
     {% include 'footer.html' %}
-</body>
-
+  </body>
 </html>

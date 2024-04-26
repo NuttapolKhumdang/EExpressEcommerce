@@ -1,21 +1,34 @@
-{% macro ptableitem(link, image, title, price)%}
-<section>
-    <a href="{{ link }}">
-        <img src="/images/{{ image }}" alt="{{ title }} picture">
-    </a>
+{% macro ptableitem(id, link, image, title, price)%}
+<section class="h-96 max-h-96">
+  <a href="{{ link }}">
+    <img
+      src="/images/products/{{ id }}/{{ image }}"
+      alt="{{ title }} picture"
+      class="h-48 w-full object-cover sm:h-64"
+    />
+  </a>
 
-    <article>
-        <a href="{{ link }}" class="sans title" aria-label="more detail about {{ title }}">{{ title }}</a>
+  <article class="flex flex-col gap-2 py-2">
+    <a
+      href="{{ link }}"
+      class="font-sans text-lg font-bold"
+      aria-label="more detail about {{ title }}"
+      >{{ title }}</a
+    >
 
-        {% if price %}
-        <div>
-            {% if not price.EQA %}
-            <p class="display price">{{ price.MIN }}~{{ price.MAX }}</p>
-            {% else %}
-            <p class="display price">{{ price.MIN }}</p>
-            {% endif %}
-        </div>
-        {% endif %}
-    </article>
+    {% if price %}
+    <p class="w-full text-right font-display text-xl font-bold">
+      {% if not price.EQA %}
+      <!--  -->
+      {{ price.MIN }}~{{ price.MAX }}
+      <!--  -->
+      {% else %}
+      <!--  -->
+      {{ price.MIN }}
+      <!--  -->
+      {% endif %}
+    </p>
+    {% endif %}
+  </article>
 </section>
 {% endmacro %}

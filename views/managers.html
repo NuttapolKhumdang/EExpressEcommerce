@@ -1,26 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     {% include 'head.html' %}
-    <link rel="stylesheet" href="/stylesheets/min.managers.css">
+    <link rel="stylesheet" href="/stylesheets/managers.css" />
     <title>Manager &mdash; EExpress</title>
-</head>
+  </head>
 
-<body>
+  <body
+    class="grid grid-cols-1 place-items-center items-center overflow-x-hidden"
+  >
     {% include 'nav.html' %}
 
-    <main class="my webstatic managers managers-container">
-        <menu id="managersnav">{% include './managers/nav.html' %}</menu>
-        {% include render %}
+    <main
+      class="my-8 grid h-max w-full max-w-6xl grid-cols-1 gap-8 px-12 md:grid-cols-[18rem_1fr]"
+    >
+      <menu
+        id="managersnav"
+        class="fixed -left-full bg-white w-full p-8 grid h-max max-h-[calc(100dvh_-_6rem)] md:max-h-[calc(100vh_-_8rem_-_2px)] grid-cols-1 overflow-y-scroll border-gray-950 duration-700 md:sticky md:border-2 md:p-0 md:top-[calc(4rem_+_2rem_+_2px)]"
+      >
+        {% include './managers/nav.html' %}
+      </menu>
+      {% include render %}
     </main>
 
     <script>
-        function extendManagersNav() {
-            document.getElementById("managersnav").classList.toggle("extend");
+      function extendManagersNav() {
+        const mnav = document.getElementById("managersnav");
+
+        if (mnav.classList.contains("-left-full")) {
+          mnav.classList.remove("-left-full");
+          mnav.classList.add("-left-0");
+        } else {
+          mnav.classList.add("-left-full");
+          mnav.classList.remove("-left-0");
         }
+      }
     </script>
     {% include 'cartview.html' %}
-</body>
-
+  </body>
 </html>

@@ -1,217 +1,321 @@
-<main class="managers-view orders">
-    <header>
-        <h1 class="mono">รายละเอียดคำสั่งซื้อ</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รายละเอียดคำสั่งซื้อ</h1>
+  </header>
 
-    <section class="my orders-view">
-        <section>
-            <h3 class="sans">รายละเอียด</h3>
-            <div>
-                <p class="sans">หมายเลขคำสั่งซื้อ</p>
-                <span class="mono">{{ order._id.toString() }}</span>
-            </div>
-            <div>
-                <p class="sans">วันที่สั่งซื้อ</p>
-                <span class="mono">{{ order.createdAt|date('Y.m.d H:i', -420) }}</span>
-            </div>
-            <div>
-                <p class="sans">วันที่เปลี่ยนแปลงล่าสุด</p>
-                <span class="mono">{{ order.updatedAt|date('Y.m.d H:i', -420) }}</span>
-            </div>
-            <div>
-                <p class="sans">สถานะ</p>
-                <span class="sans">{{ OrderStatusName[order.status] }}</span>
-            </div>
-            <div>
-                <p class="sans">ชื่อ - สกุล</p>
-                <span class="sans">{{ order.fullname }}</span>
-            </div>
-            <div>
-                <p class="sans">อีเมล์</p>
-                <span class="mono">{{ order.email }}</span>
-            </div>
-        </section>
+  <section class="grid grid-cols-1 gap-4">
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">รายละเอียด</h3>
 
-        <section class="update-order-status">
-            <h3 class="sans">อัพเดทสถานะ</h3>
-
-            <div>
-                <p class="sans">
-                    <span id="ors-current"></span>
-                    {% if order.status === OrderStatus.IN_TRANSIT
-                    or order.status === OrderStatus.CANCELLED
-                    or order.status === OrderStatus.COMPLETED
-                    or order.status === OrderStatus.REFUNDING
-                    %}{% else %}
-                    <span class="material-icons-outlined">arrow_right_alt</span>
-                    <span id="ors-next"></span>
-                    {% endif %}
-                </p>
-
-                {%
-                if order.status === OrderStatus.IN_TRANSIT
-                or order.status === OrderStatus.CANCELLED
-                or order.status === OrderStatus.COMPLETED
-                or order.status === OrderStatus.REFUNDING
-                %}{% else %}
-                <button class="sans" onclick="updateOrderStatus()">ยืนยัน</button>
-            </div>
-            {% endif %}
-            
-            <script>
-                const order_status = "{{ order.status }}";
-                const all_status = [
-                    // {% for os in OrderStatus %} 
-                    "{{ os }}", // {% endfor %}
-                ];
-
-                const all_status_name = {
-                    // {% for osn in Object.keys(OrderStatusName) %} 
-                    '{{osn}}': "{{ OrderStatusName[osn] }}", // {% endfor %}
-                };
-
-                const status_index = all_status.findIndex(e => e == order_status);
-                const next_status = all_status[status_index + 1];
-                document.getElementById("ors-current").innerHTML = all_status_name[order_status];
-                document.getElementById("ors-next").innerHTML = all_status_name[next_status];
-            </script>
-
-
-            <script>
-                async function updateOrderStatus() {
-                    if (order_status == "DELIVERED" || order_status == "CANCELLED")
-                        return new Alert("การจัดการสินค้าสิ้นสุดแล้ว", AlertType.INFO, true);
-
-                    const res = await fetchJson('/api/checkout/{{ order._id.toString() }}', {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            status: next_status,
-                            $push: { update: { status: next_status, timestamp: new Date() } }
-                        }),
-                    });
-
-                    if (res.status === 200) { window.location.reload(); };
-                }
-            </script>
-        </section>
-
-        <section class="webstatic cartview-container">
-            <h3 class="sans">รายการสินค้า</h3>
-            <article>
-                {% for p in products %}
-                <div>
-                    <img src="/images/{{ p.product.images[p.option.imageindex|default(0)] }}" loading="lazy">
-
-                    <h4 class="sans">
-                        <a href="/{{ p.product.search }}?option={{ p.option.id }}">
-                            <span>{{ p.product.name }}</span>
-                            <p><b>ตัวเลือกสินค้า:</b> {{ p.option.title }}</p>
-                        </a>
-                    </h4>
-
-                    <div>
-                        <p class="display">
-                            <span>{{ p.quantity }} x</span>
-                            <span>{{ p.option.price }}</span>
-                        </p>
-                    </div>
-                </div>
-                {% endfor %}
-            </article>
-        </section>
-
-        <section>
-            <h3 class="sans">ราคาสินค้าและค่าบริการ</h3>
-
-            <div>
-                <p class="sans">ราคาสินค้า</p>
-                <span class="display bold">{{ order.bill.subtotal }}</span>
-            </div>
-            <div>
-                <p class="sans">ค่าขนส่ง</p>
-                <span class="display bold">+ {{ order.bill.shipping }}</span>
-            </div>
-            <div>
-                <p class="sans">ส่วนลด</p>
-                <span class="display bold">- {{ order.bill.discount }}</span>
-            </div>
-            <div>
-                <p class="sans">ภาษีอากร</p>
-                <span class="display bold">+ {{ order.bill.taxes }}</span>
-            </div>
-            <div>
-                <p class="sans">ยอดสุทธิ</p>
-                <span class="display bold">{{ order.bill.total }}</span>
-            </div>
-        </section>
-        <section>
-            <h3 class="sans">การใช้งานล่วนลด</h3>
-            {% if not promotion %}
-            <p class="sans">ไม่ได้ใช้งานรหัสล่วนลดใดๆ</p>
-            {% else %}
-            <div>
-                <p class="sans">ชื่อโปรโมชั่น</p>
-                <span class="sans bold">{{ promotion.title }}</span>
-            </div>
-            <div>
-                <p class="sans">รหัสโปรโมชั่น</p>
-                <span class="sans">{{ promotion.code }}</span>
-            </div>
-            <div>
-                <p class="sans">ล่วนลด</p>
-                <span class="sans">{{ promotion.discount }}{% if promotion.discountByPercen%}%{% endif %}</span>
-            </div>
-            {% endif %}
-        </section>
-
-        <section>
-            <h3 class="sans">สถานที่จัดส่ง</h3>
-
-            <div>
-                <p class="sans">ที่อยู่</p>
-                <span class="sans">{{ address.address }}</span>
-            </div>
-            <div>
-                <p class="sans">ตำบล</p>
-                <span class="sans">{% for tambon in thai_tambons %}
-                    {% if tambon.id == address.subdistrict %}{{ tambon.name_th }}{% endif %}{% endfor %}</span>
-            </div>
-            <div>
-                <p class="sans">อำเภอ</p>
-                <span class="sans">{% for amphure in thai_amphures %}
-                    {% if amphure.id == address.district %}{{ amphure.name_th }}{% endif %}{% endfor %}</span>
-            </div>
-            <div>
-                <p class="sans">จังหวัด</p>
-                <span class="sans">{% for province in thai_provinces %}
-                    {% if province.id == address.province %}{{ province.name_th }}{% endif %}{% endfor %}</span>
-            </div>
-            <div>
-                <p class="sans">ประเทศ/ภูมิภาค</p>
-                <span class="sans">ไทย</span>
-            </div>
-            <div>
-                <p class="sans">รหัสไปรษณีย์</p>
-                <span class="mono">{{ address.postalCode }}</span>
-            </div>
-            <div>
-                <p class="sans">โทรศัพท์</p>
-                <span class="mono">{{ address.phone }}</span>
-            </div>
-        </section>
-
-        <section>
-            <h3 class="sans">ประวัติการเปลี่ยนแปลง</h3>
-
-            {% for update in order.update %}
-            <div>
-                <p class="sans">{{ OrderStatusName[update.status] }}</p>
-                <p class="mono">{{ update.timestamp|date('Y.m.d H:i:s', -420) }}</p>
-            </div>
-            {% endfor %}
-        </section>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">หมายเลขคำสั่งซื้อ</p>
+        <span class="font-mono">{{ order._id.toString() }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">วันที่สั่งซื้อ</p>
+        <span class="font-mono"
+          >{{ order.createdAt|date('Y.m.d H:i', -420) }}</span
+        >
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">วันที่เปลี่ยนแปลงล่าสุด</p>
+        <span class="font-mono"
+          >{{ order.updatedAt|date('Y.m.d H:i', -420) }}</span
+        >
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">สถานะ</p>
+        <span class="font-sans">{{ OrderStatusName[order.status] }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ชื่อ - สกุล</p>
+        <span class="font-sans">{{ order.fullname }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">อีเมล์</p>
+        <span class="font-mono">{{ order.email }}</span>
+      </div>
     </section>
+
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">อัพเดทสถานะ</h3>
+
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="flex h-max flex-row items-center gap-2 font-sans">
+          <span id="ors-current"></span>
+          {% if order.status === OrderStatus.IN_TRANSIT or order.status ===
+          OrderStatus.CANCELLED or order.status === OrderStatus.COMPLETED or
+          order.status === OrderStatus.REFUNDING %}{% else %}
+          <span class="material-icons-outlined">arrow_right_alt</span>
+          <span id="ors-next"></span>
+          {% endif %}
+        </p>
+
+        {% if order.status === OrderStatus.IN_TRANSIT or order.status ===
+        OrderStatus.CANCELLED or order.status === OrderStatus.COMPLETED or
+        order.status === OrderStatus.REFUNDING %}{% else %}
+        <button
+          class="h-8 border-2 border-gray-950 px-8 font-sans font-bold duration-100 hover:bg-gray-950 hover:text-white"
+          onclick="updateOrderStatus()"
+        >
+          ยืนยัน
+        </button>
+        {% endif %}
+      </div>
+
+      <script>
+        const order_status = "{{ order.status }}";
+        const all_status = [
+          // {% for os in OrderStatus %}
+          "{{ os }}", // {% endfor %}
+        ];
+
+        const all_status_name = {
+          // {% for osn in Object.keys(OrderStatusName) %}
+          "{{osn}}": "{{ OrderStatusName[osn] }}", // {% endfor %}
+        };
+
+        const status_index = all_status.findIndex((e) => e == order_status);
+        const next_status = all_status[status_index + 1];
+        document.getElementById("ors-current").innerHTML =
+          all_status_name[order_status];
+        document.getElementById("ors-next").innerHTML =
+          all_status_name[next_status];
+      </script>
+
+      <script>
+        async function updateOrderStatus() {
+          if (order_status == "DELIVERED" || order_status == "CANCELLED")
+            return new Alert(
+              "การจัดการสินค้าสิ้นสุดแล้ว",
+              AlertType.INFO,
+              true,
+            );
+
+          const res = await fetchJson(
+            "/api/checkout/{{ order._id.toString() }}",
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              method: "PUT",
+              body: JSON.stringify({
+                status: next_status,
+                $push: {
+                  update: { status: next_status, timestamp: new Date() },
+                },
+              }),
+            },
+          );
+
+          if (res.status === 200) {
+            window.location.reload();
+          }
+        }
+      </script>
+    </section>
+
+    <section
+      class="flex h-max w-full flex-col gap-8 border-2 border-gray-950 p-4"
+    >
+      <h3 class="py-2 text-xl font-bold">รายการสินค้า</h3>
+      <article class="grid grid-cols-1 gap-4">
+        {% for p in products %}
+        <div
+          class="grid w-full grid-cols-[4rem_1fr_4rem] place-items-center gap-4"
+        >
+          <img
+            class="h-16 w-16 min-w-16 shrink-0 object-cover"
+            src="/images/products/{{ p.product.id }}/{{ p.product.images[p.option.imageindex|default(0)] }}"
+            loading="lazy"
+          />
+
+          <a
+            href="/{{ p.product.search }}?option={{ p.option.id }}"
+            class="w-full flex-1 text-left font-sans"
+          >
+            <span>{{ p.product.name }}</span>
+            <p>
+              <span class="font-bold">ตัวเลือกสินค้า:</span> {{ p.option.title
+              }}
+            </p>
+          </a>
+
+          <div class="flex w-max flex-col text-right font-display text-lg">
+            <span>{{ p.quantity }} x</span>
+            <span>{{ p.option.price }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </article>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">ราคาสินค้าและค่าบริการ</h3>
+
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ราคาสินค้า</p>
+        <span class="font-display font-bold">{{ order.bill.subtotal }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ค่าขนส่ง</p>
+        <span class="font-display font-bold">+ {{ order.bill.shipping }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ส่วนลด</p>
+        <span class="font-display font-bold">- {{ order.bill.discount }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ภาษีอากร</p>
+        <span class="font-display font-bold">+ {{ order.bill.taxes }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ยอดสุทธิ</p>
+        <span class="font-display font-bold">{{ order.bill.total }}</span>
+      </div>
+    </section>
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">การใช้งานล่วนลด</h3>
+      {% if not promotion %}
+      <p class="font-sans">ไม่ได้ใช้งานรหัสล่วนลดใดๆ</p>
+      {% else %}
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ชื่อโปรโมชั่น</p>
+        <span class="sans bold">{{ promotion.title }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">รหัสโปรโมชั่น</p>
+        <span class="font-sans">{{ promotion.code }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">ล่วนลด</p>
+        <span class="font-sans"
+          >{{ promotion.discount }}{% if promotion.discountByPercen%}%{% endif
+          %}</span
+        >
+      </div>
+      {% endif %}
+    </section>
+
+    <section
+      class="relative grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="w-full py-2 text-xl font-bold">สถานที่จัดส่ง</h3>
+
+      <input type="checkbox" id="address-signle-line" class="peer hidden" />
+
+      <label
+        class="absolute right-4 top-6 flex h-max w-max cursor-pointer items-center justify-center p-1 duration-100 hover:bg-gray-950 hover:text-white"
+        for="address-signle-line"
+      >
+        <span class="material-icons-outlined">format_line_spacing</span>
+      </label>
+
+      <section class="flex flex-col gap-1 peer-checked:hidden">
+        <div class="flex w-full flex-row items-start justify-between">
+          <p class="font-sans">ที่อยู่</p>
+          <span class="font-sans">{{ address.address }}</span>
+        </div>
+        <div class="flex w-full flex-row items-start justify-between">
+          <p class="font-sans">ตำบล</p>
+          <span class="font-sans">
+            <!-- {% for tambon in thai_tambons %}  -->
+            <!-- {% if tambon.id == address.subdistrict %} -->
+            {{ tambon.name_th }}
+            <!-- {% endif %} -->
+            <!-- {% endfor %} -->
+          </span>
+        </div>
+        <div class="flex w-full flex-row items-start justify-between">
+          <p class="font-sans">อำเภอ</p>
+          <span class="font-sans">
+            <!-- {% for amphure in thai_amphures %} -->
+            <!-- {% if amphure.id == address.district %} -->
+            {{ amphure.name_th }}
+            <!-- {% endif %} -->
+            <!-- {% endfor %} -->
+          </span>
+        </div>
+        <div class="flex w-full flex-row items-start justify-between">
+          <p class="font-sans">จังหวัด</p>
+          <span class="font-sans">
+            <!-- {% for province in thai_provinces %}  -->
+            <!-- {% if province.id == address.province %} -->
+            {{ province.name_th }}
+            <!-- {% endif %} -->
+            <!-- {% endfor %} -->
+          </span>
+        </div>
+        <div class="flex w-full flex-row items-start justify-between">
+          <p class="font-sans">ประเทศ/ภูมิภาค</p>
+          <span class="font-sans">ไทย</span>
+        </div>
+        <div class="flex w-full flex-row items-start justify-between">
+          <p class="font-sans">รหัสไปรษณีย์</p>
+          <span class="font-mono">{{ address.postalCode }}</span>
+        </div>
+      </section>
+
+      <section class="hidden flex-col gap-1 peer-checked:flex">
+        <div class="flex w-full flex-col items-start justify-between sm:flex-row">
+          <p class="font-sans">ที่อยู่จัดส่ง</p>
+
+          <p class="font-sans">
+            <span>{{ address.address }}</span>
+
+            <span class="font-sans">
+              <!-- {% for tambon in thai_tambons %}  -->
+              <!-- {% if tambon.id == address.subdistrict %} -->
+              ตำบล{{ tambon.name_th }}
+              <!-- {% endif %} -->
+              <!-- {% endfor %} -->
+            </span>
+
+            <span>
+              <!-- {% for amphure in thai_amphures %} -->
+              <!-- {% if amphure.id == address.district %} -->
+              อำเภอ{{ amphure.name_th }}
+              <!-- {% endif %} -->
+              <!-- {% endfor %} -->
+            </span>
+
+            <span>
+              <!-- {% for province in thai_provinces %}  -->
+              <!-- {% if province.id == address.province %} -->
+              จังหวัด{{ province.name_th }}
+              <!-- {% endif %} -->
+              <!-- {% endfor %} -->
+            </span>
+            <span class="font-mono">{{ address.postalCode }}</span>
+          </p>
+        </div>
+      </section>
+
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">โทรศัพท์</p>
+        <span class="font-mono">{{ address.phone }}</span>
+      </div>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">ประวัติการเปลี่ยนแปลง</h3>
+
+      {% for update in order.update %}
+      <div class="flex w-full flex-row items-start justify-between">
+        <p class="font-sans">{{ OrderStatusName[update.status] }}</p>
+        <p class="font-mono">{{ update.timestamp|date('Y.m.d H:i:s', -420) }}</p>
+      </div>
+      {% endfor %}
+    </section>
+  </section>
 </main>

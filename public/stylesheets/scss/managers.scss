@@ -21,7 +21,7 @@
         align-items: flex-start;
         justify-content: start;
 
-        border: 2px solid var(--white);
+        border: 2px solid var(--dark);
 
         position: sticky;
         top: calc(6rem + 2px);
@@ -68,7 +68,7 @@
 
             color: var(--dark);
             background-color: var(--white);
-            transition: var(--button-action-transition);
+            transition: var(--transition);
 
             span {
                 font-size: 24px;
@@ -187,10 +187,10 @@
                     }
 
                     button {
-                        border: 2px solid var(--button-normal-border);
-                        background-color: var(--button-normal-background);
-                        color: var(--button-normal-text);
-                        transition: var(--button-action-transition);
+                        border: 2px solid var(--border);
+                        background-color: var(--white);
+                        color: var(--dark);
+                        transition: var(--transition);
 
                         display: flex;
                         flex-direction: row;
@@ -211,8 +211,8 @@
                         }
 
                         &:hover {
-                            background-color: var(--button-normal-hover-background);
-                            color: var(--button-normal-hover-text);
+                            background-color: var(--dark);
+                            color: var(--white);
                         }
                     }
                 }
@@ -230,7 +230,7 @@
             justify-content: center;
 
             width: 100%;
-            border: 2px solid var(--button-normal-border);
+            border: 2px solid var(--border);
             min-height: 6rem;
             height: max-content;
             position: relative;
@@ -260,7 +260,7 @@
                     align-items: center;
                     border: 2px solid var(--dark);
 
-                    transition: var(--button-action-transition);
+                    transition: var(--transition);
 
                     &:hover {
                         color: var(--white);
@@ -281,7 +281,7 @@
                 justify-content: center;
 
                 background-color: var(--white);
-                transition: var(--button-action-transition);
+                transition: var(--transition);
 
                 position: absolute;
                 top: 0;

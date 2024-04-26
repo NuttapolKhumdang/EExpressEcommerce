@@ -1,79 +1,130 @@
-<main class="managers-view shop-promotions">
-    <header>
-        <h1 class="mono">เพิ่มโค้ดส่วนลด</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">เพิ่มโค้ดส่วนลด</h1>
+  </header>
 
-    <article>
-        <form id="promos">
-            <h2 class="sans">ข้อมูลโปรโมชั่น</h2>
-            <fieldset>
-                <label for="title">ชื่อโปรโมชั่น</label>
-                <input type="text" id="title" class="sans" placeholder="ชื่อโปรโมชั่น" value="{{ promo.title }}">
-            </fieldset>
-            <fieldset>
-                <label for="code">โปรโมชั่นโค้ด</label>
-                <input type="text" id="code" class="sans" placeholder="โปรโมชั่นโค้ด" value="{{ promo.code }}">
-            </fieldset>
+  <article>
+    <form id="promos" class="flex flex-col gap-4">
+      <fieldset
+        class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4 *:grid *:grid-cols-1 *:gap-2"
+      >
+        <h3 class="py-2 text-xl font-bold">ข้อมูลโปรโมชั่น</h3>
+        <label for="title">
+          <span class="w-max font-mono text-sm underline">ชื่อโปรโมชั่น</span>
+          <input
+            type="text"
+            id="title"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ชื่อโปรโมชั่น"
+            value="{{ promo.title }}"
+          />
+        </label>
 
-            <fieldset>
-                <label for="discount">ส่วนลด</label>
-                <input type="text" id="discount" class="sans" placeholder="ส่วนลด"
-                    value="{{ promo.discount }}{% if promo.discountByPercen %}%{% endif %}">
-            </fieldset>
+        <label for="code">
+          <span class="w-max font-mono text-sm underline">โปรโมชั่นโค้ด</span>
+          <input
+            type="text"
+            id="code"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="โปรโมชั่นโค้ด"
+            value="{{ promo.code }}"
+          />
+        </label>
+        <label for="discount">
+          <span class="w-max font-mono text-sm underline">ส่วนลด</span>
+          <input
+            type="text"
+            id="discount"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ส่วนลด"
+            value="{{ promo.discount }}{% if promo.discountByPercen %}%{% endif %}"
+          />
+        </label>
+      </fieldset>
 
-            <h2 class="sans">เงื่อนไขการใช้งาน</h2>
+      <fieldset
+        class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4 *:grid *:grid-cols-1 *:gap-2"
+      >
+        <h3 class="py-2 text-xl font-bold">เงื่อนไขการใช้งาน</h3>
 
-            <fieldset>
-                <label for="minimum-price">ราคาขั้นต่ำ</label>
-                <input type="number" id="minimumPrice" placeholder="ราคาขั้นต่ำ" value="{{ promo.minimumPrice }}">
-            </fieldset>
-            <fieldset>
-                <label for="maximum-discount">ส่วนลดสูงสุด</label>
-                <input type="number" id="maximumDiscount" placeholder="ส่วนลดสูงสุด"
-                    value="{{ promo.maximumDiscount }}">
-            </fieldset>
+        <label for="minimum-price">
+          <span class="w-max font-mono text-sm underline">ราคาขั้นต่ำ</span>
+          <input
+            type="number"
+            id="minimumPrice"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ราคาขั้นต่ำ"
+            value="{{ promo.minimumPrice }}"
+          />
+        </label>
 
-            <button class="sans">{% if promo %} บันทึก {% else %} เพิ่มโค้ด {% endif %}</button>
-        </form>
+        <label for="maximum-discount">
+          <span class="w-max font-mono text-sm underline">ส่วนลดสูงสุด</span>
+          <input
+            type="number"
+            id="maximumDiscount"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ส่วนลดสูงสุด"
+            value="{{ promo.maximumDiscount }}"
+          />
+        </label>
+      </fieldset>
 
-        <script>
-            const promos = document.getElementById("promos");
+      <button
+        class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        {% if promo %} บันทึก {% else %} เพิ่มโค้ด {% endif %}
+      </button>
+    </form>
 
-            function getFormContent(form = promos) {
-                const input = form.querySelectorAll("input");
-                let body = {};
+    <script>
+      const promos = document.getElementById("promos");
 
-                input.forEach(e => { body[e.id] = e.value; });
-                return body;
-            }
+      function getFormContent(form = promos) {
+        const input = form.querySelectorAll("input");
+        let body = {};
 
-            promos.addEventListener("submit", async e => {
-                e.preventDefault();
+        input.forEach((e) => {
+          body[e.id] = e.value;
+        });
+        return body;
+      }
 
-                const body = getFormContent();
-                if (body.discount.endsWith('%')) {
-                    body['discountByPercen'] = true;
-                    body.discount = body.discount.split('%')[0];
-                }
+      promos.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-                const res = await fetchJson("/api/promocode/" + '{% if promo %}{{ promo._id.toString() }}{% else %}newcode{% endif %}', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+        const body = getFormContent();
+        if (body.discount.endsWith("%")) {
+          body["discountByPercen"] = true;
+          body.discount = body.discount.split("%")[0];
+        }
 
-                    /*{% if promo %}*/
-                    method: 'PUT',
-                    /*{% else %}*/
-                    method: 'POST',
-                    /*{% endif %}*/
+        const res = await fetchJson(
+          "/api/promocode/" +
+            "{% if promo %}{{ promo._id.toString() }}{% else %}newcode{% endif %}",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
 
-                    body: JSON.stringify(body),
-                });
+            /*{% if promo %}*/
+            method: "PUT",
+            /*{% else %}*/
+            method: "POST",
+            /*{% endif %}*/
 
-                if (res.status === 201) window.location.href = '/managers/shop/promos';
-                else new Alert("เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้ง", AlertType.ERROR, true);
-            });
+            body: JSON.stringify(body),
+          },
+        );
 
-        </script>
-    </article>
+        if (res.status === 201) window.location.href = "/managers/shop/promos";
+        else
+          new Alert(
+            "เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้ง",
+            AlertType.ERROR,
+            true,
+          );
+      });
+    </script>
+  </article>
 </main>

@@ -1,20 +1,40 @@
-<main class="managers-view account">
-    <header>
-        <h1 class="mono">เข้าสู่ระบบ</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">เข้าสู่ระบบ</h1>
+  </header>
 
-    <section>
-        <form action="/managers/login" method="POST">
-            <fieldset>
-                <label for="email">อีเมล์</label>
-                <input type="text" id="email" name="username" class="sans" placeholder="อีเมล์">
-            </fieldset>
+  <section>
+    <form action="/managers/login" method="POST" class="flex flex-col gap-4">
+      <fieldset class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4">
+        <label for="email" class="grid grid-cols-1 gap-2">
+          <span class="w-max font-mono text-sm underline">อีเมล์</span>
+          <input
+            type="text"
+            id="email"
+            name="username"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="อีเมล์"
+          />
+        </label>
 
-            <fieldset>
-                <label for="pwd">รหัสผ่าน</label>
-                <input type="password" id="pwd" name="password" class="sans" placeholder="รหัสผ่าน">
-            </fieldset>
-            <button type="submit">ถัดไป</button>
-        </form>
-    </section>
+        <label for="pwd" class="grid grid-cols-1 gap-2">
+          <span class="w-max font-mono text-sm underline">รหัสผ่าน</span>
+          <input
+            type="password"
+            id="pwd"
+            name="password"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="รหัสผ่าน"
+          />
+        </label>
+      </fieldset>
+
+      <button
+        type="submit"
+        class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ถัดไป
+      </button>
+    </form>
+  </section>
 </main>

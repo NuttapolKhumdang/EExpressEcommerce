@@ -1,53 +1,53 @@
-<main class="managers-view account">
-    <header>
-        <h1 class="mono">รายละเอียดบัญชี</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รายละเอียดบัญชี</h1>
+  </header>
 
-    <section class="account-view">
-        <section>
-            <h3 class="sans">ข้อมูลบัญชี</h3>
+  <section class="grid grid-cols-1 gap-2">
+    <section class="grid grid-cols-1 gap-2 border-2 border-gray-950 p-4">
+      <h3 class="font-sans text-xl py-2 font-bold">ข้อมูลบัญชี</h3>
 
-            <div>
-                <p class="sans">ชื่อผู้ใช้</p>
-                <span class="sans">{{ account.fullname }}</span>
-            </div>
-            <div>
-                <p class="sans">อีเมล์</p>
-                <span class="mono">{{ account.email }}</span>
-            </div>
-            <div>
-                <p class="sans">โทรศัพท์</p>
-                <span class="mono">{{ account.phone|default('-') }}</span>
-            </div>
-            <div>
-                <p class="sans">วันที่เพิ่ม</p>
-                <span class="mono">{{ account.createdAt|date('Y.m.d') }}</span>
-            </div>
-            <div>
-                <p class="sans">ตำแหน่ง</p>
-                <span class="sans">
-                    {% for role in AccountRole %}
-                    {% if role.Role==account.role %}
-
-                    {{ role.Name }}
-
-                    {% endif %}
-                    {% endfor %}
-                </span>
-            </div>
-            <div>
-                <p class="sans">สถานะ</p>
-                <span class="sans">
-                    {% if account.status %} ปกติ
-                    {% else %} ปิดใช้งาน
-                    {% endif %}
-                </span>
-            </div>
-        </section>
-
-        <section class="account-active">
-            <h3 class="sans">ประวัติการใช้งาน</h3>
-            {% include 'action-history.html' %}
-        </section>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">ชื่อผู้ใช้</p>
+        <span class="font-sans">{{ account.fullname }}</span>
+      </div>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">อีเมล์</p>
+        <span class="font-mono">{{ account.email }}</span>
+      </div>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">โทรศัพท์</p>
+        <span class="font-mono">{{ account.phone|default('-') }}</span>
+      </div>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">วันที่เพิ่ม</p>
+        <span class="font-mono">{{ account.createdAt|date('Y.m.d') }}</span>
+      </div>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">ตำแหน่ง</p>
+        <span class="font-sans">
+          {% for role in AccountRole %} {% if role.Role==account.role %} {{
+          role.Name }} {% endif %} {% endfor %}
+        </span>
+      </div>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">สถานะ</p>
+        <span class="font-sans">
+          {% if account.status %} ปกติ {% else %} ปิดใช้งาน {% endif %}
+        </span>
+      </div>
     </section>
+    
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">ประวัติการใช้งาน</h3>
+      <a
+        href=""
+        class="flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ดูประวัติการใช้งาน
+      </a>
+    </section>
+  </section>
 </main>

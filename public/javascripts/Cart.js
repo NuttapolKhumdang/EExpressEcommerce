@@ -1,21 +1,16 @@
 function createCartviewItem({ id, product, option, quantity } = e) {
-    return /*html*/`<div>
-        <img src="/images/${product.images[option.imageindex ? option.imageindex : 0]}">
-
-        <h4 class="sans">
-            <a href="/${product.search}?option=${option.id}">${product.name} &mdash; ${option.title}</a>
-        </h4>
-
-        <div>
-            <p class="display">
-                <span>${quantity} x</span>
-                <span>${option.price}</span>
-            </p>
-
-            <menu>
-                <button onclick="cart.remove('${id}')"><span class="material-icons-outlined">delete</span></button>
-            </menu>
-        </div>
+    return /*html*/`<div class="flex flex-row gap-4 w-full">
+    <img class="h-16 w-16 min-w-16 shrink-0 object-cover" src="/images/products/${product.id}/${product.images[option.imageindex ? option.imageindex : 0]}" />
+    <a class="flex-1 font-sans font-bold" href="/${product.search}?option=${option.id}">${product.name} &mdash; ${option.title}</a>
+    <div class="flex w-max flex-col items-end justify-center">
+        <p class="flex w-max flex-col text-right font-display text-lg">
+            <span>${quantity} x</span>
+            <span>${option.price}</span>
+        </p>
+        <button onclick="cart.remove('${id}')" class="h-8 w-8 duration-100 hover:bg-gray-950 hover:text-white flex items-center justify-center">
+            <span class="material-icons-outlined">delete</span>
+        </button>
+      </div>
     </div>`;
 }
 
@@ -25,7 +20,7 @@ class Cart {
         this.cartcontainer = cartcontainer;
         this.container = container;
         this.promotion = null;
-        this.emptyContainer = `<span class="sans">ยังไม่มีสินค้าในตะกร้า</span>`;
+        this.emptyContainer = `<span class="border-b-2 border-gray-950 py-4 text-center font-sans font-bold">ยังไม่มีสินค้าในตะกร้า</span>`;
 
         this.summaryChild = {
             subtotal: cartcontainer.querySelector("p#subtotal"),
