@@ -1,4 +1,4 @@
-<header class="fixed -top-48" id="search-container">
+<header class="fixed -top-48 z-50 h-40" id="search-container">
   <div class="flex flex-row">
     <input type="text" class="sans" placeholder="Search" />
     <button onclick="toggleSearchBox()">
@@ -50,6 +50,10 @@
 
 <script>
   function toggleSearchBox() {
-    document.getElementById("search-container").classList.toggle("extend");
+    const sc = document.getElementById("search-container")
+    if (sc.classList.contains("-top-48") ) {
+      sc.classList.add("top-0");
+      sc.classList.remove("-top-48");
+    }
   }
 </script>

@@ -1,7 +1,6 @@
 <main class="flex flex-col gap-4">
   <header class="my-2 flex flex-row items-center justify-between">
     <h1 class="font-mono text-3xl">รายละเอียดบัญชี</h1>
-
   </header>
 
   <section class="grid grid-cols-1 gap-4">
@@ -31,9 +30,9 @@
         <p>
           {% for role in AccountRole %}
           <!--  -->
-           {% if role.Role == profile.role %} {{ role.Name }} 
-           <!--  -->
-           {% endif %} {% endfor %}
+          {% if role.Role == profile.role %} {{ role.Name }}
+          <!--  -->
+          {% endif %} {% endfor %}
         </p>
       </div>
       <div class="flex w-full flex-row items-start justify-between">
@@ -41,7 +40,7 @@
         <p>
           {% if not profile.status %} ปิดใช้งาน
           <!--  -->
-          {% else %} ปิดใช้งาน
+          {% else %} ปกติ
           <!--  -->
           {% endif %}
         </p>

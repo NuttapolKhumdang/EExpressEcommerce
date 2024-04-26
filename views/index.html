@@ -52,20 +52,7 @@
     </main>
 
     {% endfor %}
-    <!--  -->
-    {% if a %}
-    <main class="my webstatuc heading">
-      <div>
-        <h2 class="sans">สินค้าทั้งหมด</h2>
-      </div>
-    </main>
-
-    <main class="webstatic ptable">
-      {% for product in products %} {{
-      template.ptableitem(product._id.toString(), product.search,
-      product.images[0], product.name, product.price) }} {% endfor %}
-    </main>
-    {% endif %}
+    
     <!--  -->
     {% include 'cartview.html' %}
     <!--  -->

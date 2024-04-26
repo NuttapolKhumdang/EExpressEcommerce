@@ -21,7 +21,7 @@
           <input
             type="text"
             id="email"
-            class="border-b-2 border-gray-950 py-4 font-sans"
+            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
             placeholder="อีเมล์"
           />
         </label>
@@ -34,7 +34,7 @@
           <span class="font-mono text-sm underline">ประเทศ/ภูมิภาค</span>
           <select
             id="country"
-            class="border-b-2 border-gray-950 py-4 font-sans"
+            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
           >
             <option disabled>ประเทศ/ภูมิภาค</option>
             <option value="thailand" selected>ประเทศไทย</option>
@@ -48,13 +48,13 @@
             <input
               type="text"
               id="fname"
-              class="border-b-2 border-gray-950 py-4 font-sans"
+              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
               placeholder="ชื่อ"
             />
             <input
               type="text"
               id="lname"
-              class="border-b-2 border-gray-950 py-4 font-sans"
+              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
               placeholder="นามสกุล"
             />
           </div>
@@ -65,7 +65,7 @@
           <input
             type="text"
             id="address"
-            class="border-b-2 border-gray-950 py-4 font-sans"
+            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
             placeholder="ที่อยู่"
           />
         </label>
@@ -75,7 +75,7 @@
             <span class="font-mono text-sm underline">จังหวัด</span>
             <select
               id="province"
-              class="border-b-2 border-gray-950 py-4 font-sans"
+              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
               onchange="OnProvinceChange(this.value)"
             >
               <option selected disabled value="">จังหวัด</option>
@@ -89,7 +89,7 @@
             <span class="font-mono text-sm underline">อำเภอ</span>
             <select
               id="district"
-              class="border-b-2 border-gray-950 py-4 font-sans"
+              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
               onchange="OnAmphureChange(this.value)"
             >
               <option selected disabled value="">อำเภอ</option>
@@ -101,7 +101,7 @@
           <span class="font-mono text-sm underline">ตำบล</span>
           <select
             id="subdistrict"
-            class="border-b-2 border-gray-950 py-4 font-sans"
+            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
             onchange="OnTambonChange(this.value)"
           >
             <option selected disabled value="">ตำบล</option>
@@ -124,7 +124,7 @@
           <input
             type="tel"
             id="phone"
-            class="border-b-2 border-gray-950 py-4 font-sans"
+            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
             placeholder="โทรศัพท์"
           />
         </label>
@@ -239,7 +239,7 @@
     <form id="discount-code" class="flex w-full flex-row gap-4">
       <input
         type="text"
-        class="w-5/6 border-b-2 border-gray-950 py-4"
+        class="w-5/6 border-b-2 border-gray-950 py-4 outline-offset-4"
         placeholder="บัตรของขวัญหรือรหัสส่วนลด"
       />
       <button
@@ -357,7 +357,7 @@
 
     if (res.status === 200 || res.status === 201) {
       setLocalStorage("cart", [], true);
-      redirect("/checkout/finish?id=" + res.order);
+      redirect("/checkout/finish?id=" + res.order + '&token=' + res.token);
     } else {
       btnSubmitAction("normal");
       return new Alert(res.message, AlertType.ERROR);

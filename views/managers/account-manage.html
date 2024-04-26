@@ -9,7 +9,7 @@
 
     {% else %}
     <div
-      class="grid h-max w-full grid-cols-[1fr_8rem_6rem_2rem] gap-4 px-4 py-2 font-sans font-bold"
+      class="grid h-max w-full grid-cols-[6fr_1fr_1fr_2rem] gap-4 px-4 py-2 font-sans font-bold"
     >
       <p class="w-full text-left">ชื่อผู้ใช้</p>
       <p class="w-full text-center">ตำแหน่ง</p>
@@ -21,7 +21,7 @@
     {% for profile in accounts %}
     <a
       href="/managers/account/{{ profile._id.toString() }}"
-      class="group grid h-max grid-cols-[1fr_8rem_6rem_2rem] place-items-center gap-4 border-2 border-gray-950 p-4 font-sans duration-100 hover:bg-gray-950 hover:text-white"
+      class="group grid h-max grid-cols-[6fr_1fr_1fr_2rem] place-items-center gap-4 border-2 border-gray-950 p-4 font-sans duration-100 hover:bg-gray-950 hover:text-white"
     >
       <p class="w-full text-left">{{ profile.fullname }}</p>
       <p class="w-full text-center">{{ AccountRole[profile.role].Name }}</p>

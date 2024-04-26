@@ -1,6 +1,6 @@
-<main class="flex flex-col gap-4">
+<main class="w-full max-w-6xl flex flex-col gap-4  px-12 py-8">
     <header class="my-2 flex flex-row items-center justify-between">
-      <h1 class="font-mono text-3xl">รายละเอียดคำสั่งซื้อ</h1>
+      <h1 class="font-sans font-bold text-3xl">รายละเอียดคำสั่งซื้อ</h1>
     </header>
   
     <section class="grid grid-cols-1 gap-4">
@@ -37,45 +37,6 @@
           <p class="font-sans">อีเมล์</p>
           <span class="font-mono">{{ order.email }}</span>
         </div>
-      </section>
-  
-      <section
-        class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
-      >
-        <h3 class="py-2 text-xl font-bold">อัพเดทสถานะ</h3>
-  
-        <div class="flex w-full flex-row items-start justify-between">
-          <p class="flex h-max flex-row items-center gap-2 font-sans">
-            <span id="ors-current"></span>
-            {% if order.status === OrderStatus.IN_TRANSIT or order.status ===
-            OrderStatus.CANCELLED or order.status === OrderStatus.COMPLETED or
-            order.status === OrderStatus.REFUNDING %}{% else %}
-            <span class="material-icons-outlined">arrow_right_alt</span>
-            <span id="ors-next"></span>
-            {% endif %}
-          </p>
-        </div>
-  
-        <script>
-          const order_status = "{{ order.status }}";
-          const all_status = [
-            // {% for os in OrderStatus %}
-            "{{ os }}", // {% endfor %}
-          ];
-  
-          const all_status_name = {
-            // {% for osn in Object.keys(OrderStatusName) %}
-            "{{osn}}": "{{ OrderStatusName[osn] }}", // {% endfor %}
-          };
-  
-          const status_index = all_status.findIndex((e) => e == order_status);
-          const next_status = all_status[status_index + 1];
-          document.getElementById("ors-current").innerHTML =
-            all_status_name[order_status];
-          document.getElementById("ors-next").innerHTML =
-            all_status_name[next_status];
-        </script>
-
       </section>
   
       <section
