@@ -124,12 +124,12 @@ class Cart {
     }
 
     setSummary(k, v) {
-        k.innerHTML = v;
+        k.innerHTML = typeof v === "number" ? Number(v).toFixed(2) : v;
     }
 
     summary(show = false) {
-        if (show) this.cartcontainer.querySelector("summary").classList.remove("hide");
-        else this.cartcontainer.querySelector("summary").classList.add("hide");
+        if (show) this.cartcontainer.querySelector("summary").classList.remove("hidden");
+        else this.cartcontainer.querySelector("summary").classList.add("hidden");
     }
 
     update() {

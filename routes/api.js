@@ -83,7 +83,7 @@ router.route('/checkout/:cart')
 
         const token = (function () {
             let s = '';
-            for (let i = 0; i < 128; i++) s += (Math.random() * 16 | 0).toString(16); 
+            for (let i = 0; i < 128; i++) s += (Math.random() * 16 | 0).toString(16);
             return s;
         })();
 
@@ -142,7 +142,7 @@ router.route('/checkout/:cart')
             await order.save();
 
             await MailCheckout(order, address);
-            return res.status(201).json({ status: 201, message: 'OK', order: order._id.toString() });
+            return res.status(201).json({ status: 201, message: 'OK', order: order._id.toString(), token, });
         } catch (e) {
             console.error(e);
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
