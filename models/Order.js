@@ -37,6 +37,7 @@ const OrderSchema = new Schema({
     'bill.discount': Number,
     'bill.total': Number,
 
+    token: String,
     status: {
         type: String,
         default: 'pending'
