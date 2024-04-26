@@ -1,23 +1,21 @@
 {% import './components.html' as template %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     {% include 'head.html' %}
     <title>{{ title }} &mdash; EExpress</title>
-</head>
-
-<body>
-    {% if component %}
-    {% include 'nav.html' %}
-    {% endif %}
-
+  </head>
+  <body
+    class="flex flex-col place-items-center items-center overflow-x-hidden"
+  >
+    {% if component %} {% include 'nav.html' %} {% endif %}
+    <!--  -->
+    
     {% include render %}
+    <!--  -->
 
-    {% if component %}
-    {% include 'cartview.html' %}
-    {% include 'footer.html' %}
+    {% if component %} {% include 'cartview.html' %} {% include 'footer.html' %}
+    <!--  -->
     {% endif %}
-</body>
-
+  </body>
 </html>

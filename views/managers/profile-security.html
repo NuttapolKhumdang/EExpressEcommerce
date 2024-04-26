@@ -1,49 +1,68 @@
-<main class="managers-view account">
-    <header>
-        <h1 class="mono">ความปลอดภัย</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">ความปลอดภัย</h1>
+  </header>
 
-    <section class="account-view">
-        <section>
-            <h3 class="sans">อีเมล์</h3>
+  <section class="grid grid-cols-1 gap-2">
+    <section class="grid grid-cols-1 gap-2 border-2 border-gray-950 p-4">
+      <h3 class="font-font-sans py-2 text-xl font-bold">อีเมล์</h3>
 
-            <div>
-                <p class="sans">อีเมล์</p>
-                <span class="mono bold">{{ account.email }}</span>
-            </div>
-        </section>
-
-        <section>
-            <h3 class="sans">รหัสผ่าน</h3>
-
-            <div>
-                <p class="sans">เปลี่ยนรหัสผ่าน</p>
-                <button class="sans" onclick="redirect('/managers/profile/security/password')">เปลี่ยน</button>
-            </div>
-            <div>
-                <p class="sans">เปลี่ยนครั้งล่าสุด</p>
-                <span class="mono bold">{{ account.passwordChange.reverse()[0]?.timestamp|date('Y.m.d H:i', -420)|default('ไม่มีการเปลี่ยนรหัสผ่าน')}}</span>
-            </div>
-        </section>
-
-        <section class="account-active">
-            <h3 class="sans">ประวัติการเข้าสู่ระบบ</h3>
-            {% if actions.action.length === 0 or not actions.action %}
-            <h4 class="sans">ไม่พบข้อมูล</h4>
-            {% endif %}
-
-            {% for action in actions.action %}
-            {% if action.action === Action.SESSION.LOGIN %}
-            <div>
-                <p class="mono">{{ action.action }}
-                    {% if action.info._id %}
-                    <span>&gt; {{ action.info._id }}</span>
-                    {% endif %}
-                </p>
-                <span class="mono">{{ action.timestamp|date('Y.m.d H:i:s', -420) }}</span>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </section>
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">อีเมล์</p>
+        <span class="font-mono font-medium">{{ account.email }}</span>
+      </div>
     </section>
+
+    <section class="grid grid-cols-1 gap-2 border-2 border-gray-950 p-4">
+      <h3 class="font-font-sans py-2 text-xl font-bold">รหัสผ่าน</h3>
+
+      <div class="flex flex-row items-center justify-between">
+        <p class="font-sans">เปลี่ยนรหัสผ่าน</p>
+
+        <button
+          class="h-8 w-max border-2 border-gray-950 px-4 font-sans font-bold duration-100 hover:bg-gray-950 hover:text-white"
+          onclick="redirect('/managers/profile/security/password')"
+        >
+          เปลี่ยน
+        </button>
+      </div>
+
+      <div class="flex flex-row items-center justify-between">
+        <p class="sans">เปลี่ยนครั้งล่าสุด</p>
+        <span class="font-mono font-medium">
+          {% if account.passwordChange.length > 0%} {{
+          account.passwordChange.reverse()[0].timestamp|date('Y.m.d H:i',-420)
+          }}
+          <!--  -->
+          {% else %} ไม่มีประวิติการเปลี่ยนแปลง {% endif %}
+        </span>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 gap-2 border-2 border-gray-950 p-4">
+      <h3 class="font-font-sans py-2 text-xl font-bold">ประวัติการเข้าสู่ระบบ</h3>
+
+      {% if actions.action.length === 0 or not actions.action %}
+      <h4 class="font-sans">ไม่พบข้อมูล</h4>
+      {% endif %}
+
+      <!--  -->
+      {% for action in actions.action %}
+      <!--  -->
+      {% if action.action === Action.SESSION.LOGIN %}
+      <div
+        class="flex w-full flex-row items-start justify-between border-b border-gray-950 py-1"
+      >
+        <p class="flex flex-col justify-start font-mono">
+          {{ action.action }} {% if action.info._id %}
+          <span class="indent-4">&gt; {{ action.info._id }}</span>
+          {% endif %}
+        </p>
+        <span class="font-mono"
+          >{{ action.timestamp|date('Y.m.d H:i:s', -420) }}</span
+        >
+      </div>
+      {% endif %} {% endfor %}
+    </section>
+  </section>
 </main>

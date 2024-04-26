@@ -1,44 +1,58 @@
-<section class="webstatic cartview-container hide" id="cartview-container">
-    <header class="sans">
-        <h2>ตะกร้าสินค้า</h2>
+<section
+  class="fixed -right-full top-0 flex h-full max-h-dvh w-full max-w-xl flex-col gap-8 overflow-y-scroll border-l-2 border-gray-950 bg-white p-12 duration-700 z-50"
+  id="cartview-container"
+>
+  <header class="flex w-full flex-row items-center justify-between">
+    <h1 class="font-sans text-2xl font-bold">ตะกร้าสินค้า</h1>
 
-        <button onclick="toggleCartview()"><span class="material-icons-outlined">chevron_right</span></button>
-    </header>
+    <button
+      onclick="toggleCartview()"
+      class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+    >
+      <span class="material-icons-outlined">chevron_right</span>
+    </button>
+  </header>
 
-    <article id="cartview-cartlist"></article>
+  <article class="grid grid-cols-1" id="cartview-cartlist"></article>
 
-    <summary class="hide">
-        <div>
-            <span class="sans">ราคา</span>
-            <p class="display" id="subtotal">0</p>
-        </div>
+  <summary class="flex flex-col gap-2">
+    <div class="flex items-baseline justify-end gap-2">
+      <span class="font-sans">ราคา</span>
+      <p class="font-display text-3xl" id="subtotal">0</p>
+    </div>
 
-        <div>
-            <span class="sans">ค่าขนส่ง</span>
-            <p class="display" id="shiping">0</p>
-        </div>
+    <div class="flex items-baseline justify-end gap-2">
+      <span class="font-sans">ค่าขนส่ง</span>
+      <p class="font-display text-3xl" id="shiping">0</p>
+    </div>
 
-        <div>
-            <span class="sans">ส่วนลด</span>
-            <p class="display" id="discount">0</p>
-        </div>
+    <div class="flex items-baseline justify-end gap-2">
+      <span class="font-sans">ส่วนลด</span>
+      <p class="font-display text-3xl" id="discount">0</p>
+    </div>
 
-        <div>
-            <span class="sans">รวม</span>
-            <p class="display" id="total">0</p>
-        </div>
+    <div class="flex items-baseline justify-end gap-2">
+      <span class="font-sans">รวม</span>
+      <p class="font-display text-3xl" id="total">0</p>
+    </div>
 
-        <button class="sans" onclick="window.location.href = '/checkout'">สั่งซื้อ</button>
-    </summary>
+    <button
+      class="mt-4 h-14 border-2 border-gray-950 bg-white text-xl font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      onclick="window.location.href = '/checkout'"
+    >
+      สั่งซื้อ
+    </button>
+  </summary>
 </section>
 
 <script>
-    const cartviewcartlist = document.getElementById("cartview-cartlist");
-    const cartviewcontainer = document.getElementById("cartview-container");
+  const cartviewcartlist = document.getElementById("cartview-cartlist");
+  const cartviewcontainer = document.getElementById("cartview-container");
 
     const cart = new Cart(cartviewcontainer, cartviewcartlist);
 
-    function toggleCartview() {
-        return cartviewcontainer.classList.toggle("hide");
-    }
+  function toggleCartview() {
+    cartviewcontainer.classList.toggle("-right-0");
+    cartviewcontainer.classList.toggle("-right-full");
+  }
 </script>

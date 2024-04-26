@@ -1,26 +1,55 @@
-<header class="webstatic search-container" id="search-container">
-    <div class="search">
-        <input type="text" class="sans" placeholder="Search">
-        <button onclick="toggleSearchBox()"><span class="material-icons-outlined">close</span></button>
-    </div>
+<header class="fixed -top-48" id="search-container">
+  <div class="flex flex-row">
+    <input type="text" class="sans" placeholder="Search" />
+    <button onclick="toggleSearchBox()">
+      <span class="material-icons-outlined">close</span>
+    </button>
+  </div>
 </header>
 
-<header class="webstatic masterhead">
-    <h3 class="display"><a href="/">EExpress</a></h3>
+<header
+  class="sticky left-0 top-0 z-50 flex w-full items-center justify-center border-b-2 border-gray-950 bg-white"
+>
+  <div
+    class="flex h-16 w-full max-w-7xl flex-row items-center justify-between px-12"
+  >
+    <a href="/" class="font-display text-xl">EExpress</a>
 
-    <nav>
-        {% if account?._id %}
-        <button class="i smb" onclick="extendManagersNav()"><span class="material-icons-outlined">menu</span></button>
-        <button class="i" onclick="redirect('/managers')"><span class="material-icons-outlined">store</span></button>
-        {% endif %}
-        <button class="i" onclick="toggleSearchBox()"><span class="material-icons-outlined">search</span></button>
-        <button class="i" onclick="toggleCartview()"><span class="material-icons-outlined">shopping_bag</span></button>
-        <!-- <a class="sans">Login</a> -->
+    <nav class="flex flex-row items-center justify-center gap-2">
+      {% if account?._id %}
+      <button
+        onclick="extendManagersNav()"
+        class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white md:hidden"
+      >
+        <span class="material-icons-outlined">menu</span>
+      </button>
+      <a
+        href="/managers"
+        class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        <span class="material-icons-outlined">store</span>
+      </a>
+      {% endif %}
+
+      <button
+        class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+        onclick="toggleSearchBox()"
+      >
+        <span class="material-icons-outlined">search</span>
+      </button>
+      <button
+        class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+        onclick="toggleCartview()"
+      >
+        <span class="material-icons-outlined">shopping_bag</span>
+      </button>
+      <!-- <a class="sans">Login</a> -->
     </nav>
+  </div>
 </header>
 
 <script>
-    function toggleSearchBox() {
-        document.getElementById("search-container").classList.toggle("extend");
-    }
+  function toggleSearchBox() {
+    document.getElementById("search-container").classList.toggle("extend");
+  }
 </script>

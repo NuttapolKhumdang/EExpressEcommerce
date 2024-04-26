@@ -1,268 +1,366 @@
 <script>
-    new Alert('ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/docs/about-this-project">ข้อมูลเพิ่มเติม</a>', AlertType.ERROR);
+  new Alert(
+    'ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/docs/about-this-project" class="underline">ข้อมูลเพิ่มเติม</a>',
+    AlertType.ERROR,
+  );
 </script>
 
-<header class="my webstatic checkout-header">
-    <h1 class="display">EExpress</h1>
-    <p class="sans">Cart > Infomation > Shipping > Payment</p>
+<header class="flex h-max w-full max-w-6xl flex-col px-12 pt-8">
+  <h1 class="font-display text-4xl">EExpress</h1>
+  <p class="font-sans text-sm">Cart > Infomation > Shipping > Payment</p>
 </header>
 
-<main class="my webstatic checkout-container">
-    <section class="checkout-form">
-        <form id="checkout-form">
-            <fieldset>
-                <h1 class="sans">ข้อมูลติดต่อ</h1>
+<main class="grid h-max w-full max-w-6xl grid-cols-2 gap-16 px-12 py-8">
+  <section class="checkout-form">
+    <form id="checkout-form" class="grid grid-cols-1 gap-4">
+      <fieldset class="grid grid-cols-1 gap-4 border-2 border-gray-950 p-4">
+        <h1 class="py-2 font-sans text-2xl font-medium">ข้อมูลติดต่อ</h1>
 
-                <div>
-                    <label for="email" class="mono">อีเมล์</label>
-                    <input type="text" id="email" class="sans" placeholder="อีเมล์">
-                </div>
-            </fieldset>
+        <label for="email" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">อีเมล์</span>
+          <input
+            type="text"
+            id="email"
+            class="border-b-2 border-gray-950 py-4 font-sans"
+            placeholder="อีเมล์"
+          />
+        </label>
+      </fieldset>
 
-            <fieldset>
-                <h1 class="sans">สถานที่จัดส่ง</h1>
-                <div>
-                    <label for="country" class="mono">ประเทศ/ภูมิภาค</label>
-                    <select id="country" class="sans">
-                        <option disabled>ประเทศ/ภูมิภาค</option>
-                        <option value="thailand" selected>ประเทศไทย</option>
-                    </select>
-                </div>
+      <fieldset class="grid grid-cols-1 gap-4 border-2 border-gray-950 p-4">
+        <h1 class="py-2 font-sans text-2xl font-medium">สถานที่จัดส่ง</h1>
 
-                <div>
-                    <label for="fname" class="mono">ชื่อ - นามสกุล</label>
+        <label for="country" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">ประเทศ/ภูมิภาค</span>
+          <select
+            id="country"
+            class="border-b-2 border-gray-950 py-4 font-sans"
+          >
+            <option disabled>ประเทศ/ภูมิภาค</option>
+            <option value="thailand" selected>ประเทศไทย</option>
+          </select>
+        </label>
 
-                    <div class="row">
-                        <input type="text" id="fname" class="sans" placeholder="ชื่อ">
-                        <input type="text" id="lname" class="sans" placeholder="นามสกุล">
-                    </div>
-                </div>
+        <label for="fname" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">ชื่อ - นามสกุล</span>
 
-                <div>
-                    <label for="address" class="mono">ที่อยู่</label>
-                    <input type="text" id="address" class="sans" placeholder="ที่อยู่">
-                </div>
+          <div class="grid grid-cols-2 gap-4">
+            <input
+              type="text"
+              id="fname"
+              class="border-b-2 border-gray-950 py-4 font-sans"
+              placeholder="ชื่อ"
+            />
+            <input
+              type="text"
+              id="lname"
+              class="border-b-2 border-gray-950 py-4 font-sans"
+              placeholder="นามสกุล"
+            />
+          </div>
+        </label>
 
-                <div class="row">
-                    <div>
-                        <label for="province" class="mono">จังหวัด</label>
-                        <select id="province" class="sans" onchange="OnProvinceChange(this.value)">
-                            <option selected disabled value="">จังหวัด</option>
-                            {% for province in thai_provinces %}
-                            <option value="{{ province.id }}">{{ province.name_th }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label for="district" class="mono">อำเภอ</label>
-                        <select id="district" class="sans" onchange="OnAmphureChange(this.value)">
-                            <option selected disabled value="">อำเภอ</option>
-                        </select>
-                    </div>
-                </div>
+        <label for="address" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">ที่อยู่</span>
+          <input
+            type="text"
+            id="address"
+            class="border-b-2 border-gray-950 py-4 font-sans"
+            placeholder="ที่อยู่"
+          />
+        </label>
 
-                <div>
-                    <label for="subdistrict" class="mono">ตำบล</label>
-                    <select id="subdistrict" class="sans" onchange="OnTambonChange(this.value)">
-                        <option selected disabled value="">ตำบล</option>
-                    </select>
-                </div>
+        <div class="grid grid-cols-2 gap-4">
+          <label for="province" class="grid grid-cols-1">
+            <span class="font-mono text-sm underline">จังหวัด</span>
+            <select
+              id="province"
+              class="border-b-2 border-gray-950 py-4 font-sans"
+              onchange="OnProvinceChange(this.value)"
+            >
+              <option selected disabled value="">จังหวัด</option>
+              {% for province in thai_provinces %}
+              <option value="{{ province.id }}">{{ province.name_th }}</option>
+              {% endfor %}
+            </select>
+          </label>
 
-                <div>
-                    <label for="postalCode" class="mono">รหัสไปรษณีย์</label>
-                    <input type="text" id="postalCode" class="sans" placeholder="รหัสไปรษณีย์">
-                </div>
-                <div>
-                    <label for="phone" class="mono">โทรศัพท์</label>
-                    <input type="tel" id="phone" class="sans" placeholder="โทรศัพท์">
-                </div>
-            </fieldset>
+          <label for="district" class="grid grid-cols-1">
+            <span class="font-mono text-sm underline">อำเภอ</span>
+            <select
+              id="district"
+              class="border-b-2 border-gray-950 py-4 font-sans"
+              onchange="OnAmphureChange(this.value)"
+            >
+              <option selected disabled value="">อำเภอ</option>
+            </select>
+          </label>
+        </div>
 
-            <menu>
-                <button onclick="redirect('/')" type="button"><span class="material-icons-outlined">chevron_left</span>
-                    <p class="sans">กลับสู่หน้าหลัก</p>
-                </button>
-                <button class="primary" type="submit">
-                    <p class="sans">ถัดไป</p>
-                </button>
-            </menu>
-        </form>
+        <label for="subdistrict" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">ตำบล</span>
+          <select
+            id="subdistrict"
+            class="border-b-2 border-gray-950 py-4 font-sans"
+            onchange="OnTambonChange(this.value)"
+          >
+            <option selected disabled value="">ตำบล</option>
+          </select>
+        </label>
 
-        <script>
-            async function loadAddress() {
-                const res = await fetchJson('/api/address');
+        <label for="postalCode" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">รหัสไปรษณีย์</span>
+          <input
+            disabled
+            type="text"
+            id="postalCode"
+            class="border-b-2 border-gray-950 bg-white py-4 font-sans"
+            placeholder="รหัสไปรษณีย์"
+          />
+        </label>
+        <label for="phone" class="grid grid-cols-1">
+          <span class="font-mono text-sm underline">โทรศัพท์</span>
 
-                if (res.status == 200) {
-                    setLocalStorage("address", {
-                        province: res.thai_provinces,
-                        amphures: res.thai_amphures,
-                        tambons: res.thai_tambons
-                    }, true);
-                }
-            }
+          <input
+            type="tel"
+            id="phone"
+            class="border-b-2 border-gray-950 py-4 font-sans"
+            placeholder="โทรศัพท์"
+          />
+        </label>
+      </fieldset>
 
-            if (!getLocalStorage("address", true)) {
-                loadAddress();
-            };
-
-            function createFormOption(value, text) {
-                const option = document.createElement("option");
-                option.value = value;
-                option.innerHTML = text;
-                return option;
-            }
-
-            const amphures_elemt = document.getElementById('district');
-            const default_amphures = amphures_elemt.innerHTML;
-
-            const tambons_elemt = document.getElementById('subdistrict');
-            const default_tambons = tambons_elemt.innerHTML;
-
-            const postcode_elemt = document.getElementById('postalCode');
-            const default_postcode = "";
-
-            function OnProvinceChange(province) { // Render amphures
-                const amphures = getLocalStorage("address", true).amphures.filter(e => e.province_id == province);
-
-                amphures_elemt.innerHTML = default_amphures;
-                tambons_elemt.innerHTML = default_tambons;
-                postcode_elemt.value = default_postcode;
-
-                amphures.forEach(e => {
-                    amphures_elemt.insertAdjacentElement("beforeend", createFormOption(e.id, e.name_th));
-                });
-            }
-
-            function OnAmphureChange(amphure) { // Render tambons
-                const tambons = getLocalStorage("address", true).tambons.filter(e => e.amphure_id == amphure);
-
-                tambons_elemt.innerHTML = default_tambons;
-                tambons.forEach(e => {
-                    tambons_elemt.insertAdjacentElement("beforeend", createFormOption(e.id, e.name_th));
-                });
-            }
-
-            function OnTambonChange(tambon) { // Render postcode
-                const tambons = getLocalStorage("address", true).tambons.filter(e => e.id == tambon);
-                postcode_elemt.value = tambons[0].zip_code;
-            }
-        </script>
-    </section>
-
-    <section class="webstatic cartview-container" id="cartview-container">
-        <header class="sans">
-            <h2>ตะกร้า</h2>
-        </header>
-
-        <article id="cartview-cartlist"></article>
-
-        <form id="discount-code">
-            <input type="text" class="sans" placeholder="บัตรของขวัญหรือรหัสส่วนลด">
-            <button type="submit" class="sans">ยืนยัน</button>
-        </form>
-        <script>
-            const discount_code = document.getElementById("discount-code");
-            discount_code.addEventListener("submit", e => {
-                e.preventDefault();
-
-                const code = discount_code.querySelector("input").value;
-                cart.applyDiscardCode(code);
-            });
-        </script>
-
-        <summary>
-            <div>
-                <span class="sans">ราคา</span>
-                <p class="display" id="subtotal">0</p>
-            </div>
-
-            <div>
-                <span class="sans">ค่าขนส่ง</span>
-                <p class="display" id="shiping">0</p>
-            </div>
-
-            <div>
-                <span class="sans">ส่วนลด</span>
-                <p class="display" id="discount">0</p>
-            </div>
-
-            <div>
-                <span class="sans">รวม</span>
-                <p class="display" id="total">0</p>
-            </div>
-        </summary>
-    </section>
+      <menu class="flex flex-row items-center justify-between">
+        <button
+          onclick="redirect('/')"
+          type="button"
+          class="flex w-max flex-row items-center justify-center px-4 py-2 pl-2 duration-100 hover:bg-gray-950 hover:text-white"
+        >
+          <span class="material-icons-outlined">chevron_left</span>
+          <p class="sans">กลับสู่หน้าหลัก</p>
+        </button>
+        <button
+          class="w-max border-2 border-gray-950 px-8 py-2 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+          type="submit"
+        >
+          <p class="sans">ถัดไป</p>
+        </button>
+      </menu>
+    </form>
 
     <script>
-        const cartviewcartlist = document.getElementById("cartview-cartlist");
-        const cartviewcontainer = document.getElementById("cartview-container");
+      async function loadAddress() {
+        const res = await fetchJson("/api/address");
 
-        const cart = new Cart(cartviewcontainer, cartviewcartlist);
+        if (res.status == 200) {
+          setLocalStorage(
+            "address",
+            {
+              province: res.thai_provinces,
+              amphures: res.thai_amphures,
+              tambons: res.thai_tambons,
+            },
+            true,
+          );
+        }
+      }
+
+      if (!getLocalStorage("address", true)) {
+        loadAddress();
+      }
+
+      function createFormOption(value, text) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.innerHTML = text;
+        return option;
+      }
+
+      const amphures_elemt = document.getElementById("district");
+      const default_amphures = amphures_elemt.innerHTML;
+
+      const tambons_elemt = document.getElementById("subdistrict");
+      const default_tambons = tambons_elemt.innerHTML;
+
+      const postcode_elemt = document.getElementById("postalCode");
+      const default_postcode = "";
+
+      function OnProvinceChange(province) {
+        // Render amphures
+        const amphures = getLocalStorage("address", true).amphures.filter(
+          (e) => e.province_id == province,
+        );
+
+        amphures_elemt.innerHTML = default_amphures;
+        tambons_elemt.innerHTML = default_tambons;
+        postcode_elemt.value = default_postcode;
+
+        amphures.forEach((e) => {
+          amphures_elemt.insertAdjacentElement(
+            "beforeend",
+            createFormOption(e.id, e.name_th),
+          );
+        });
+      }
+
+      function OnAmphureChange(amphure) {
+        // Render tambons
+        const tambons = getLocalStorage("address", true).tambons.filter(
+          (e) => e.amphure_id == amphure,
+        );
+
+        tambons_elemt.innerHTML = default_tambons;
+        tambons.forEach((e) => {
+          tambons_elemt.insertAdjacentElement(
+            "beforeend",
+            createFormOption(e.id, e.name_th),
+          );
+        });
+      }
+
+      function OnTambonChange(tambon) {
+        // Render postcode
+        const tambons = getLocalStorage("address", true).tambons.filter(
+          (e) => e.id == tambon,
+        );
+        postcode_elemt.value = tambons[0].zip_code;
+      }
     </script>
+  </section>
+
+  <section class="flex h-max w-full flex-col gap-8" id="cartview-container">
+    <header class="font-sans text-2xl font-bold">ตะกร้าสินค้า</header>
+
+    <article
+      class="grid grid-cols-1 border-b-2 border-gray-950 pb-2"
+      id="cartview-cartlist"
+    ></article>
+
+    <form id="discount-code" class="flex w-full flex-row gap-4">
+      <input
+        type="text"
+        class="w-5/6 border-b-2 border-gray-950 py-4"
+        placeholder="บัตรของขวัญหรือรหัสส่วนลด"
+      />
+      <button
+        type="submit"
+        class="w-1/6 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ยืนยัน
+      </button>
+    </form>
+    <script>
+      const discount_code = document.getElementById("discount-code");
+      discount_code.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const code = discount_code.querySelector("input").value;
+        cart.applyDiscardCode(code);
+      });
+    </script>
+
+    <summary class="flex flex-col gap-2">
+      <div class="flex items-baseline justify-end gap-2">
+        <span class="font-sans">ราคา</span>
+        <p class="font-display text-3xl" id="subtotal">0</p>
+      </div>
+
+      <div class="flex items-baseline justify-end gap-2">
+        <span class="font-sans">ค่าขนส่ง</span>
+        <p class="font-display text-3xl" id="shiping">0</p>
+      </div>
+
+      <div class="flex items-baseline justify-end gap-2">
+        <span class="font-sans">ส่วนลด</span>
+        <p class="font-display text-3xl" id="discount">0</p>
+      </div>
+
+      <div class="flex items-baseline justify-end gap-2">
+        <span class="font-sans">รวม</span>
+        <p class="font-display text-3xl" id="total">0</p>
+      </div>
+    </summary>
+  </section>
+
+  <script>
+    const cartviewcartlist = document.getElementById("cartview-cartlist");
+    const cartviewcontainer = document.getElementById("cartview-container");
+
+    const cart = new Cart(cartviewcontainer, cartviewcartlist);
+  </script>
 </main>
 
 <script>
-    const checkout = document.getElementById("checkout-form");
-    const checkout_submit = checkout.querySelector("button[type=submit]");
-    const checkout_submit_default = checkout_submit.innerHTML;
+  const checkout = document.getElementById("checkout-form");
+  const checkout_submit = checkout.querySelector("button[type=submit]");
+  const checkout_submit_default = checkout_submit.innerHTML;
 
-    function btnSubmitAction(action = "normal") {
-        if (action == 'loading') checkout_submit.innerHTML = `<div class="s2loader"></div>`;
-        else if (action = 'normal') checkout_submit.innerHTML = checkout_submit_default;
-    }
+  function btnSubmitAction(action = "normal") {
+    if (action == "loading")
+      checkout_submit.innerHTML = `<div class="s2loader"></div>`;
+    else if ((action = "normal"))
+      checkout_submit.innerHTML = checkout_submit_default;
+  }
 
-    checkout.addEventListener("submit", async e => {
-        e.preventDefault();
+  checkout.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        const address = {};
-        checkout.querySelectorAll("input").forEach(e => {
-            if (e.value == "") e.classList.add("incorrect");
-            else e.classList.remove("incorrect");
-            e.oninput = () => e.classList.remove("incorrect");
+    const address = {};
+    checkout.querySelectorAll("input").forEach((e) => {
+      if (e.value == "") e.classList.add("incorrect");
+      else e.classList.remove("incorrect");
+      e.oninput = () => e.classList.remove("incorrect");
 
-            address[e.id] = e.value;
-        });
-
-        checkout.querySelectorAll("select").forEach(e => {
-            if (e.value == "") e.classList.add("incorrect");
-            else e.classList.remove("incorrect");
-            e.oninput = () => e.classList.remove("incorrect");
-
-            address[e.id] = e.value;
-        });
-
-        let emptyValue = 0;
-        for (let k of Object.keys(address)) {
-            if (address[k] === "") emptyValue++;
-        }
-
-        const promotion = cart.promotion;
-        const product = getLocalStorage('cart', true);
-        if (!product || product.length == 0) return new Alert("ยังไม่มีสินค้าในตะกร้า &nbsp; <a href='/'>เลือกซื้อสินค้า</a>", AlertType.ERROR);
-        if (emptyValue) return new Alert("กรุณาตรวจสอบข้อมูลการจัดส่งก่อนดำเนินการต่อ", AlertType.ERROR);
-
-        btnSubmitAction('loading');
-        const res = await fetchJson("/api/checkout/new", {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                address,
-                promotion,
-                product
-            }),
-        });
-
-        console.log(res);
-
-        if (res.status === 200 || res.status === 201) {
-            setLocalStorage('cart', [], true);
-            redirect('/');
-        } else {
-            btnSubmitAction('normal');
-            return new Alert(res.message, AlertType.ERROR);
-        }
+      address[e.id] = e.value;
     });
 
+    checkout.querySelectorAll("select").forEach((e) => {
+      if (e.value == "") e.classList.add("incorrect");
+      else e.classList.remove("incorrect");
+      e.oninput = () => e.classList.remove("incorrect");
+
+      address[e.id] = e.value;
+    });
+
+    let emptyValue = 0;
+    for (let k of Object.keys(address)) {
+      if (address[k] === "") emptyValue++;
+    }
+
+    const promotion = cart.promotion;
+    const product = getLocalStorage("cart", true);
+    if (!product || product.length == 0)
+      return new Alert(
+        "ยังไม่มีสินค้าในตะกร้า &nbsp; <a href='/'>เลือกซื้อสินค้า</a>",
+        AlertType.ERROR,
+      );
+    if (emptyValue)
+      return new Alert(
+        "กรุณาตรวจสอบข้อมูลการจัดส่งก่อนดำเนินการต่อ",
+        AlertType.ERROR,
+      );
+
+    btnSubmitAction("loading");
+    const res = await fetchJson("/api/checkout/new", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        address,
+        promotion,
+        product,
+      }),
+    });
+
+    console.log(res);
+
+    if (res.status === 200 || res.status === 201) {
+      setLocalStorage("cart", [], true);
+      redirect("/checkout/finish?id=" + res.order);
+    } else {
+      btnSubmitAction("normal");
+      return new Alert(res.message, AlertType.ERROR);
+    }
+  });
 </script>

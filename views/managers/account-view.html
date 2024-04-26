@@ -1,164 +1,239 @@
-<main class="managers-view account">
-    <header>
-        <h1 class="mono">รายละเอียดบัญชี</h1>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รายละเอียดบัญชี</h1>
 
-        {% if profile.deleted %}
-        <button onclick="onAccountDelete(false)"><span class="material-icons-outlined">restore</span></button>
-        {% else %}
-        <button onclick="onAccountDelete(true)"><span class="material-icons-outlined">delete</span></button>
-        {% endif%}
-    </header>
+    {% if profile.deleted %}
+    <button
+      class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+      onclick="onAccountDelete(false)"
+    >
+      <span class="material-icons-outlined">restore</span>
+    </button>
+    {% else %}
+    <button
+      class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+      onclick="onAccountDelete(true)"
+    >
+      <span class="material-icons-outlined">delete</span>
+    </button>
+    {% endif%}
+  </header>
 
-    <section class="account-view">
-        <section>
-            <h3 class="sans">ข้อมูลบัญชี</h3>
+  <section class="grid grid-cols-1 gap-4">
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">ข้อมูลบัญชี</h3>
 
-            <div>
-                <p class="sans">ชื่อผู้ใช้</p>
-                <span class="sans">{{ profile.fullname }}</span>
-            </div>
-            <div>
-                <p class="sans">อีเมล์</p>
-                <span class="mono">{{ profile.email }}</span>
-            </div>
-            <div>
-                <p class="sans">โทรศัพท์</p>
-                <span class="mono">{{ profile.phone|default('-') }}</span>
-            </div>
-            <div>
-                <p class="sans">วันที่เพิ่ม</p>
-                <span class="mono">{{ profile.createdAt|date('Y.m.d') }}</span>
-            </div>
-            <div>
-                <p class="sans">ตำแหน่ง</p>
-                <select class="sans" onchange="onAccountRoleChange(this.value)">
-                    {% for role in AccountRole %}
-                    <option value="{{ role.Role }}" {% if role.Role==profile.role %} selected {% endif %}>{{ role.Name
-                        }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div>
-                <p class="sans">สถานะ</p>
-                <select class="sans" onchange="onAccountStatusChange(this.value)">
-                    <option value="true">ปกติ</option>
-                    <option value="false" {% if not profile.status %} selected {% endif %}>ปิดใช้งาน</option>
-                </select>
-            </div>
-        </section>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>ชื่อผู้ใช้</p>
+        <span>{{ profile.fullname }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>อีเมล์</p>
+        <span class="font-mono">{{ profile.email }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>โทรศัพท์</p>
+        <span class="font-mono">{{ profile.phone|default('-') }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>วันที่เพิ่ม</p>
+        <span class="font-mono">{{ profile.createdAt|date('Y.m.d') }}</span>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>ตำแหน่ง</p>
+        <select class="text-right" onchange="onAccountRoleChange(this.value)">
+          {% for role in AccountRole %}
+          <!--  -->
+          {% if role.Role == profile.role %}
+          <option value="{{ role.Role }}" selected>{{ role.Name }}</option>
+          {% else %}
+          <option value="{{ role.Role }}">{{ role.Name }}</option>
+          {% endif %}
+          <!--  -->
+          {% endfor %}
+        </select>
+      </div>
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>สถานะ</p>
+        <select onchange="onAccountStatusChange(this.value)" class="text-right">
+          {% if not profile.deleted %}
+          <option value="true">ปกติ</option>
 
-        <section id="permission">
-            <h3 class="sans">สิทธิ์การเข้าถึงข้อมูล</h3>
+          <!--  -->
+          {% if not profile.status %}
+          <option value="false" selected>ปิดใช้งาน</option>
+          {% else %}
+          <option value="false">ปิดใช้งาน</option>
+          {% endif %}
 
-            {% for k in Object.keys(Rights) %}
-            <div class="permission-selector">
-                <p class="mono">
-                    {{ k }}
-                </p>
-
-                <fieldset id="{{ k }}">
-                    {% for r in Object.keys(Rights[k]) %}
-                    <span>
-                        <input id="{{ k }}_{{ r }}" type="checkbox" onchange="onAccessChange(this.id, this.checked)" {%
-                            if profile.access.includes(k + '_' + r) %} checked {% endif %}>
-                        <label for="{{ k }}_{{ r }}" class="mono">{{ r }}</label>
-                    </span>
-                    {% endfor %}
-                </fieldset>
-            </div>
-            {% endfor %}
-
-            <script>
-                let account_role = {};
-                let access_rights = [];
-
-                async function loadAccessInfomation() {
-                    const res = await fetchJson('/api/account/access');
-                    if (res.status == 200) account_role = res.AccountRole;
-                }
-                loadAccessInfomation();
-
-                async function onAccountRoleChange(role) {
-                    access_rights = account_role[role].Access;
-
-                    const res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
-                        headers: { 'Content-Type': 'application/json' },
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            access: access_rights,
-                            role: role
-                        }),
-                    });
-
-                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
-                    else renderRoleSelector();
-                }
-            </script>
-
-            <script>
-                const permissionContainer = document.getElementById("permission");
-
-                permissionContainer.querySelectorAll("input").forEach(e => {
-                    if (e.checked) access_rights.push(e.id);
-                });
-
-                function renderRoleSelector() {
-                    permissionContainer.querySelectorAll("input").forEach(e => {
-                        if (access_rights.includes(e.id)) e.checked = true;
-                        else e.checked = false;
-                    });
-                }
-
-                async function onAccessChange(k, v) {
-                    if (v) {
-                        const isSelected = access_rights.filter(e => e === k).length !== 0;
-                        if (isSelected) return;
-                        else access_rights.push(k);
-                    } else access_rights = access_rights.filter(e => e !== k);
-
-                    const res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        method: 'PUT',
-                        body: JSON.stringify({ access: access_rights }),
-                    });
-
-                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
-                }
-
-                async function onAccountStatusChange(v) {
-                    const status = (v === "true");
-                    const res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        method: 'PUT',
-                        body: JSON.stringify({ status }),
-                    });
-
-                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
-                }
-
-                async function onAccountDelete(status = true) {
-                    let res;
-                    if (status) res = await fetchJson('/managers/account/{{ profile._id.toString() }}', { method: 'DELETE' });
-                    else res = await fetchJson('/managers/account/{{ profile._id.toString() }}', {
-                        headers: { 'Content-Type': 'application/json' },
-                        method: 'PUT',
-                        body: JSON.stringify({ deleted: false })
-                    });
-
-                    if (res.status !== 200) return new Alert(res.message, AlertType.ERROR, true);
-                    else return redirect('/managers/account');
-                }
-            </script>
-        </section>
-
-        <section class="account-active">
-            <h3 class="sans">ประวัติการใช้งาน</h3>
-
-            {% include 'action-history.html' %}
-        </section>
+          <!--  -->
+          {% else %}
+          <option>บัญชีถูกลบ</option>
+          {% endif %}
+        </select>
+      </div>
     </section>
+
+    <section
+      class="flex flex-col gap-1 border-2 border-gray-950 p-4"
+      id="permission"
+    >
+      <h3 class="py-2 text-xl font-bold">สิทธิ์การเข้าถึงข้อมูล</h3>
+
+      {% for k in Object.keys(Rights) %}
+      <div class="flex flex-col">
+        <p class="font-font-mono">{{ k }}</p>
+
+        <fieldset id="{{ k }}" class="flex flex-col pl-8">
+          {% for r in Object.keys(Rights[k]) %}
+          <span>
+            <label for="{{ k }}_{{ r }}" class="flex flex-row gap-4">
+              {% if profile.access.includes(k + '_' + r) %}
+              <input
+                id="{{ k }}_{{ r }}"
+                type="checkbox"
+                onchange="onAccessChange(this.id, this.checked)"
+                class="accent-gray-950"
+                checked
+              />
+              {% else %}
+              <input
+                id="{{ k }}_{{ r }}"
+                type="checkbox"
+                onchange="onAccessChange(this.id, this.checked)"
+                class="accent-gray-950"
+              />
+              {% endif %}
+
+              <span>{{ r }}</span>
+            </label>
+          </span>
+          {% endfor %}
+        </fieldset>
+      </div>
+      {% endfor %}
+
+      <script>
+        let account_role = {};
+        let access_rights = [];
+
+        async function loadAccessInfomation() {
+          const res = await fetchJson("/api/account/access");
+          if (res.status == 200) account_role = res.AccountRole;
+        }
+        loadAccessInfomation();
+
+        async function onAccountRoleChange(role) {
+          access_rights = account_role[role].Access;
+
+          const res = await fetchJson(
+            "/managers/account/{{ profile._id.toString() }}",
+            {
+              headers: { "Content-Type": "application/json" },
+              method: "PUT",
+              body: JSON.stringify({
+                access: access_rights,
+                role: role,
+              }),
+            },
+          );
+
+          if (res.status !== 200)
+            return new Alert(res.message, AlertType.ERROR, true);
+          else renderRoleSelector();
+        }
+      </script>
+
+      <script>
+        const permissionContainer = document.getElementById("permission");
+
+        permissionContainer.querySelectorAll("input").forEach((e) => {
+          if (e.checked) access_rights.push(e.id);
+        });
+
+        function renderRoleSelector() {
+          permissionContainer.querySelectorAll("input").forEach((e) => {
+            if (access_rights.includes(e.id)) e.checked = true;
+            else e.checked = false;
+          });
+        }
+
+        async function onAccessChange(k, v) {
+          if (v) {
+            const isSelected =
+              access_rights.filter((e) => e === k).length !== 0;
+            if (isSelected) return;
+            else access_rights.push(k);
+          } else access_rights = access_rights.filter((e) => e !== k);
+
+          const res = await fetchJson(
+            "/managers/account/{{ profile._id.toString() }}",
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              method: "PUT",
+              body: JSON.stringify({ access: access_rights }),
+            },
+          );
+
+          if (res.status !== 200)
+            return new Alert(res.message, AlertType.ERROR, true);
+        }
+
+        async function onAccountStatusChange(v) {
+          const status = v === "true";
+          const res = await fetchJson(
+            "/managers/account/{{ profile._id.toString() }}",
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              method: "PUT",
+              body: JSON.stringify({ status }),
+            },
+          );
+
+          if (res.status !== 200)
+            return new Alert(res.message, AlertType.ERROR, true);
+        }
+
+        async function onAccountDelete(status = true) {
+          let res;
+          if (status)
+            res = await fetchJson(
+              "/managers/account/{{ profile._id.toString() }}",
+              { method: "DELETE" },
+            );
+          else
+            res = await fetchJson(
+              "/managers/account/{{ profile._id.toString() }}",
+              {
+                headers: { "Content-Type": "application/json" },
+                method: "PUT",
+                body: JSON.stringify({ deleted: false }),
+              },
+            );
+
+          if (res.status !== 200)
+            return new Alert(res.message, AlertType.ERROR, true);
+          else return redirect("/managers/account");
+        }
+      </script>
+    </section>
+
+    <section
+      class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans"
+    >
+      <h3 class="py-2 text-xl font-bold">ประวัติการใช้งาน</h3>
+      <a
+        href=""
+        class="flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ดูประวัติการใช้งาน
+      </a>
+    </section>
+  </section>
 </main>

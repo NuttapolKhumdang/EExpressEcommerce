@@ -1,11 +1,22 @@
-<header class="my webstatic checkout-finish">
-    <main>
-        <h1 class="sans">ขอบคุณที่ใช้บริการของเรา</h1>
-        <h2 class="sans">สินค้าของคุณจะถูกจัดส่งในเร็วๆ นี้</h2>
+<header class="flex h-96 w-full items-center justify-center">
+  <main class="flex h-max w-max max-w-5xl flex-col gap-4">
+    <header class="flex flex-col gap-2 font-sans font-bold">
+      <h1 class="text-5xl">ขอบคุณที่ใช้บริการของเรา</h1>
+      <h2 class="text-xl">สินค้าของคุณจะถูกจัดส่งในเร็วๆ นี้</h2>
+    </header>
 
-        <menu>
-            <button class="sans">ดูรายละเอียดคำสั่งซื้อ</button>
-            <a href="/" class="sans" aria-label="back to home">กลับสู่หน้าหลัก</a>
-        </menu>
-    </main>
+    <menu class="flex w-full flex-row justify-between gap-2">
+      <a href="/checkout/detail/{{ id }}"
+        class="w-max border-2 border-gray-950 px-8 py-2 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ดูรายละเอียดคำสั่งซื้อ
+      </a>
+      <a
+        href="/"
+        class="flex w-max flex-row items-center justify-center px-8 py-2 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+        aria-label="back to home"
+        >กลับสู่หน้าหลัก</a
+      >
+    </menu>
+  </main>
 </header>

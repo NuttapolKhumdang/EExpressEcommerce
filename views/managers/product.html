@@ -1,19 +1,41 @@
-<main class="managers-view product-list">
-    <header>
-        <h1 class="mono">รายการสินค้า</h1>
-    </header>
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รายการสินค้า</h1>
+  </header>
+  <section class="flex flex-col gap-2">
+    {% if products.length === 0 %}
+    <h4 class="font-sans font-bold">ไม่พบข้อมูล</h4>
+    {% endif %}
+    <!--  -->
 
-    <section class="my product-viewlist"> 
-        {% for product in products %}
-        <div>
-            <div class="image">
-                <img src="/images/products/{{ product._id.toString()}}/{{ product.images[0] }}" alt="Product picture of {{ product.name }}">
-            </div>
-            <a href="/managers/product/{{ product.search }}">
-                <h2 class="sans">{{ product.name }}</h2>
-                <p class="sans">{{ product.description }}</p>
-            </a>
-        </div>
-        {% endfor %}
-    </section>
+    {% for product in products %}
+    <a
+      href="/managers/product/{{ product.search }}"
+      class="group grid h-max grid-cols-[4rem_1fr_4rem] gap-4 duration-100 hover:bg-gray-950 hover:text-white"
+    >
+      <img
+        class="h-16 w-16 object-cover"
+        src="/images/products/{{ product._id.toString()}}/{{ product.images[0] }}"
+        alt="Product picture of {{ product.name }}"
+      />
+
+      <div class="flex h-full w-full flex-col items-start justify-center">
+        <h2 class="font-sans text-xl font-bold">{{ product.name }}</h2>
+        <h2 class="font-display text-sm font-bold">
+          {% if not product.price.EQA %}
+          <!--  -->
+          {{ product.price.MIN }} ~ {{ product.price.MAX }}
+          <!--  -->
+          {% else %} {{ product.price.MIN }} {% endif %}
+        </h2>
+      </div>
+
+      <div
+        class="flex h-full w-full items-center justify-center opacity-0 duration-100 group-hover:text-white group-hover:opacity-100"
+      >
+        <span class="material-icons-outlined">chevron_right</span>
+      </div>
+    </a>
+    {% endfor %}
+  </section>
 </main>

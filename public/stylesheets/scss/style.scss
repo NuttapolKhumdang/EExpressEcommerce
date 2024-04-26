@@ -16,7 +16,7 @@
     --red: #D37676;
     --yellow: #F1EF99;
     --green: #99B898;
-    --button-action-transition: 160ms;
+    --transition: 160ms;
 }
 
 * {
@@ -46,7 +46,7 @@ button {
     border: 2px solid var(--border);
     background-color: var(--white);
     color: var(--dark);
-    transition: var(--button-action-transition);
+    transition: var(--transition);
 
     display: flex;
     justify-content: center;
@@ -437,7 +437,7 @@ form {
             align-items: center;
 
             opacity: 0;
-            transition: var(--button-action-transition);
+            transition: var(--transition);
 
             user-select: none;
 
@@ -928,7 +928,7 @@ form {
 
                     color: var(--dark);
                     background-color: var(--white);
-                    transition: var(--button-action-transition);
+                    transition: var(--transition);
 
                     &:hover {
                         background-color: var(--red);
