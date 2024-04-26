@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
+const postcss = require('postcss');
+const autoprefixer = require('autoprefixer');
+const tailwindcss = require('tailwindcss');
+
 const path = require('path');
 const fs = require('fs');
 const sharp = require('sharp');
+
 const Appearance = require('../models/Appearance');
 const { Product, Category } = require('../models/Product');
 const { Order, Address } = require('../models/Order');
@@ -15,6 +20,15 @@ const thai_tambons = require('../modules/address/thai_tambons.json');
 
 router.get('/tst', async (req, res, next) => { // !! test route
     return res.render('test');
+});
+
+
+router.get('/style.css', async (req, res, next) => {
+    const css = await postcss([tailwindcss(), autoprefixer()]).process(
+        await fs.promises.readFile(path.join(__dirname, '../', 'public/stylesheets/tailwind.css'), 'utf-8')
+    );
+    res.setHeader('Content-Type', 'text/css');
+    res.end(css.css);
 });
 
 router.get('/', async (req, res, next) => {
