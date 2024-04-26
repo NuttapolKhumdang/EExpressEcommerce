@@ -208,13 +208,23 @@ router.route('/account/invite')
         return res.redirect('/managers/');
     });
 
+router.get('/account/action/:id', Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
+    try {
+        const profile = await Account.findById(req.params.id);
+        const actions = await Actions.findOne({ id: profile._id.toString() });
+        return res.render('managers', { render: 'managers/account-history.html', account: req.user, profile, actions, AccountRole, Rights });
+    } catch (e) {
+        console.error(e);
+        return next('route');
+    }
+});
+
 router.route('/account/:id')
     .get(Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
         try {
             const profile = await Account.findById(req.params.id);
-            const actions = await Actions.findOne({ id: profile._id.toString() });
             await UpdateAction(req.user._id, Action.ACCOUNT.INFOMATION, { _id: req.params.id });
-            return res.render('managers', { render: 'managers/account-view.html', account: req.user, profile, actions, AccountRole, Rights });
+            return res.render('managers', { render: 'managers/account-view.html', account: req.user, profile, AccountRole, Rights });
         } catch {
             return next('route');
         }
