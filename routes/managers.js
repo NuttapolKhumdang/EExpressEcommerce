@@ -5,21 +5,96 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 
 const Access = require('../modules/Access');
-const { Account, Actions } = require('../models/Account');
 const { Rights, AccountRole } = require('../modules/AccessRights');
 const { Mailer } = require('../modules/Mailer');
+const { Months, fdiffp } = require('../modules/Utils');
+
 
 const { UpdateAction, Action } = require('../modules/UpdateActions');
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
 const thai_tambons = require('../modules/address/thai_tambons.json');
 
+const { Analytics } = require('../models/Analytics');
+const { Account, Actions } = require('../models/Account');
 const { Product, Category } = require('../models/Product');
 const { Address, Promotion, Order, OrderStatus, OrderStatusName } = require('../models/Order');
 
 router.get('/', Access(false), (req, res, next) => {
     return res.render('managers', { render: 'managers/profile-personal.html', account: req.user, AccountRole, Rights });
 });
+
+
+// ?? Analytics
+router.get('/analytics/insights',Access([Rights.MAKET.ANALYSIS]), async (req, res, next) => {
+    const date = new Date();
+    const analytics = await Analytics.find({ year: date.getFullYear() });
+    const revenue = {};
+    const clicks = {};
+    const orders = {};
+    const conversion = {};
+    const sales = {};
+
+    const all = {
+        revenue: 0,
+        clicks: 0,
+        orders: 0,
+        conversion: 0,
+        sales: 0,
+    }
+
+    analytics.forEach(e => {
+        if (!revenue[e.year]) revenue[e.year] = {};
+        if (!revenue[e.year][e.month]) revenue[e.year][e.month] = e.revenue;
+        else revenue[e.year][e.month] += e.revenue;
+
+        if (!clicks[e.year]) clicks[e.year] = {};
+        if (!clicks[e.year][e.month]) clicks[e.year][e.month] = e.clicks;
+        else clicks[e.year][e.month] += e.clicks;
+
+        if (!orders[e.year]) orders[e.year] = {};
+        if (!orders[e.year][e.month]) orders[e.year][e.month] = e.orders;
+        else orders[e.year][e.month] += e.orders;
+
+        if (!conversion[e.year]) conversion[e.year] = {};
+        if (!conversion[e.year][e.month]) conversion[e.year][e.month] = e.conversion;
+        else conversion[e.year][e.month] += e.conversion;
+
+        if (!sales[e.year]) sales[e.year] = {};
+        if (!sales[e.year][e.month]) sales[e.year][e.month] = e.sales;
+        else sales[e.year][e.month] += e.sales;
+
+        all.revenue += e.revenue;
+        all.clicks += e.clicks;
+        all.orders += e.orders;
+        all.conversion += e.conversion;
+        all.sales += e.sales;
+    });
+
+    return res.render('managers', {
+        render: 'managers/analytics-insights.html', account: req.user,
+
+        all,
+        revenue,
+        clicks,
+        orders,
+        conversion,
+        sales,
+
+        trend: {
+            revenue: fdiffp(revenue),
+            clicks: fdiffp(clicks),
+            orders: fdiffp(orders),
+            conversion: fdiffp(conversion),
+            sales: fdiffp(sales),
+        },
+
+
+        Months,
+        date: new Date(),
+    });
+});
+
 
 // ?? Shop
 router.get('/shop/appearance', Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
@@ -51,11 +126,20 @@ router.get('/product/create', Access([Rights.PRODUCT.ADD]), async (req, res, nex
 });
 
 router.get('/product/:id', Access([Rights.PRODUCT.INFOMATION]), async (req, res, next) => {
-    const category = await Category.find({});
-    const product = await Product.findOne({ search: req.params.id, deleted: false });
-    await UpdateAction(req.user._id, Action.PRODUCT.INFOMATION, { _id: product._id.toString() });
+    try {
+        const category = await Category.find({});
+        const product = await Product.findOne({ search: req.params.id, deleted: false });
+        await UpdateAction(req.user._id, Action.PRODUCT.INFOMATION, { _id: product._id.toString() });
 
-    return res.render('managers', { render: 'managers/product-create.html', account: req.user, product, category });
+        return res.render('managers', { render: 'managers/product-create.html', account: req.user, product, category });
+    } catch (e) {
+        console.error(e);
+        return next('route');
+    }
+});
+
+router.get('/product/:id/detail', Access([Rights.PRODUCT.MODIFY]), async (req, res, next) => {
+
 });
 
 // ?? Orders
@@ -283,5 +367,9 @@ router.route('/logout')
             return res.redirect('/');
         });
     });
+
+router.get('/*', Access(false), (req, res, next) => {
+    return res.redirect('/managers');
+});
 
 module.exports = router;

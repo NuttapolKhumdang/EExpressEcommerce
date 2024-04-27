@@ -1,0 +1,188 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<main class="flex flex-col gap-4">
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">ข้อมูลเชิงลึก</h1>
+    </header>
+
+    <section class="flex flex-col gap-4 p-4 border-2 border-gray-950">
+        <h3 class="py-2 text-xl font-bold">ภายในเดือนนี้</h3>
+
+        <main class="grid grid-cols-2 gap-4 *:flex *:flex-col *:gap-2 *:border-l-2 *:border-gray-950 *:p-4 *:w-full">
+            <section id="next-payout">
+                <h2 class="text-sm font-medium font-mono">รายได้</h2>
+                <div class="flex flex-col lg:flex-row gap-2 h-max items-start lg:items-end *:flex *:flex-row *:gap-2 py-4">
+                    <div class="items-end">
+                        <span class="font-mono font-medium">THB</span>
+                        <h2 class="font-bold text-3xl leading-none">{{ revenue[date.getFullYear()][date.getMonth()]|default(0) }}</h2>
+                    </div>
+
+                    <div class="{% if trend.revenue >= 0 %}text-green-500{% else %}text-red-500{% endif %} items-center">
+                        <span class="material-icons-outlined" style="font-size: 16px;">
+                            {% if trend.revenue >= 0 %} trending_up {% else %} trending_down {% endif %}
+                        </span>
+                        <p class="font-mono text-sm">{{ trend.revenue|default(0) }}%</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-sm font-medium font-mono">จำนวนการคลิก</h2>
+                <div class="flex flex-col lg:flex-row gap-2 h-max items-start lg:items-end *:flex *:flex-row *:gap-2 *:items-center py-4">
+                    <div>
+                        <h2 class="font-bold text-3xl leading-none">{{ clicks[date.getFullYear()][date.getMonth()]|default(0) }}</h2>
+                    </div>
+
+                    <div class="{% if trend.clicks >= 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                        <span class="material-icons-outlined" style="font-size: 16px;">
+                            {% if trend.clicks >= 0 %} trending_up {% else %} trending_down {% endif %}
+                        </span>
+                        <p class="font-mono text-sm">{{ trend.clicks|default(0)}}%</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-sm font-medium font-mono">จำนวนคำสั่งซื้อ</h2>
+                <div class="flex flex-col lg:flex-row gap-2 h-max items-start lg:items-end *:flex *:flex-row *:gap-2 *:items-center py-4">
+                    <div>
+                        <h2 class="font-bold text-3xl leading-none">{{ orders[date.getFullYear()][date.getMonth()]|default(0) }}</h2>
+                    </div>
+
+                    <div class="{% if trend.orders >= 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                        <span class="material-icons-outlined" style="font-size: 16px;">
+                            {% if trend.orders >= 0 %} trending_up {% else %} trending_down {% endif %}
+                        </span>
+                        <p class="font-mono text-sm">{{ trend.orders|default(0)}}%</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-sm font-medium font-mono">จำนวนสินค้าที่ขายแล้ว</h2>
+                <div class="flex flex-col lg:flex-row gap-2 h-max items-start lg:items-end *:flex *:flex-row *:gap-2 *:items-center py-4">
+                    <div>
+                        <h2 class="font-bold text-3xl leading-none">{{ sales[date.getFullYear()][date.getMonth()]|default(0) }}</h2>
+                    </div>
+
+                    <div class="{% if trend.sales >= 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                        <span class="material-icons-outlined" style="font-size: 16px;">
+                            {% if trend.sales >= 0 %} trending_up {% else %} trending_down {% endif %}
+                        </span>
+                        <p class="font-mono text-sm">{{ trend.sales|default(0)}}%</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </section>
+
+    <main class="border-2 border-gray-950 p-4">
+        <h3 class="py-2 text-xl font-bold">ภาพรวมข้อมูลการขายภายในหนึ่งปี</h3>
+
+        <div class="w-full h-max relative py-4">
+            <canvas id="analytical-overview"></canvas>
+        </div>
+
+        <script>
+            const ctx = document.getElementById('analytical-overview');
+            Chart.defaults.font.family = "'DM Mono', monospace";
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [
+                        /*  {% for y in revenue %} */
+                        /*  {% for r in Object.keys(y) %} */
+                        "{{ Months.short[r] }}",
+                        /*  {% endfor %} */
+                        /*  {% endfor %} */
+                    ],
+                    datasets: [
+                        {
+                            label: 'รายได้',
+                            data: [
+                                /*  {% for y in revenue %} */
+                                /*  {% for r in y %} */
+                                Number('{{r}}'),
+                                /*  {% endfor %} */
+                                /*  {% endfor %} */
+                            ],
+                            borderColor: 'rgb(239, 68, 68)', // bg-red-500
+                            backgroundColor: 'rgb(252, 165, 165)',
+                        },
+                        {
+                            label: 'จำนวนการคลิก',
+                            data: [
+                                /*  {% for y in clicks %} */
+                                /*  {% for r in y %} */
+                                Number('{{r}}'),
+                                /*  {% endfor %} */
+                                /*  {% endfor %} */
+                            ],
+                            borderColor: 'rgb(249, 115, 22)', // bg-orange-500
+                            backgroundColor: 'rgb(254, 215, 170)',
+                        },
+                        {
+                            label: 'จำนวนคำสั่งซื้อ',
+                            data: [
+                                /*  {% for y in orders %} */
+                                /*  {% for r in y %} */
+                                Number('{{r}}'),
+                                /*  {% endfor %} */
+                                /*  {% endfor %} */
+                            ],
+                            borderColor: 'rgb(16, 185, 129)', // bg-emerald-500
+                            backgroundColor: 'rgb(110, 231, 183)', // 300
+                        },
+                        {
+                            label: 'จำนวนสินค้า',
+                            data: [
+                                /*  {% for y in sales %} */
+                                /*  {% for r in y %} */
+                                Number('{{r}}'),
+                                /*  {% endfor %} */
+                                /*  {% endfor %} */
+                            ],
+                            borderColor: 'rgb(234, 179, 8)', // bg-yellow-500
+                            backgroundColor: 'rgb(253, 224, 71)', // 300
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        // y: {
+                        //     beginAtZero: true,
+                        // },
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <header class="grid grid-cols-2 gap-4 *:flex *:flex-col *:gap-2 *:border-l-2 *:border-gray-950 *:p-4 *:w-full">
+            <section>
+                <h2 class="text-lg font-medium font-mono text-red-500">รายได้</h2>
+                <h2 class="flex flex-row items-end gap-2">
+                    <span class="font-mono font-medium text-sm">THB</span>
+                    <p class="font-bold text-3xl leading-none">{{ all.revenue|default(0) }}</p>
+                </h2>
+            </section>
+            <section>
+                <h2 class="text-lg font-medium font-mono text-orange-500">จำนวนการคลิก</h2>
+                <h2 class="font-bold text-3xl leading-none">{{ all.clicks|default(0) }}</h2>
+            </section>
+            <section>
+                <h2 class="text-lg font-medium font-mono text-emerald-500">จำนวนคำสั่งซื้อ</h2>
+                <h2 class="font-bold text-3xl leading-none">{{ all.orders|default(0) }}</h2>
+            </section>
+            <section>
+                <h2 class="text-lg font-medium font-mono text-yellow-500">จำนวนสินค้า</h2>
+                <h2 class="font-bold text-3xl leading-none">{{ all.sales|default(0) }}</h2>
+            </section>
+        </header>
+    </main>
+</main>

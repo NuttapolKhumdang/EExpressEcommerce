@@ -4,6 +4,7 @@ const router = express.Router();
 const { Promotion, Address, Order, OrderStatus } = require('../models/Order');
 const { Product } = require('../models/Product');
 const Appearance = require('../models/Appearance');
+const { updateAnalytics } = require('../modules/Analytics');
 
 const { Rights, AccountRole } = require('../modules/AccessRights');
 const { UpdateAction, Action } = require('../modules/UpdateActions');
@@ -142,6 +143,7 @@ router.route('/checkout/:cart')
             await order.save();
 
             await MailCheckout(order, address);
+            await updateAnalytics({ revenue: _bill.total, orders: 1, sales: product.length });
             return res.status(201).json({ status: 201, message: 'OK', order: order._id.toString(), token, });
         } catch (e) {
             console.error(e);

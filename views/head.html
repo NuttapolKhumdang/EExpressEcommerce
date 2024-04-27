@@ -2,13 +2,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- <link rel="stylesheet" href="/stylesheets/style.css"> -->
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/tailwind">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-    href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Major+Mono+Display&family=Noto+Sans+Thai:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Major+Mono+Display&family=Noto+Sans+Thai:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -16,8 +14,9 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 
+<!-- <script src="/javascripts/Banner.js" async></script> -->
+
 <script src="/javascripts/Alert.js"></script>
-<script src="/javascripts/Banner.js" async></script>
 <script src="/javascripts/Cart.js"></script>
 
 <script>
@@ -55,5 +54,17 @@
 
     function redirect(view) {
         return window.location.href = view;
+    }
+</script>
+
+<script>
+    document.onclick = () => {
+        console.log('xlc');
+        setLocalStorage('__alsx__xu_clx__v_', Number(getLocalStorage('__alsx__xu_clx__v_') ?? 0) + 1);
+    };
+
+    window.onbeforeunload = () => {
+        fetch(`/analytics/data?__alsx__xu_clx__v_=${getLocalStorage('__alsx__xu_clx__v_')}`);
+        setLocalStorage('__alsx__xu_clx__v_', 0);
     }
 </script>
