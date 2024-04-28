@@ -10,7 +10,7 @@
   <p class="font-sans text-sm">Cart > Infomation > Shipping > Payment</p>
 </header>
 
-<main class="grid h-max w-full max-w-6xl grid-cols-2 gap-16 px-12 py-8">
+<main class="flex md:grid h-max w-full max-w-6xl flex-col-reverse md:grid-cols-2 gap-16 px-12 py-8">
   <section class="checkout-form">
     <form id="checkout-form" class="grid grid-cols-1 gap-4">
       <fieldset class="grid grid-cols-1 gap-4 border-2 border-gray-950 p-4">
@@ -18,12 +18,7 @@
 
         <label for="email" class="grid grid-cols-1">
           <span class="font-mono text-sm underline">อีเมล์</span>
-          <input
-            type="text"
-            id="email"
-            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-            placeholder="อีเมล์"
-          />
+          <input type="text" id="email" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="อีเมล์" />
         </label>
       </fieldset>
 
@@ -32,10 +27,7 @@
 
         <label for="country" class="grid grid-cols-1">
           <span class="font-mono text-sm underline">ประเทศ/ภูมิภาค</span>
-          <select
-            id="country"
-            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-          >
+          <select id="country" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4">
             <option disabled>ประเทศ/ภูมิภาค</option>
             <option value="thailand" selected>ประเทศไทย</option>
           </select>
@@ -45,39 +37,20 @@
           <span class="font-mono text-sm underline">ชื่อ - นามสกุล</span>
 
           <div class="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              id="fname"
-              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-              placeholder="ชื่อ"
-            />
-            <input
-              type="text"
-              id="lname"
-              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-              placeholder="นามสกุล"
-            />
+            <input type="text" id="fname" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="ชื่อ" />
+            <input type="text" id="lname" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="นามสกุล" />
           </div>
         </label>
 
         <label for="address" class="grid grid-cols-1">
           <span class="font-mono text-sm underline">ที่อยู่</span>
-          <input
-            type="text"
-            id="address"
-            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-            placeholder="ที่อยู่"
-          />
+          <input type="text" id="address" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="ที่อยู่" />
         </label>
 
         <div class="grid grid-cols-2 gap-4">
           <label for="province" class="grid grid-cols-1">
             <span class="font-mono text-sm underline">จังหวัด</span>
-            <select
-              id="province"
-              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-              onchange="OnProvinceChange(this.value)"
-            >
+            <select id="province" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" onchange="OnProvinceChange(this.value)">
               <option selected disabled value="">จังหวัด</option>
               {% for province in thai_provinces %}
               <option value="{{ province.id }}">{{ province.name_th }}</option>
@@ -87,11 +60,7 @@
 
           <label for="district" class="grid grid-cols-1">
             <span class="font-mono text-sm underline">อำเภอ</span>
-            <select
-              id="district"
-              class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-              onchange="OnAmphureChange(this.value)"
-            >
+            <select id="district" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" onchange="OnAmphureChange(this.value)">
               <option selected disabled value="">อำเภอ</option>
             </select>
           </label>
@@ -99,50 +68,28 @@
 
         <label for="subdistrict" class="grid grid-cols-1">
           <span class="font-mono text-sm underline">ตำบล</span>
-          <select
-            id="subdistrict"
-            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-            onchange="OnTambonChange(this.value)"
-          >
+          <select id="subdistrict" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" onchange="OnTambonChange(this.value)">
             <option selected disabled value="">ตำบล</option>
           </select>
         </label>
 
         <label for="postalCode" class="grid grid-cols-1">
           <span class="font-mono text-sm underline">รหัสไปรษณีย์</span>
-          <input
-            disabled
-            type="text"
-            id="postalCode"
-            class="border-b-2 border-gray-950 bg-white py-4 font-sans"
-            placeholder="รหัสไปรษณีย์"
-          />
+          <input disabled type="text" id="postalCode" class="border-b-2 border-gray-950 bg-white py-4 font-sans" placeholder="รหัสไปรษณีย์" />
         </label>
         <label for="phone" class="grid grid-cols-1">
           <span class="font-mono text-sm underline">โทรศัพท์</span>
 
-          <input
-            type="tel"
-            id="phone"
-            class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-            placeholder="โทรศัพท์"
-          />
+          <input type="tel" id="phone" class="border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="โทรศัพท์" />
         </label>
       </fieldset>
 
       <menu class="flex flex-row items-center justify-between">
-        <button
-          onclick="redirect('/')"
-          type="button"
-          class="flex w-max flex-row items-center justify-center px-4 py-2 pl-2 duration-100 hover:bg-gray-950 hover:text-white"
-        >
+        <button onclick="redirect('/')" type="button" class="flex w-max flex-row items-center justify-center px-4 py-2 pl-2 duration-100 hover:bg-gray-950 hover:text-white">
           <span class="material-icons-outlined">chevron_left</span>
           <p class="sans">กลับสู่หน้าหลัก</p>
         </button>
-        <button
-          class="w-max border-2 border-gray-950 px-8 py-2 font-bold duration-100 hover:bg-gray-950 hover:text-white"
-          type="submit"
-        >
+        <button class="w-max border-2 border-gray-950 px-8 py-2 font-bold duration-100 hover:bg-gray-950 hover:text-white" type="submit">
           <p class="sans">ถัดไป</p>
         </button>
       </menu>
@@ -231,21 +178,11 @@
   <section class="flex h-max w-full flex-col gap-8" id="cartview-container">
     <header class="font-sans text-2xl font-bold">ตะกร้าสินค้า</header>
 
-    <article
-      class="grid grid-cols-1 border-b-2 border-gray-950 pb-2"
-      id="cartview-cartlist"
-    ></article>
+    <article class="grid grid-cols-1 border-b-2 border-gray-950 pb-2" id="cartview-cartlist"></article>
 
     <form id="discount-code" class="flex w-full flex-row gap-4">
-      <input
-        type="text"
-        class="w-5/6 border-b-2 border-gray-950 py-4 outline-offset-4"
-        placeholder="บัตรของขวัญหรือรหัสส่วนลด"
-      />
-      <button
-        type="submit"
-        class="w-1/6 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-      >
+      <input type="text" class="w-5/6 border-b-2 border-gray-950 py-4 outline-offset-4" placeholder="บัตรของขวัญหรือรหัสส่วนลด" />
+      <button type="submit" class="w-1/6 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
         ยืนยัน
       </button>
     </form>
