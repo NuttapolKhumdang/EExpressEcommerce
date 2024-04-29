@@ -3,12 +3,20 @@
     <h1 class="font-mono text-3xl">เพิ่มสินค้า</h1>
 
     {% if product?._id %}
-    <button
-      onclick="remove()"
-      class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-    >
-      <span class="material-icons-outlined">delete</span>
-    </button>
+    <menu class="flex flex-row gap-4">
+      <a
+        href=""
+        class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        <span class="material-icons-outlined">article</span>
+      </a>
+      <button
+        onclick="remove()"
+        class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        <span class="material-icons-outlined">delete</span>
+      </button>
+    </menu>
 
     <script>
       async function remove() {
@@ -46,7 +54,7 @@
       </label>
 
       <div
-        class="grid h-max grid-cols-6 gap-2 *:h-full *:w-full *:object-cover"
+        class="grid h-max w-full grid-cols-6 gap-2 *:h-32 *:max-h-32 *:w-full *:object-cover"
         id="image-preview"
       >
         <label
@@ -71,11 +79,12 @@
         const imagepreview = document.getElementById("image-preview");
         const defaultimagepreview = imagepreview.querySelector("label");
 
-        const imagefile = [
-          // {% for img in product.images %}
-          "{{ img }}",
-          // {% endfor %}
-        ];
+        let images_store = [];
+        const imagefile = async () => {
+          const res = await fetchJson("/product/id/{{ product.search }}");
+          images_store = res?.images ?? [];
+          return res?.images ?? [];
+        };
 
         let files = [];
         function createPreview(files) {
@@ -107,7 +116,7 @@
 
         image.addEventListener("change", (e) => {
           if (e.target.files.length > 20) {
-            const alert = new Alert(
+            new Alert(
               "สามารถเลือกรูปภาพได้สูงสุด 20 ภาพเท่านั้น",
               AlertType.ERROR,
               true,
@@ -184,7 +193,9 @@
           </option>
           {% else %}
           <option value="{{ cate._id.toString() }}">{{ cate.title }}</option>
-          {% endif %} {% endfor %}
+          {% endif %}
+          <!--  -->
+          {% endfor %}
         </select>
 
         <input
@@ -192,7 +203,6 @@
           id="category-new"
           class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
           placeholder="ประเภทสินค้า"
-          required
         />
       </label>
 
@@ -255,6 +265,7 @@
             <button
               type="button"
               onclick="selectOptionImage('{{ option.id }}')"
+              class="flex min-h-12 w-full flex-row items-center justify-center gap-2 border-2 border-gray-950 hover:bg-gray-950 hover:text-white"
             >
               <span class="material-icons-outlined">art_track</span>
               <p class="sans">เลือกรูปภาพสินค้า</p>
@@ -421,17 +432,15 @@
       },
     );
 
-    console.log(res);
     if (res.status == 200) window.location.href = "/managers/product/";
-    else if (res.status == 409)
-      new Alert("ชื่อสินค้ามีการใช้งานแล้ว", AlertType.ERROR, true);
+    else new Alert(res.message, AlertType.ERROR, true);
   });
 </script>
 
 <script src="/javascripts/textarea.js"></script>
 
 <script>
-  function setOptionImageIndex(id, index) {
+  async function setOptionImageIndex(id, index) {
     const container = document.getElementById(id);
     const menu = container.querySelector("menu");
     const preview = document.createElement("img");
@@ -439,7 +448,7 @@
 
     if (!files || files.length === 0) {
       preview.src =
-        "/images/products/{{ product._id.toString() }}/" + imagefile[index];
+        "/images/products/{{ product._id.toString() }}/" + images_store[index];
     } else {
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -453,8 +462,8 @@
     preview.addEventListener("click", () => selectOptionImage(id));
   }
 
-  function selectOptionImage(id) {
-    if (imagefile.length === 0 && (!files || files.length === 0))
+  async function selectOptionImage(id) {
+    if (await imagefile().length === 0 && (!files || files.length === 0))
       return new Alert(
         "กรุณาอัพโหลดรูปภาพสินค้าก่อนดำเนินการต่อ",
         AlertType.ERROR,
@@ -462,28 +471,55 @@
       );
 
     const container = document.createElement("header");
-    container.classList.add("product-options-images-selector");
+    container.classList.add(
+      "fixed",
+      "left-0",
+      "top-0",
+      "z-50",
+      "flex",
+      "h-dvh",
+      "w-full",
+      "items-center",
+      "justify-center",
+      "backdrop-blur-lg",
+    );
 
     const button = document.createElement("button");
     const span = document.createElement("span");
     span.classList.add("material-icons-outlined");
     span.innerHTML = "close";
     button.insertAdjacentElement("beforeend", span);
+    button.classList =
+      "flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white";
 
     button.addEventListener("click", () => container.remove());
     const header = document.createElement("header");
-    header.classList.add("sans");
-    header.insertAdjacentText("beforeend", "เลือกรูปภาพ");
+    header.classList =
+      "flex h-max w-full flex-row items-center justify-between";
+
+    const h1 = document.createElement("h1");
+    h1.classList = "font-sans text-2xl font-bold";
+    h1.insertAdjacentText("beforeend", "เลือกรูปภาพ");
+    header.insertAdjacentElement("beforeend", h1);
     header.insertAdjacentElement("beforeend", button);
 
     const section = document.createElement("section");
-    container.insertAdjacentElement("afterbegin", header);
-    container.insertAdjacentElement("beforeend", section);
-    const prefile = createPreview(imagefile.length !== 0 ? imagefile : files);
+    const div = document.createElement("div");
+
+    div.classList =
+      "flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 border-2 border-gray-950 bg-white p-4";
+    section.classList = "grid grid-cols-6 gap-4";
+    div.insertAdjacentElement("afterbegin", header);
+    div.insertAdjacentElement("beforeend", section);
+    container.insertAdjacentElement("beforeend", div);
+
+    const images = await imagefile();
+    const prefile = createPreview(images.length !== 0 ? images : files);
 
     const selectpack = prefile.map((e, index) => {
       const img = document.createElement("div");
       img.insertAdjacentElement("beforeend", e);
+      img.classList = "cursor-pointer";
 
       img.addEventListener("click", () => {
         setOptionImageIndex(id, index);
