@@ -56,6 +56,9 @@ passport.deserializeUser(async (id, cb) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
+const { clientAccess } = require('./modules/Analytics');
+app.use(clientAccess());
+
 const apiRouter = require('./routes/api');
 const articlesRouter = require('./routes/articles');
 const analyticsRouter = require('./routes/analytics');
