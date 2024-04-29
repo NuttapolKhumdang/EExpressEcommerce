@@ -1,0 +1,33 @@
+{% import './components.html' as template %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  {% include 'head.html' %}
+  <title>เกิดข้อผิดพลาด &mdash; EExpress</title>
+</head>
+
+<body class="flex flex-col items-center overflow-x-hidden">
+  {% include 'nav.html' %}
+  <!--  -->
+
+  <header class="flex h-96 w-full items-center justify-center">
+    <main class="flex h-max w-max max-w-5xl flex-col gap-4">
+      {% include render %}
+      <!-- <menu class="flex w-full flex-row justify-between gap-2">
+            <a href="/checkout/detail/{{ id }}"
+              class="w-max border-2 border-gray-950 px-8 py-2 font-bold duration-100 hover:bg-gray-950 hover:text-white"
+            >
+              ดูรายละเอียดคำสั่งซื้อ
+            </a>
+        </menu> -->
+      <a href="/" class="flex w-max -ml-2 flex-row items-center justify-center p-2 font-bold duration-100 hover:bg-gray-950 hover:text-white" aria-label="back to home">กลับสู่หน้าหลัก</a>
+    </main>
+  </header>
+
+  {% include 'cartview.html' %}
+  <!--  -->
+  {% include 'footer.html' %}
+</body>
+
+</html>
