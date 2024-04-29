@@ -1,61 +1,40 @@
 {% import './components.html' as template %}
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     {% include 'head.html' %}
     <title>EExpress</title>
-  </head>
+</head>
 
-  <body
-    class="grid grid-cols-1 place-items-center items-center overflow-x-hidden"
-  >
-    {% include 'nav.html' %} {% if banner %}
-    <!--
-    <main class=" webstatic banner-section" id="banner">
-        <menu>
-            <div id="b_left">
-                <span class="material-icons-outlined">chevron_left</span>
-            </div>
+<body class="grid grid-cols-1 place-items-center items-center overflow-x-hidden">
+    {% include 'nav.html' %}
+    <!--  -->
 
-            <div id="b_right">
-                <span class="material-icons-outlined">chevron_right</span>
-            </div>
-        </menu>
-        <section></section>
-    </main>
-
-    <script>
-        const banner = document.getElementById("banner");
-        const bbanner = new Banner(banner, []);
-
-        bbanner.render()
-    </script>
-    -->
+    {% if appearance.length === 0 %}
+    <h2 class="font-bold text-3xl w-full max-w-6xl py-8">ไม่พบข้อมูล</h2>
     {% endif %}
     <!--  -->
+
     {% for placement in appearance %}
-    <header
-      class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold"
-    >
-      {{ placement.title }}
+    <header class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold">
+        {{ placement.title }}
     </header>
 
-    <main
-      class="grid w-full max-w-6xl gap-4 px-12 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
-      {% for product in placement.products %}
-      <!--  -->
-      {{ template.ptableitem(product._id.toString(),
-      product.search,product.images[0], product.name, product.price) }}
-      <!--  -->
-      {% endfor %}
+    <main class="grid w-full max-w-6xl gap-4 px-12 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {% for product in placement.products %}
+        <!--  -->
+        {{ template.ptableitem(product._id.toString(), product.search,product.images[0], product.name, product.price) }}
+        <!--  -->
+        {% endfor %}
     </main>
 
     {% endfor %}
-    
+
     <!--  -->
     {% include 'cartview.html' %}
     <!--  -->
-     {% include 'footer.html' %}
-  </body>
+    {% include 'footer.html' %}
+</body>
+
 </html>
