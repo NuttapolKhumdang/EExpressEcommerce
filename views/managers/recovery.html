@@ -1,0 +1,118 @@
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">กู้คืนบัญชี</h1>
+  </header>
+
+  {% if action == 'continue' %}
+  <section>
+    <h3 class="py-2 text-xl font-bold">เช็กอีเมลของคุณ!</h3>
+    <p>เราได้ส่งวิธีการกู้คืนบัญชีไปที่อีเมลของคุณแล้ว</p>
+  </section>
+
+  {% elif action == 'recovery' %}
+  <section>
+    <h3 class="py-2 text-xl font-bold">ตั้งค่ารหัสผ่านของคุณ!</h3>
+  </section>
+
+  <section>
+    <form
+      action="/managers/account/invite?id={{ profile._id.toString() }}"
+      method="POST"
+      id="fsubm"
+      class="flex flex-col gap-4"
+    >
+      <fieldset
+        class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4 *:grid *:grid-cols-1 *:gap-2"
+      >
+        <label for="email">
+          <span class="w-max font-mono text-sm underline">อีเมล์</span>
+
+          <input
+            type="text"
+            id="email"
+            name="username"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="อีเมล์"
+            value="{{ query.email }}"
+          />
+        </label>
+
+        <label for="pwd">
+          <span class="w-max font-mono text-sm underline">รหัสผ่าน</span>
+
+          <input
+            type="password"
+            id="pwd"
+            name="password"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="รหัสผ่าน"
+          />
+        </label>
+
+        <label for="pwdc">
+          <span class="w-max font-mono text-sm underline">ยืนยันรหัสผ่าน</span>
+
+          <input
+            type="password"
+            id="pwdc"
+            name="passwore"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ยืนยันรหัสผ่าน"
+          />
+        </label>
+      </fieldset>
+
+      <script>
+        const pwd = document.getElementById("pwd");
+        const pwdc = document.getElementById("pwdc");
+        function cppw() {
+          if (pwd.value !== pwdc.value) return false;
+          return true;
+        }
+
+        document.getElementById("fsubm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!cppw()) {
+            new Alert("รหัสผ่านไม่ตรงกัน", AlertType.ERROR, true);
+          } else {
+            const res= await fetchJson('?token={{ query.token }}&email={{ query.email }}', {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              method:'PUT',
+              body: JSON.stringify({
+                password: pwd.value, 
+              })
+            });
+
+            if (res.status == 200) redirect('/managers/login?message=เปลี่ยนรหัสผ่านแล้ว');
+            else new Alert(res.message, AlertType.ERROR, true);
+          }
+        });
+      </script>
+
+      <button
+        type="submit"
+        class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        ถัดไป
+      </button>
+    </form>
+  </section>
+
+  {% else %}
+  <section>
+    <form action="" method="POST" class="grid grid-cols-1 gap-4">
+      <fieldset class=" grid grid-cols-1 gap-8 border-2 border-gray-950 p-4 *:grid *:grid-cols-1 *:gap-2">
+        <label for="email">
+          <span class="w-max font-mono text-sm underline">อีเมล์</span>
+          <input type="text" id="email" name="email" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="อีเมล์" required />
+        </label>
+
+        <button type="submit" class="h-max py-2 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white">
+          ยืนยัน
+        </button>
+    </form>
+  </section>
+  {% endif %}
+</main>
