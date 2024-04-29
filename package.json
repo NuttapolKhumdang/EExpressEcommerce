@@ -24,6 +24,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "qrcode": "^1.5.3",
     "sharp": "^0.33.2",
     "swig": "^1.4.2",
     "uuidv4": "^6.2.13"
