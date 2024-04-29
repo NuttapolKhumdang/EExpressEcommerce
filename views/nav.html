@@ -1,17 +1,64 @@
-<header class="fixed -top-48 z-50 h-40" id="search-container">
-  <div class="flex flex-row">
-    <input type="text" class="sans" placeholder="Search" />
-    <button onclick="toggleSearchBox()">
-      <span class="material-icons-outlined">close</span>
-    </button>
+<header
+  class="fixed -top-48 z-50 flex h-32 w-full items-center justify-center border-b-2 border-black bg-white duration-700"
+  id="search-container"
+>
+  <div
+    class="flex h-16 w-full max-w-7xl flex-row items-center justify-between px-4"
+  >
+    <form action="/search" class="flex w-full flex-row items-center justify-center gap-4">
+      <select
+        name="category"
+        class="h-12 border-b-2 border-gray-950 px-1 font-sans outline-offset-4"
+      >
+        <option value="" selected>ทั้งหมด</option>
+        {% for category in categories %}
+        <option value="{{ category._id.toString() }}">
+          {{ category.title }}
+        </option>
+        {% endfor %}
+      </select>
+
+      <div class="grid w-full grid-cols-[1fr_4rem]">
+        <input
+          type="text"
+          id="search-query"
+          name="search"
+          placeholder="ค้นหาสินค้า"
+          oninput="onInputQueryInput(this.value)"
+          class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+        />
+        <button
+          type="button"
+          id="button-submit"
+          onclick="toggleSearchBox()"
+          class="flex h-12 w-full items-center justify-center border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
+        >
+          <span class="material-icons-outlined">close</span>
+        </button>
+
+        <script>
+          function onInputQueryInput(value) {
+            const sc = document.getElementById("search-container");
+            const bs = sc.querySelector("button#button-submit");
+            if (!value) {
+              bs.querySelector("span").innerHTML = "close";
+              bs.onclick = () => toggleSearchBox();
+            } else {
+              bs.querySelector("span").innerHTML = "search";
+              bs.onclick = () => sc.querySelector("form").submit();
+            }
+          }
+        </script>
+      </div>
+    </form>
   </div>
 </header>
 
 <header
-  class="sticky left-0 top-0 z-50 flex w-full items-center justify-center border-b-2 border-gray-950 bg-white"
+  class="sticky left-0 top-0 z-40 flex w-full items-center justify-center border-b-2 border-black bg-white"
 >
   <div
-    class="flex h-16 w-full max-w-7xl flex-row items-center justify-between px-12"
+    class="flex h-16 w-full max-w-7xl flex-row items-center justify-between px-4"
   >
     <a href="/" class="font-display text-xl">EExpress</a>
 
@@ -29,8 +76,7 @@
       >
         <span class="material-icons-outlined">store</span>
       </a>
-      {% endif %}
-
+      {% else %}
       <button
         class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
         onclick="toggleSearchBox()"
@@ -43,17 +89,24 @@
       >
         <span class="material-icons-outlined">shopping_bag</span>
       </button>
-      <!-- <a class="sans">Login</a> -->
+      {% endif %}
+      <!--  -->
+      {% if account?._id %}
+      <p class="px-2">{{ account.fullname }}</p>
+      {% endif %}
     </nav>
   </div>
 </header>
 
 <script>
   function toggleSearchBox() {
-    const sc = document.getElementById("search-container")
-    if (sc.classList.contains("-top-48") ) {
+    const sc = document.getElementById("search-container");
+    if (sc.classList.contains("-top-48")) {
       sc.classList.add("top-0");
       sc.classList.remove("-top-48");
+    } else {
+      sc.classList.add("-top-48");
+      sc.classList.remove("top-0");
     }
   }
 </script>

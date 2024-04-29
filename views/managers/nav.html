@@ -1,28 +1,6 @@
 {% if account?._id %}
 
 <!-- ? -->
-<p class="h-max p-4 font-mono text-sm">สถิติและการวิเคราะห์ข้อมูล</p>
-<a
-  href="/managers/analytics/insights"
-  class="flex flex-row items-center justify-start gap-2 px-4 py-3 hover:bg-gray-950 hover:text-white"
->
-  <span
-    class="material-icons-outlined flex h-max w-8 items-center justify-center"
-    >insights</span
-  >
-  <p class="font-sans font-bold">ข้อมูลเชิงลึก</p>
-</a>
-<a
-  class="flex flex-row items-center justify-start gap-2 px-4 py-3 hover:bg-gray-950 hover:text-white"
->
-  <span
-    class="material-icons-outlined flex h-max w-8 items-center justify-center"
-    >analytics</span
-  >
-  <p class="font-sans font-bold">การวิเคราะการขาย</p>
-</a>
-
-<!-- ? -->
 <p class="h-max p-4 font-mono text-sm">โปรไฟล์</p>
 <a
   href="/managers/profile"
@@ -125,6 +103,40 @@
 </a>
 
 <!-- ? -->
+<p class="h-max p-4 font-mono text-sm">สถิติและการวิเคราะห์ข้อมูล</p>
+<a
+  href="/managers/analytics/insights"
+  class="flex flex-row items-center justify-start gap-2 px-4 py-3 hover:bg-gray-950 hover:text-white"
+>
+  <span
+    class="material-icons-outlined flex h-max w-8 items-center justify-center"
+    >insights</span
+  >
+  <p class="font-sans font-bold">การวิเคราะห์การขาย</p>
+</a>
+<a
+  href="/managers/analytics/access"
+  class="flex flex-row items-center justify-start gap-2 px-4 py-3 hover:bg-gray-950 hover:text-white"
+>
+  <span
+    class="material-icons-outlined flex h-max w-8 items-center justify-center"
+    >hub</span
+  >
+  <p class="font-sans font-bold">ข้อมูลการเข้าใช้งาน</p>
+</a>
+
+<a
+  href="/managers/analytics/portal"
+  class="flex flex-row items-center justify-start gap-2 px-4 py-3 hover:bg-gray-950 hover:text-white"
+>
+  <span
+    class="material-icons-outlined flex h-max w-8 items-center justify-center"
+    >bubble_chart</span
+  >
+  <p class="font-sans font-bold">ประตูมิติ</p>
+</a>
+
+<!-- ? -->
 <p class="h-max p-4 font-mono text-sm">บัญชีผู้ใช้</p>
 <a
   href="/managers/account"
@@ -178,5 +190,15 @@
     >login</span
   >
   <p class="font-font-sans">เข้าสู่ระบบ</p>
+</a>
+<a
+  href="/managers/account/recovery"
+  class="flex flex-row items-center justify-start gap-2 px-4 py-3 hover:bg-gray-950 hover:text-white"
+>
+  <span
+    class="material-icons-outlined flex h-max w-8 items-center justify-center"
+    >lock_reset</span
+  >
+  <p class="font-font-sans">กู้คืนบัญชี</p>
 </a>
 {% endif %}
