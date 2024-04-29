@@ -1,7 +1,5 @@
 {% import './components.html' as template %}
 
-<!-- ผลไม้ลูกสีขาวทอง สว่างไสวเป็นประกายอยู่บนท้องฟ้า ความมืดครึ้มได้ปกคลุมลงบนเมฆขาว ต้นหญ้สูงใหญ่ปลิวไหวตามสายลม เม็ดฝนโปรยปรายกลางสายน้ำ พัดพาสรรพสิ่งพัดปลิว ล่องลอยสู่เมฆา -->
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -12,9 +10,17 @@
   <body class="flex flex-col items-center overflow-x-hidden">
     {% include 'nav.html' %}
     <!--  -->
+    <script>
+      if (!getLocalStorage('agree-site-example')) new Alert(
+        'ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/docs/about-this-project" class="underline">ข้อมูลเพิ่มเติม</a>',
+        AlertType.ERROR,
+      );
 
+      setLocalStorage('agree-site-example', true);
+    </script>
+    
     <main
-      class="grid w-full max-w-6xl grid-cols-1 gap-4 px-12 py-8 lg:h-max lg:grid-cols-2"
+      class="grid w-full max-w-6xl grid-cols-1 gap-8 px-12 py-8 lg:h-max lg:grid-cols-2"
     >
       <section class="flex h-max flex-col gap-4">
         <img
@@ -24,10 +30,10 @@
           alt="product preview image"
         />
 
-        <div class="flex flex-row gap-2" id="itable">
+        <div class="flex flex-row gap-2 items-start justify-start  w-full overflow-x-scroll" id="itable">
           {% for image in product.images %}
           <img
-            class="max-h-12 w-12 cursor-pointer object-cover"
+            class="max-h-14 w-14 cursor-pointer object-cover"
             src="/images/products/{{ product._id.toString() }}/{{ image }}"
             loading="lazy"
             alt="product image {{ loop.index}}"
