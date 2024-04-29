@@ -36,13 +36,21 @@ router.route('/:id')
 
         let category = req.body.category;
         if (category == "category-new") {
+            if (!req.body.newcategory) return res.json({ status: 400, message: "ประเภทสินค้าไม่ถูกต้อง" });
             const newcategory = new Category({
                 title: req.body.newcategory,
-                Quantity: 1,
+                quantity: 1,
             });
 
             await newcategory.save();
             category = newcategory._id.toString();
+        } else {
+            try {
+                await Category.findByIdAndUpdate(category, { $inc: { quantity: 1 } });
+            } catch (e) {
+                console.error(e);
+                return res.json({ status: 500, message: "ประเภทสินค้าไม่ถูกต้อง" });
+            }
         }
 
         const search = ParseSearch(req.body.name);
@@ -66,10 +74,10 @@ router.route('/:id')
             search,
             options,
             price,
+            category,
 
             name: req.body.name,
             description: req.body.description,
-            category: req.body.category,
             deleted: false,
         });
 
@@ -80,9 +88,30 @@ router.route('/:id')
 
     .put(Access([Rights.PRODUCT.MODIFY]), Image.upload.array('images'), async (req, res, next) => {
         const original = await Product.findOne({ search: req.params.id });
+        const images = [];
+        if (req.files.length !== 0) {
+            const filepath = path.join(__dirname, '../', 'resource', 'products', 'images', original._id.toString());
+            if (!fs.existsSync(filepath)) fs.mkdirSync(filepath, { recursive: true });
+
+            for (let i = 0; i < req.files.length; i++) {
+                const upload = new Image.Resize(filepath);
+                const filename = await upload.save(req.files[i].buffer);
+                images.push(filename);
+            }
+        }
 
         let category = req.body.category;
+        if (original.category !== category) {
+            try {
+                await Category.findByIdAndUpdate(original.category, { $inc: { quantity: -1 } });
+            } catch (e) {
+                console.error(e);
+                return res.json({ status: 500, message: "ประเภทสินค้าไม่ถูกต้อง" });
+            }
+        }
+
         if (category == "category-new") {
+            if (!req.body.newcategory) return res.json({ status: 400, message: "ประเภทสินค้าไม่ถูกต้อง" });
             const newcategory = new Category({
                 title: req.body.newcategory,
                 Quantity: 1,
@@ -90,8 +119,8 @@ router.route('/:id')
 
             await newcategory.save();
             category = newcategory._id.toString();
-
-            await Category.findByIdAndUpdate(original.category, { $inc: { Quantity: -1 } });
+        } else {
+            await Category.findByIdAndUpdate(category, { $inc: { quantity: 1 } });
         }
 
         const search = ParseSearch(req.body.name);
@@ -113,15 +142,16 @@ router.route('/:id')
             search,
             options,
             price,
+            category,
 
+            images: images.length !== 0 ? images : original.images,
             name: req.body.name,
             description: req.body.description,
-            category: category,
             deleted: false,
         });
 
         await UpdateAction(req.user._id, Action.PRODUCT.MODIFY, { _id: product._id.toString() });
-        return res.json({ status: 200, message: 'ok', product, search });
+        return res.json({ status: 200, message: 'ok', search });
     })
 
     .delete(Access([Rights.PRODUCT.REMOVE]), async (req, res, next) => {

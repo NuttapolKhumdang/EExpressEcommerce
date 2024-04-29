@@ -82,11 +82,11 @@ router.route('/checkout/:cart')
         const _bill = {};
         const product = [];
 
-        const token = (function () {
-            let s = '';
-            for (let i = 0; i < 128; i++) s += (Math.random() * 16 | 0).toString(16);
-            return s;
-        })();
+        const token = (function (ln) {
+            let result = '';
+            for (let i = 0; i < ln; i++) result += (Math.random() * 16 | 0).toString(16);
+            return result;
+        })(128);
 
         _product.forEach(e => {
             _bill['subtotal'] = Number(_bill['subtotal'] ?? 0) + (Number(e?.option?.price ?? 0) * e.quantity);

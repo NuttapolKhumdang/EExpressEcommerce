@@ -9,6 +9,7 @@ const AddressSchema = new Schema({
     country: String,
     postalCode: String,
     phone: String,
+    email: String,
 }, {
     timestamps: true,
 });
