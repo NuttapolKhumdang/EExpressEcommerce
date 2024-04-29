@@ -1,40 +1,45 @@
+{% if message %}
+<script>new Alert('{{ message }}', AlertType.INFO, true)</script>
+{% elif error %}
+<script>new Alert('{{ error }}', AlertType.ERROR, true)</script>
+{% endif %}
+
 <main class="flex flex-col gap-4">
-  <header class="my-2 flex flex-row items-center justify-between">
-    <h1 class="font-mono text-3xl">เข้าสู่ระบบ</h1>
-  </header>
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">เข้าสู่ระบบ</h1>
+    </header>
 
-  <section>
-    <form action="/managers/login" method="POST" class="flex flex-col gap-4">
-      <fieldset class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4">
-        <label for="email" class="grid grid-cols-1 gap-2">
-          <span class="w-max font-mono text-sm underline">อีเมล์</span>
-          <input
-            type="text"
-            id="email"
-            name="username"
-            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-            placeholder="อีเมล์"
-          />
-        </label>
+    <section>
+        <form action="/managers/login" method="POST" class="flex flex-col gap-4">
+            <fieldset class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4">
+                <label for="email" class="grid grid-cols-1 gap-2">
+                    <span class="w-max font-mono text-sm underline">อีเมล์</span>
+                    <input type="text" id="email" oninput="onEmailInput(this.value)" name="username" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="อีเมล์" />
+                </label>
 
-        <label for="pwd" class="grid grid-cols-1 gap-2">
-          <span class="w-max font-mono text-sm underline">รหัสผ่าน</span>
-          <input
-            type="password"
-            id="pwd"
-            name="password"
-            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-            placeholder="รหัสผ่าน"
-          />
-        </label>
-      </fieldset>
+                <script>
+                    function onEmailInput(value) {
+                        setLocalStorage('__ifield_login', { email: value, timestamp: new Date() }, true);
+                    }
 
-      <button
-        type="submit"
-        class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
-      >
-        ถัดไป
-      </button>
-    </form>
-  </section>
+                    (function () {
+                        const lt = new Date(getLocalStorage('__ifield_login', true).timestamp).getTime();
+                        const nt = new Date().getTime();
+
+                        if ((nt - lt) > (30 * 1000)) setLocalStorage('__ifield_login', null);
+                        else document.getElementById("email").value = getLocalStorage('__ifield_login', true).email;
+                    })();
+                </script>
+
+                <label for="pwd" class="grid grid-cols-1 gap-2">
+                    <span class="w-max font-mono text-sm underline">รหัสผ่าน</span>
+                    <input type="password" id="pwd" name="password" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="รหัสผ่าน" />
+                </label>
+            </fieldset>
+
+            <button type="submit" class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white">
+                ถัดไป
+            </button>
+        </form>
+    </section>
 </main>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>คุณได้รับการเพิ่มบัญชี Express</title>
+    <title>กู้คืนบัญชีของคุณ</title>
 
     <style>
         body {
@@ -69,9 +69,9 @@
         </div>
 
         <p>เรียน {{ account.fullname }},</p>
-        <p>คุณได้รับการเพิ่มบัญชีใน EExpress, ใช้ปุ่มด้านล่างเพื่อยืนยันบัญชีของคุณ</p>
-        <a class="alink sans" href="https://shop.nuttapolkhumdang.work/managers/account/invite?id={{ account._id }}">
-            <div>ยืนยันบัญชี</div>
+        <p>คุณได้ทำการกู้คืนบัญชีของคุณ ใช้ปุ่มด้านล่างเพื่อดำเนินการต่อ</p>
+        <a class="alink sans" href="https://shop.nuttapolkhumdang.work/managers/account/recovery?action=recovery&token={{ account.activetoken }}&email={{ account.email }}">
+            <div>เปลี่ยนรหัสผ่าน</div>
         </a>
 
         <p>หากคุณไม่ได้เกี่ยวข้อง โปรดเพิกเฉยต่ออีเมลฉบับนี้</p>

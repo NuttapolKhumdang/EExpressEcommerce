@@ -1,0 +1,19 @@
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">เพิ่มบัญชีผู้ใช้สูงสุด</h1>
+  </header>
+
+  <section>
+    <form action="/managers/account/add" method="POST" class="grid grid-cols-1 gap-4">
+      <fieldset class=" grid grid-cols-1 gap-8 border-2 border-gray-950 p-4 *:grid *:grid-cols-1 *:gap-2">
+        <label for="email">
+          <span class="w-max font-mono text-sm underline">อีเมล์</span>
+          <input type="text" id="email" name="email" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="อีเมล์" required />
+        </label>
+
+        <button type="submit" class="h-max py-2 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white">
+          ยืนยัน
+        </button>
+    </form>
+  </section>
+</main>

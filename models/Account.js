@@ -8,6 +8,7 @@ const AccountSchema = new Schema({
     phone: String,
 
     role: String,
+    level: Number,
     access: Array,
     status: {
         type: Boolean,
@@ -19,6 +20,7 @@ const AccountSchema = new Schema({
     },
 
     passwordChange: Array,
+    activetoken: String,
 }, {
     timestamps: true
 });
