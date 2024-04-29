@@ -7,7 +7,7 @@ function access(rights = [], json = false) {
             if (isAccessable) return next();
 
             if (json) return res.status(403).json({ status: 403, message: 'no permission to access content' });
-            else return res.render('errors/403');
+            else return res.status(403).render('managers', { render: 'managers/no-access.html', account: req?.user });
         };
 
         if (json) return res.status(401).json({ status: 401, message: 'no permission to access content' })

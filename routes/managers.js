@@ -1,5 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const fs = require('fs');
+const qrcode = require('qrcode');
 
 const passport = require('passport');
 const bcrypt = require('bcrypt');
@@ -9,13 +13,13 @@ const { Rights, AccountRole } = require('../modules/AccessRights');
 const { Mailer } = require('../modules/Mailer');
 const { Months, fdiffp } = require('../modules/Utils');
 
-
 const { UpdateAction, Action } = require('../modules/UpdateActions');
 const thai_provinces = require('../modules/address/thai_provinces.json');
 const thai_amphures = require('../modules/address/thai_amphures.json');
 const thai_tambons = require('../modules/address/thai_tambons.json');
 
-const { Analytics } = require('../models/Analytics');
+const { Analytics, ClientAccess, PortalAccess } = require('../models/Analytics');
+const { parseAccessAnalytics } = require('../modules/Analytics');
 const { Account, Actions } = require('../models/Account');
 const { Product, Category } = require('../models/Product');
 const { Address, Promotion, Order, OrderStatus, OrderStatusName } = require('../models/Order');
@@ -26,7 +30,7 @@ router.get('/', Access(false), (req, res, next) => {
 
 
 // ?? Analytics
-router.get('/analytics/insights',Access([Rights.MAKET.ANALYSIS]), async (req, res, next) => {
+router.get('/analytics/insights', Access([Rights.MAKET.ANALYTICS]), async (req, res, next) => {
     const date = new Date();
     const analytics = await Analytics.find({ year: date.getFullYear() });
     const revenue = {};
@@ -45,30 +49,30 @@ router.get('/analytics/insights',Access([Rights.MAKET.ANALYSIS]), async (req, re
 
     analytics.forEach(e => {
         if (!revenue[e.year]) revenue[e.year] = {};
-        if (!revenue[e.year][e.month]) revenue[e.year][e.month] = e.revenue;
-        else revenue[e.year][e.month] += e.revenue;
+        if (!revenue[e.year][e.month]) revenue[e.year][e.month] = e.revenue ?? 0;
+        else revenue[e.year][e.month] += e.revenue ?? 0;
 
         if (!clicks[e.year]) clicks[e.year] = {};
-        if (!clicks[e.year][e.month]) clicks[e.year][e.month] = e.clicks;
-        else clicks[e.year][e.month] += e.clicks;
+        if (!clicks[e.year][e.month]) clicks[e.year][e.month] = e.clicks ?? 0;
+        else clicks[e.year][e.month] += e.clicks ?? 0;
 
         if (!orders[e.year]) orders[e.year] = {};
-        if (!orders[e.year][e.month]) orders[e.year][e.month] = e.orders;
-        else orders[e.year][e.month] += e.orders;
+        if (!orders[e.year][e.month]) orders[e.year][e.month] = e.orders ?? 0;
+        else orders[e.year][e.month] += e.orders ?? 0;
 
         if (!conversion[e.year]) conversion[e.year] = {};
-        if (!conversion[e.year][e.month]) conversion[e.year][e.month] = e.conversion;
-        else conversion[e.year][e.month] += e.conversion;
+        if (!conversion[e.year][e.month]) conversion[e.year][e.month] = e.conversion ?? 0;
+        else conversion[e.year][e.month] += e.conversion ?? 0;
 
         if (!sales[e.year]) sales[e.year] = {};
-        if (!sales[e.year][e.month]) sales[e.year][e.month] = e.sales;
-        else sales[e.year][e.month] += e.sales;
+        if (!sales[e.year][e.month]) sales[e.year][e.month] = e.sales ?? 0;
+        else sales[e.year][e.month] += e.sales ?? 0;
 
-        all.revenue += e.revenue;
-        all.clicks += e.clicks;
-        all.orders += e.orders;
-        all.conversion += e.conversion;
-        all.sales += e.sales;
+        all.revenue += e.revenue ?? 0;
+        all.clicks += e.clicks ?? 0;
+        all.orders += e.orders ?? 0;
+        all.conversion += e.conversion ?? 0;
+        all.sales += e.sales ?? 0;
     });
 
     return res.render('managers', {
@@ -95,6 +99,54 @@ router.get('/analytics/insights',Access([Rights.MAKET.ANALYSIS]), async (req, re
     });
 });
 
+router.get('/analytics/access', Access([Rights.MAKET.ANALYTICS]), async (req, res, next) => {
+    const clientAccess = await ClientAccess.find();
+    const { result, all, total } = parseAccessAnalytics(clientAccess, 'viewpath');
+    return res.render('managers', {
+        render: 'managers/analytics-access.html', account: req.user,
+        all, result, total, Months, date: new Date(),
+    });
+});
+
+router.route('/analytics/portal')
+    .get(async (req, res, next) => {
+        const portalAccess = await PortalAccess.find();
+        const { result, all, total } = parseAccessAnalytics(portalAccess, 'portal');
+        console.log(result);
+        return res.render('managers', {
+            render: 'managers/analytics-portal.html', account: req.user,
+            all, result, total, Months, date: new Date(),
+        });
+    })
+    .post(async (req, res, next) => {
+        const dirpath = path.join(__dirname, '../', 'resource', 'portal');
+        if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath, { recursive: true });
+
+        const portalkey = (function (ln) {
+            let result = "";
+            for (let i = 0; i < ln; i++) result += (Math.random() * 16 | 0).toString(16);
+            return result;
+        })(32);
+
+        try {
+            const qrdata = await qrcode.toBuffer(process.env.SITE_DOMAIN + '/?__alsx__at_qrx__v_=' + portalkey, {
+                type: 'png',
+                errorCorrectionLevel: 'H',
+            });
+
+            fs.writeFileSync(path.join(dirpath, portalkey), qrdata);
+
+            const portal = new PortalAccess({
+                portal: portalkey,
+                title: req.body.title,
+            });
+
+            await portal.save();
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ status: 500, message: 'server die' });
+        }
+    });
 
 // ?? Shop
 router.get('/shop/appearance', Access([Rights.SHOP.MODIFY]), async (req, res, next) => {
@@ -235,6 +287,39 @@ router.get('/account/deleted', Access([Rights.ACCOUNT.INFOMATION]), async (req, 
     return res.render('managers', { render: 'managers/account-manage.html', account: req.user, accounts, AccountRole, heading: 'บัญชีที่ลบแล้ว' });
 });
 
+router.route('/account/init')
+    .get(async (req, res, next) => {
+        const accounts = await Account.find().limit(1);
+        if (accounts.length > 0) return res.redirect('/managers');
+        return res.render('managers', { render: 'managers/account-init.html', AccountRole });
+    })
+    .post(async (req, res, next) => {
+        const accounts = await Account.find().limit(1);
+        if (accounts.length > 0) return res.status(401).json({ status: 401, message: 'please continue with an existing account' });
+
+        const account = new Account({
+            fullname: 'ผู้ใช้สูงสุด',
+            email: req.body.email,
+            role: AccountRole.ALL.Role,
+            level: AccountRole.ALL.Level,
+            access: AccountRole.ALL.Access,
+            status: true,
+            deleted: false,
+        });
+
+        await account.save();
+
+        Mailer('account_new.html', {
+            recive: account.email,
+            subject: 'คุณได้รับการเพิ่มบัญชีใน Express',
+        }, {
+            account: { _id: account._id.toString() },
+            account,
+        });
+
+        return res.redirect('/managers/account');
+    });
+
 router.route('/account/add')
     .get(Access([Rights.ACCOUNT.ADD]), (req, res, next) => {
         return res.render('managers', { render: 'managers/account-add.html', account: req.user, AccountRole });
@@ -247,6 +332,7 @@ router.route('/account/add')
             email: req.body.email,
             phone: req.body.phone,
             role: req.body.role,
+            level: AccountRole[req.body.role].Level,
             access: AccountRole[req.body.role].Access,
             status: true,
             deleted: false,
@@ -256,7 +342,7 @@ router.route('/account/add')
 
         Mailer('account_new.html', {
             recive: account.email,
-            subject: 'คุณได้รับสิทธิ์ในการจัดการเว็ปไซต์ Express',
+            subject: 'คุณได้รับการเพิ่มบัญชีใน Express',
         }, {
             account: { _id: account._id.toString() },
             account,
@@ -303,6 +389,58 @@ router.get('/account/action/:id', Access([Rights.ACCOUNT.INFOMATION]), async (re
     }
 });
 
+router.route('/account/recovery') // ?? Unauthorize end-point
+    .get(async (req, res, next) => {
+        if (req.isAuthenticated()) return res.redirect('/managers');
+        return res.render('managers', { render: 'managers/recovery.html', action: req?.query?.action, query: req?.query });
+    })
+    .post(async (req, res, next) => {
+        const token = (function (ln) {
+            let result = "";
+            for (let i = 0; i < ln; i++) result += (Math.random() * 16 | 0).toString(16);
+            return result;
+        })(32);
+
+        try {
+            await Account.findOneAndUpdate({ email: req.body.email }, { activetoken: token });
+            const account = await Account.findOne({ email: req.body.email });
+
+            Mailer('account_recovery.html', {
+                recive: account.email,
+                subject: 'กู้คืนบัญชีของคุณ',
+            }, {
+                account,
+            });
+
+            return res.redirect('/managers/account/recovery?action=continue');
+        } catch (e) {
+            return res.redirect('/managers/login?error=เกิดข้อผิดพลาด');
+        }
+    })
+    .put(async (req, res, next) => {
+        try {
+            const account = await Account.findOne({ email: req.query?.email });
+            if (account.activetoken !== req.query?.token) return res.json({ status: 401, message: 'token unaccepte' });
+
+            await Account.findByIdAndUpdate(account._id, {
+                password: bcrypt.hashSync(req.body.password, 10),
+                $push: {
+                    passwordChange: {
+                        pwd: account.password,
+                        timestamp: new Date(),
+                    }
+                },
+                activetoken: null,
+            });
+
+            await UpdateAction(account._id, Action.PROFILE.RECOVERY);
+            return res.json({ status: 200, message: 'OK' });
+        } catch (e) {
+            console.error(e);
+            return res.status(400).json({ status: 400, message: 'เกิดข้อผิดพลาด' });
+        }
+    });
+
 router.route('/account/:id')
     .get(Access([Rights.ACCOUNT.INFOMATION]), async (req, res, next) => {
         try {
@@ -314,14 +452,22 @@ router.route('/account/:id')
         }
     })
     .put(Access([Rights.ACCOUNT.MODIFY]), async (req, res, next) => {
-        if (req.params.id === req.user._id.toString()) return res.status(403).json({ status: 403, message: 'คุณไม่สามารถเปลี่ยนการตั้งต่าสิทธิ์การเข้าถึงของคุณเองได้' });
+        try {
+            const account = await Account.findById(req.params.id);
+            if (req.params.id === req.user._id.toString()) return res.status(403).json({ status: 403, message: 'คุณไม่สามารถเปลี่ยนการตั้งค่าสิทธิ์การเข้าถึงของคุณเองได้' });
+            if (req.user.level > account.level) return res.status(403).json({ status: 403, message: 'คุณไม่สามารถเปลี่ยนการตั้งค่าสิทธิ์ของบัญชีที่ระดับสูงกว่าได้' });
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
+        }
 
         try {
             const profile = await Account.findByIdAndUpdate(req.params.id, req.body);
             await UpdateAction(req.user._id, Action.ACCOUNT.MODIFY, { _id: req.params.id, update: req.body });
 
             return res.json({ status: 200, message: 'OK', profile });
-        } catch {
+        } catch (e) {
+            console.error(e);
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
     })
@@ -331,22 +477,24 @@ router.route('/account/:id')
             await UpdateAction(req.user._id, Action.ACCOUNT.REMOVE, { _id: req.params.id });
 
             return res.json({ status: 200, message: 'OK', profile });
-        } catch {
+        } catch (e) {
+            console.error(e);
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
     });
+
 
 // ?? Authenticate
 router.route('/login')
     .get((req, res, next) => {
         if (req.isAuthenticated()) return res.redirect('/managers');
-        return res.render('managers', { render: 'managers/account-login.html', });
+        return res.render('managers', { render: 'managers/account-login.html', message: req.query?.message });
     })
     .post(passport.authenticate('local', {
-        failureRedirect: '/managers',
+        failureRedirect: '/managers/login?error=อีเมลหรือรหัสผ่านไม่ถูกต้อง',
     }), async (req, res, next) => {
-        if (!req.user.status) return req.logout({}, (err) => { return res.status(403).render('errors/account-inactive.html') });
-        if (req.user.deleted) return req.logout({}, (err) => { return res.status(403).render('errors/account-deleted.html') });
+        if (!req.user.status) return req.logout({}, (err) => { return res.status(403).render('error', { render: 'errors/account-inactive.html' }) });
+        if (req.user.deleted) return req.logout({}, (err) => { return res.status(403).render('error', { render: 'errors/account-deleted.html' }) });
 
         await UpdateAction(req.user._id, Action.SESSION.LOGIN);
         return res.redirect('/managers');

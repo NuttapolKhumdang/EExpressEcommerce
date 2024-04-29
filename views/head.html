@@ -19,7 +19,7 @@
 <script src="/javascripts/Alert.js"></script>
 <script src="/javascripts/Cart.js"></script>
 
-<script>
+<script> /* Global Function Scripts */
     async function fetchJson(url, options = {}) {
         try {
             const res = await fetch(url, options);
@@ -44,7 +44,7 @@
     }
 </script>
 
-<script>
+<script> /* Global Function Scripts */
     function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -52,14 +52,23 @@
         });
     }
 
-    function redirect(view) {
+    function redirect(view = String()) {
+        if (!view) return window.location.reload();
         return window.location.href = view;
     }
 </script>
 
 <script>
+    function copyToClipboard(text) {
+        if (!navigator.clipboard) {
+            return false; // Clipboard API not supported
+        }
+        return navigator.clipboard.writeText(text);
+    }
+</script>
+
+<script> /* Analytics Scripts */
     document.onclick = () => {
-        console.log('xlc');
         setLocalStorage('__alsx__xu_clx__v_', Number(getLocalStorage('__alsx__xu_clx__v_') ?? 0) + 1);
     };
 
@@ -67,4 +76,11 @@
         fetch(`/analytics/data?__alsx__xu_clx__v_=${getLocalStorage('__alsx__xu_clx__v_')}`);
         setLocalStorage('__alsx__xu_clx__v_', 0);
     }
+
+    const urlQuery = new URLSearchParams(window.location.search);
+    function query(key) {
+        return urlQuery.get(key);
+    }
+
+    if (query('__alsx__at_qrx__v_')) fetch(`/analytics/data?__alsx__at_qrx__v_=${query('__alsx__at_qrx__v_')}`);
 </script>

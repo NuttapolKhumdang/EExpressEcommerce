@@ -1,0 +1,40 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<main class="flex flex-col gap-4">
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">ข้อมูลการเข้าใช้งาน</h1>
+    </header>
+
+    <main class="grid grid-cols-2 gap-4 *:flex *:flex-col *:gap-2 *:border-l-2 *:border-gray-950 *:p-4 *:w-full">
+        <section>
+            <h2 class="text-sm font-medium font-mono">จำนวน URL ทั้งหมด</h2>
+            <div class="flex flex-col lg:flex-row gap-2 h-max items-start lg:items-end *:flex *:flex-row *:gap-2 py-4">
+                <h2 class="font-bold text-3xl leading-none">{{ Object.keys(result).length|default(0) }}</h2>
+            </div>
+        </section>
+        <section>
+            <h2 class="text-sm font-medium font-mono">จำนวนการเข้าถึงทั้งหมด</h2>
+            <div class="flex flex-col lg:flex-row gap-2 h-max items-start lg:items-end *:flex *:flex-row *:gap-2 py-4">
+                <h2 class="font-bold text-3xl leading-none">{{ total|default(0) }}</h2>
+            </div>
+        </section>
+    </main>
+
+    <section class="flex flex-col gap-4 p-4 border-2 border-gray-950">
+        <h3 class="py-2 text-xl font-bold">รายละเอียด</h3>
+
+        <article class="flex flex-col cursor-default *:grid *:grid-cols-[6fr_1fr] *:gap-4 *:px-2 *:py-1">
+            <div class="font-bold text-sm">
+                <span>URL</span>
+                <span class="text-center">จำนวนการเข้าถึง</span>
+            </div>
+
+            {% for view in Object.keys(all) %}
+            <div class="font-mono hover:bg-gray-950 hover:text-white">
+                <a href="{{view}}">{{ decodeURI(view)}}</a>
+                <span class="text-center">{{ all[view] }}</span>
+            </div>
+            {% endfor %}
+        </article>
+    </section>
+</main>

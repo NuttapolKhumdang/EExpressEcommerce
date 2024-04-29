@@ -34,9 +34,9 @@ router.get('/images/:source/:oid/:filename', async (req, res, next) => {
     }
 });
 
-router.get('/static/:filename', async (req, res, next) => {
+router.get('/:parent/:filename', async (req, res, next) => {
     try {
-        const file = fs.readFileSync(path.join(__dirname, '../', 'resource', 'static', req.params.filename));
+        const file = fs.readFileSync(path.join(__dirname, '../', 'resource', req.params.parent, req.params.filename));
         sharp(file)
             .webp()
             .resize(512, 512, {

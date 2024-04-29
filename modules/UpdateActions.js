@@ -64,7 +64,8 @@ const Action = {
     },
 
     PROFILE: {
-        PASSWORD_CHANGE: 'PROFILE_PASSWORD_CHANGE'
+        PASSWORD_CHANGE: 'PROFILE_PASSWORD_CHANGE',
+        RECOVERY: 'PROFILE_RECOVERY',
     }
 }
 module.exports = { UpdateAction, Action };

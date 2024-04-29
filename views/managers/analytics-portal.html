@@ -1,0 +1,234 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">ประตูมิติ</h1>
+
+    <button
+      onclick="portalCreator.render()"
+      class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
+    >
+      <span class="material-icons-outlined">add</span>
+    </button>
+  </header>
+
+  <main
+    class="grid grid-cols-2 gap-4 *:flex *:w-full *:flex-col *:gap-2 *:border-l-2 *:border-gray-950 *:p-4"
+  >
+    <section>
+      <h2 class="font-mono text-sm font-medium">จำนวนประตูมิติทั้งหมด</h2>
+      <div
+        class="flex h-max flex-col items-start gap-2 py-4 *:flex *:flex-row *:gap-2 lg:flex-row lg:items-end"
+      >
+        <h2 class="text-3xl font-bold leading-none">
+          {{ Object.keys(result).length|default(0) }}
+        </h2>
+      </div>
+    </section>
+    <section>
+      <h2 class="font-mono text-sm font-medium">
+        จำนวนผู้ที่ผ่านประตูมิติทั้งหมด
+      </h2>
+      <div
+        class="flex h-max flex-col items-start gap-2 py-4 *:flex *:flex-row *:gap-2 lg:flex-row lg:items-end"
+      >
+        <h2 class="text-3xl font-bold leading-none">{{ total|default(0) }}</h2>
+      </div>
+    </section>
+  </main>
+
+  <section class="flex flex-col gap-4 border-2 border-gray-950 p-4">
+    <h3 class="py-2 text-xl font-bold">รายละเอียด</h3>
+
+    <article
+      class="flex cursor-default flex-col *:grid *:grid-cols-[5fr_1fr_1fr] *:place-items-center *:gap-4 *:px-2 *:py-1 *:duration-100"
+    >
+      <div class="text-sm font-bold">
+        <span class="w-full text-left">ประตูมิติ</span>
+        <span class="text-center">จำนวนการเข้าถึง</span>
+      </div>
+
+      {% for view in Object.keys(result) %}
+      <div class="h-12 font-mono hover:bg-gray-950 hover:text-white">
+        <p class="w-full text-left">{{view}}</p>
+        <span class="text-center"
+          >{{ result[view][date.getFullYear()][date.getMonth()]|default(0)
+          }}</span
+        >
+
+        <menu class="flex h-max w-full items-center justify-center">
+          <a
+            onclick="renderPortalView('{{ view }}')"
+            class="flex h-max w-max items-center justify-center text-white duration-100 hover:bg-white hover:text-gray-950"
+            ><span class="material-icons-outlined">qr_code_2</span></a
+          >
+        </menu>
+      </div>
+      {% endfor %}
+    </article>
+  </section>
+</main>
+
+<header
+  id="portal-qr-view"
+  class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg"
+>
+  <div
+    class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 border-2 border-gray-950 bg-white p-4"
+  >
+    <header class="flex h-max w-full flex-row items-center justify-between">
+      <h1 class="font-sans text-2xl font-bold">QR ประตูมิติ</h1>
+
+      <button
+        onclick="closePortalView()"
+        class="flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </header>
+
+    <section class="flex flex-col items-center justify-center gap-4">
+      <div class="flex flex-row items-center gap-2">
+        <p class="text-lg font-bold uppercase"></p>
+        <button class="group relative" id="copy">
+          <span class="material-icons-outlined">copy</span>
+
+          <p
+            class="absolute top-8 hidden w-max border-2 border-black bg-white p-1 px-2 text-sm font-bold text-black group-hover:block"
+          >
+            คัดลอกลิ้งค์
+          </p>
+        </button>
+      </div>
+
+      <img
+        src="#"
+        class="max-h-96 w-max object-contain"
+        loading="lazy"
+        alt="portal-qrcode"
+      />
+    </section>
+  </div>
+</header>
+
+<script>
+  const portalQRView = document.getElementById("portal-qr-view");
+  function renderPortalView(id) {
+    portalQRView.classList.remove("hidden");
+    portalQRView.classList.add("flex");
+
+    const p = portalQRView.querySelector("p");
+    const img = portalQRView.querySelector("img");
+    const copy = portalQRView.querySelector("button#copy");
+    p.innerHTML = id;
+    img.src = "/portal/" + id;
+
+    copy.querySelector("span").innerHTML = "copy";
+    copy.onclick = () => {
+      copyToClipboard(
+        "https://shop.nuttapolkhumdang.work/?__alsx__at_qrx__v_=" + id,
+      );
+      copy.querySelector("span").innerHTML = "check";
+
+      setTimeout(() => {
+        copy.querySelector("span").innerHTML = "copy";
+      }, 2000);
+    };
+  }
+
+  function closePortalView() {
+    portalQRView.classList.add("hidden");
+    portalQRView.classList.remove("flex");
+  }
+  closePortalView();
+</script>
+
+<header
+  id="portal-insert-track"
+  class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg"
+>
+  <div
+    class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 border-2 border-gray-950 bg-white p-4"
+  >
+    <header class="flex h-max w-full flex-row items-center justify-between">
+      <h1 class="font-sans text-2xl font-bold">เพิ่มประตูมิติ</h1>
+
+      <button
+        id="close"
+        class="flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
+      >
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </header>
+
+    <section>
+      <form class="flex flex-col gap-4">
+        <label for="title" class="grid grid-cols-1 gap-2">
+          <span class="w-max font-mono text-sm underline">ชื่่อประตูมิติ</span>
+          <input
+            type="text"
+            id="title"
+            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
+            placeholder="ชื่่อประตูมิติ"
+          />
+        </label>
+
+        <button
+          type="submit"
+          class="h-12 w-full border-2 border-gray-950 font-sans text-lg font-bold duration-100 hover:bg-gray-950 hover:text-white"
+        >
+          เพิ่ม
+        </button>
+      </form>
+    </section>
+  </div>
+</header>
+
+<script>
+  class PortalCreator {
+    constructor(container = document.getElementById()) {
+      this.container = container;
+      this.portal_form = this.container.querySelector("form");
+      this.portal_name = this.container.querySelector("input#title").value;
+
+      this.portal_close = this.container.querySelector("button#close");
+      this.portal_close.addEventListener("click", (e) => this.close());
+      this.portal_form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await this.create();
+      });
+
+      this.close();
+    }
+
+    clear() {
+      this.portal_name = "";
+    }
+
+    close() {
+      this.container.classList.remove("flex");
+      this.container.classList.add("hidden");
+      this.clear();
+    }
+
+    render() {
+      this.container.classList.add("flex");
+      this.container.classList.remove("hidden");
+    }
+
+    async create() {
+      const res = await fetchJson("", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ title: this.portal_name }),
+      });
+
+      if (res.status === 200) return redirect();
+    }
+  }
+
+  const PIT = document.getElementById("portal-insert-track");
+  const portalCreator = new PortalCreator(PIT);
+</script>
