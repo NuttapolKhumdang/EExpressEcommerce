@@ -19,7 +19,7 @@ router.get('/address', async (req, res, next) => {
     return res.json({ status: 200, message: 'OK', thai_provinces, thai_amphures, thai_tambons });
 });
 
-router.get('/account/access', Access([Rights.ACCOUNT.MODIFY]), async (req, res, next) => {
+router.get('/account/access', async (req, res, next) => {
     return res.json({ status: 200, message: 'OK', Rights, AccountRole });
 });
 

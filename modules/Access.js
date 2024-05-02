@@ -6,11 +6,11 @@ function access(rights = [], json = false) {
 
             if (isAccessable) return next();
 
-            if (json) return res.status(403).json({ status: 403, message: 'no permission to access content' });
+            if (json) return res.status(403).json({ status: 403, message: 'คุณไม่มีสิทธิ์เข้าถึงหรือเปลี่ยนแปลงเนื้อหานี้' });
             else return res.status(403).render('managers', { render: 'managers/no-access.html', account: req?.user });
         };
 
-        if (json) return res.status(401).json({ status: 401, message: 'no permission to access content' })
+        if (json) return res.status(401).json({ status: 401, message: 'คุณไม่มีสิทธิ์เข้าถึงหรือเปลี่ยนแปลงเนื้อหานี้' })
         else return res.redirect('/managers/login');
     }
 }

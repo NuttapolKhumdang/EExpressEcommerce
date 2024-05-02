@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
 const Access = require('../modules/Access');
 const { Rights, AccountRole } = require('../modules/AccessRights');
 const { Mailer } = require('../modules/Mailer');
-const { Months, fdiffp } = require('../modules/Utils');
+const { Months, fdiffp, token } = require('../modules/Utils');
 
 const { UpdateAction, Action } = require('../modules/UpdateActions');
 const thai_provinces = require('../modules/address/thai_provinces.json');
@@ -100,6 +100,20 @@ router.get('/analytics/insights', Access([Rights.MAKET.ANALYTICS]), async (req, 
 });
 
 router.get('/analytics/access', Access([Rights.MAKET.ANALYTICS]), async (req, res, next) => {
+    if (req.query?.view) {
+        try {
+
+            const clientAccess = await ClientAccess.findOne({ viewpath: req.query?.view });
+            return res.render('managers', {
+                render: 'managers/analytics-client-details.html', account: req.user,
+                access: clientAccess,
+            });
+        } catch (e) {
+            console.error(e);
+            return next('route');
+        }
+    }
+
     const clientAccess = await ClientAccess.find();
     const { result, all, total } = parseAccessAnalytics(clientAccess, 'viewpath');
     return res.render('managers', {
@@ -110,12 +124,21 @@ router.get('/analytics/access', Access([Rights.MAKET.ANALYTICS]), async (req, re
 
 router.route('/analytics/portal')
     .get(async (req, res, next) => {
+        if (req.query?.view) {
+            const portalAccess = await PortalAccess.findOne({ portal: req.query.view });
+
+            return res.render('managers', {
+                render: 'managers/analytics-client-details.html', account: req.user,
+                access: portalAccess,
+            });
+        }
+
         const portalAccess = await PortalAccess.find();
         const { result, all, total } = parseAccessAnalytics(portalAccess, 'portal');
-        console.log(result);
+
         return res.render('managers', {
             render: 'managers/analytics-portal.html', account: req.user,
-            all, result, total, Months, date: new Date(),
+            all, result, total, Months, date: new Date(), portals: portalAccess,
         });
     })
     .post(async (req, res, next) => {
@@ -129,7 +152,7 @@ router.route('/analytics/portal')
         })(32);
 
         try {
-            const qrdata = await qrcode.toBuffer(process.env.SITE_DOMAIN + '/?__alsx__at_qrx__v_=' + portalkey, {
+            const qrdata = await qrcode.toBuffer(process.env.SITE_DOMAIN + '/?portal=' + portalkey, {
                 type: 'png',
                 errorCorrectionLevel: 'H',
             });
@@ -142,6 +165,7 @@ router.route('/analytics/portal')
             });
 
             await portal.save();
+            return res.json({ status: 200, message: 'OK' });
         } catch (e) {
             console.error(e);
             return res.status(500).json({ status: 500, message: 'server die' });
@@ -251,10 +275,10 @@ router.route('/profile/security')
     });
 
 router.route('/profile/security/password')
-    .get(Access(false), async (req, res, next) => {
+    .get(Access([Rights.PROFILE.MODIFY_PASSWORD]), async (req, res, next) => {
         return res.render('managers', { render: 'managers/profile-security-password.html', account: req.user, q: req.query });
     })
-    .post(Access(false), async (req, res, next) => {
+    .post(Access([Rights.PROFILE.MODIFY_PASSWORD], true), async (req, res, next) => {
         if (bcrypt.compareSync(req.body.pw0, req.user.password)) {
             await Account.findByIdAndUpdate(req.user._id, {
                 password: bcrypt.hashSync(req.body.pw1, 10),
@@ -352,6 +376,35 @@ router.route('/account/add')
         return res.redirect('/managers/account');
     });
 
+router.route('/account/direct/add')
+    .get(Access(false), (req, res, next) => {
+        return res.render('managers', { render: 'managers/account-direct-add.html', account: req?.user, AccountRole });
+    })
+    .post(Access([Rights.ACCOUNT.ADD]), async (req, res, next) => {
+        if (!req.body.fullname || !req.body.role) return res.status(400).redirect('/managers/account/direct/add?error=ข้อมูลไม่ถูกต้อง');
+        const accountPWtoken = token(64);
+        const account = new Account({
+            fullname: req.body.fullname,
+            email: token(12),
+            password: bcrypt.hashSync(accountPWtoken, 10),
+            token: accountPWtoken,
+
+            role: req.body.role,
+            level: AccountRole[req.body.role].Level,
+            access: AccountRole[req.body.role].Access,
+            status: true,
+            deleted: false,
+        });
+
+        await account.save();
+
+        const action = new Actions({ id: account._id, });
+        await action.save();
+
+        await UpdateAction(req.user._id, Action.ACCOUNT.ADD, { _id: account._id.toString(), account });
+        return res.redirect('/managers/account/' + account._id.toString());
+    });
+
 router.route('/account/invite')
     .get(async (req, res, next) => {
         if (!req.query.id) return res.status(404).render('errors/404');
@@ -395,14 +448,8 @@ router.route('/account/recovery') // ?? Unauthorize end-point
         return res.render('managers', { render: 'managers/recovery.html', action: req?.query?.action, query: req?.query });
     })
     .post(async (req, res, next) => {
-        const token = (function (ln) {
-            let result = "";
-            for (let i = 0; i < ln; i++) result += (Math.random() * 16 | 0).toString(16);
-            return result;
-        })(32);
-
         try {
-            await Account.findOneAndUpdate({ email: req.body.email }, { activetoken: token });
+            await Account.findOneAndUpdate({ email: req.body.email }, { activetoken: token(32) });
             const account = await Account.findOne({ email: req.body.email });
 
             Mailer('account_recovery.html', {
@@ -451,7 +498,7 @@ router.route('/account/:id')
             return next('route');
         }
     })
-    .put(Access([Rights.ACCOUNT.MODIFY]), async (req, res, next) => {
+    .put(Access([Rights.ACCOUNT.MODIFY], true), async (req, res, next) => {
         try {
             const account = await Account.findById(req.params.id);
             if (req.params.id === req.user._id.toString()) return res.status(403).json({ status: 403, message: 'คุณไม่สามารถเปลี่ยนการตั้งค่าสิทธิ์การเข้าถึงของคุณเองได้' });
@@ -471,7 +518,7 @@ router.route('/account/:id')
             return res.status(500).json({ status: 500, message: 'เกิดข้อผิดพลาดบางอย่าง โปรดลองอีกครั้งในภายหลัง' });
         }
     })
-    .delete(Access([Rights.ACCOUNT.REMOVE]), async (req, res, next) => {
+    .delete(Access([Rights.ACCOUNT.REMOVE], true), async (req, res, next) => {
         try {
             const profile = await Account.findByIdAndUpdate(req.params.id, { deleted: true });
             await UpdateAction(req.user._id, Action.ACCOUNT.REMOVE, { _id: req.params.id });
@@ -488,7 +535,7 @@ router.route('/account/:id')
 router.route('/login')
     .get((req, res, next) => {
         if (req.isAuthenticated()) return res.redirect('/managers');
-        return res.render('managers', { render: 'managers/account-login.html', message: req.query?.message });
+        return res.render('managers', { render: 'managers/account-login.html', message: req.query?.message, error: req.query?.error });
     })
     .post(passport.authenticate('local', {
         failureRedirect: '/managers/login?error=อีเมลหรือรหัสผ่านไม่ถูกต้อง',
@@ -496,6 +543,20 @@ router.route('/login')
         if (!req.user.status) return req.logout({}, (err) => { return res.status(403).render('error', { render: 'errors/account-inactive.html' }) });
         if (req.user.deleted) return req.logout({}, (err) => { return res.status(403).render('error', { render: 'errors/account-deleted.html' }) });
 
+        await UpdateAction(req.user._id, Action.SESSION.LOGIN);
+        return res.redirect('/managers');
+    });
+
+router.route('/login/direct')
+    .get((req, res, next) => {
+        if (req.isAuthenticated()) return req.logout({}, (err) => { });
+        if (!req.query?.token || !req.query.account) return res.redirect('/managers/login?error=Token ยืนยันตัวตนไม่ถูกต้อง');
+
+        return res.render('direct-auth', { query: req?.query });
+    })
+    .post(passport.authenticate('local', {
+        failureRedirect: '/managers/login?error=การยืนยันตัวตนไม่ถูกต้อง',
+    }), async (req, res, next) => {
         await UpdateAction(req.user._id, Action.SESSION.LOGIN);
         return res.redirect('/managers');
     });

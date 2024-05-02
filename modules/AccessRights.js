@@ -1,4 +1,3 @@
-
 const Access = {
     //* Product
     PRODUCT: {
@@ -38,7 +37,14 @@ const Access = {
         INFOMATION: 'ACCOUNT_INFOMATION',
         MODIFY: 'ACCOUNT_MODIFY',
         REMOVE: 'ACCOUNT_REMOVE',
-    }
+    },
+
+    //* Profile
+    PROFILE: {
+        MODIFY_PASSWORD: 'PROFILE_MODIFY_PASSWORD',
+        MODIFY_EMAIL: 'PROFILE_MODIFY_EMAIL',
+        MODIFY_USERNAME: 'PROFILE_MODIFY_USERNAME',
+    },
 };
 
 const AccountRole = {
@@ -64,6 +70,10 @@ const AccountRole = {
             Access.PRODUCT.MODIFY,
             Access.PRODUCT.REMOVE,
             Access.SHOP.MODIFY,
+
+            Access.PROFILE.MODIFY_EMAIL,
+            Access.PROFILE.MODIFY_PASSWORD,
+            Access.PROFILE.MODIFY_USERNAME,
         ]
     },
     ADMINISTRATOR: {
@@ -83,6 +93,10 @@ const AccountRole = {
             Access.MAKET.ACCESS,
             Access.MAKET.PORTAL,
             Access.ORDER.OVERVIEW,
+
+            Access.PROFILE.MODIFY_EMAIL,
+            Access.PROFILE.MODIFY_PASSWORD,
+            Access.PROFILE.MODIFY_USERNAME,
         ]
     },
     SALESPERSON: {
@@ -95,6 +109,10 @@ const AccountRole = {
             Access.ORDER.INFOMATION,
             Access.ORDER.MODIFY,
             Access.ORDER.OVERVIEW,
+
+            Access.PROFILE.MODIFY_EMAIL,
+            Access.PROFILE.MODIFY_PASSWORD,
+            Access.PROFILE.MODIFY_USERNAME,
         ]
     },
     WAREHOUSE_WORKER: {
@@ -104,7 +122,11 @@ const AccountRole = {
         Access: [
             Access.ORDER.INFOMATION,
             Access.PRODUCT.INFOMATION,
-            Access.CUSTOMER.INFOMATION
+            Access.CUSTOMER.INFOMATION,
+
+            Access.PROFILE.MODIFY_EMAIL,
+            Access.PROFILE.MODIFY_PASSWORD,
+            Access.PROFILE.MODIFY_USERNAME,
         ]
     },
     MARKETER: {
@@ -114,6 +136,10 @@ const AccountRole = {
         Access: [
             Access.MAKET.ANALYTICS,
             Access.PRODUCT.INFOMATION,
+
+            Access.PROFILE.MODIFY_EMAIL,
+            Access.PROFILE.MODIFY_PASSWORD,
+            Access.PROFILE.MODIFY_USERNAME,
         ]
     },
     CUSTOMER_SERVICE_REPRESENTATIVE: {
@@ -125,11 +151,15 @@ const AccountRole = {
             Access.CUSTOMER.INFOMATION,
             Access.ORDER.OVERVIEW,
             Access.ORDER.INFOMATION,
+
+            Access.PROFILE.MODIFY_EMAIL,
+            Access.PROFILE.MODIFY_PASSWORD,
+            Access.PROFILE.MODIFY_USERNAME,
         ]
     }
 }
 
-/** Level Descriptions
+/** Level Descriptions -- Thanks for GEMINI.google.com
  * ? Level 0: Security Administrator
  * * Description: Has full access to control all user accounts and system configurations, including permissions for sensitive content. Can view, modify, and delete any sensitive information.
  *

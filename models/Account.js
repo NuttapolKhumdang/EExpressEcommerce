@@ -21,6 +21,7 @@ const AccountSchema = new Schema({
 
     passwordChange: Array,
     activetoken: String,
+    token: String,
 }, {
     timestamps: true
 });
