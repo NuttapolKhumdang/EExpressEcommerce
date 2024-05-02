@@ -1,86 +1,105 @@
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- <link rel="stylesheet" href="/stylesheets/style.css"> -->
-<link rel="stylesheet" href="/tailwind">
+<link rel="stylesheet" href="/tailwind" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Major+Mono+Display&family=Noto+Sans+Thai:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Major+Mono+Display&family=Noto+Sans+Thai:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+  rel="stylesheet"
+/>
+<link
+  href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined"
+  rel="stylesheet"
+/>
 
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest" />
 
 <!-- <script src="/javascripts/Banner.js" async></script> -->
 
 <script src="/javascripts/Alert.js"></script>
 <script src="/javascripts/Cart.js"></script>
 
-<script> /* Global Function Scripts */
-    async function fetchJson(url, options = {}) {
-        try {
-            const res = await fetch(url, options);
-            const json = await res.json();
-            return json;
-        } catch (e) {
-            console.error("fail to fetch", url, e);
-            return null;
-        }
+<script>
+  /* Global Function Scripts */
+  async function fetchJson(url, options = {}) {
+    let res;
+    try {
+      res = await fetch(url, options);
+      const json = await res.json();
+      return json;
+    } catch (e) {
+      console.error(url, e);
+      return res;
     }
+  }
 
-    function getLocalStorage(k, json = false) {
-        return json
-            ? JSON.parse(window.localStorage.getItem(k))
-            : window.localStorage.getItem(k);
-    }
+  function getLocalStorage(k, json = false) {
+    return json
+      ? JSON.parse(window.localStorage.getItem(k))
+      : window.localStorage.getItem(k);
+  }
 
-    function setLocalStorage(k, v, json = false) {
-        return json
-            ? window.localStorage.setItem(k, JSON.stringify(v))
-            : window.localStorage.setItem(k, v);
-    }
-</script>
-
-<script> /* Global Function Scripts */
-    function uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
-    function redirect(view = String()) {
-        if (!view) return window.location.reload();
-        return window.location.href = view;
-    }
+  function setLocalStorage(k, v, json = false) {
+    return json
+      ? window.localStorage.setItem(k, JSON.stringify(v))
+      : window.localStorage.setItem(k, v);
+  }
 </script>
 
 <script>
-    function copyToClipboard(text) {
-        if (!navigator.clipboard) {
-            return false; // Clipboard API not supported
-        }
-        return navigator.clipboard.writeText(text);
-    }
+  /* Global Function Scripts */
+  function uuidv4() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      },
+    );
+  }
+
+  function redirect(view = String()) {
+    if (!view) return window.location.reload();
+    return (window.location.href = view);
+  }
 </script>
 
-<script> /* Analytics Scripts */
-    document.onclick = () => {
-        setLocalStorage('__alsx__xu_clx__v_', Number(getLocalStorage('__alsx__xu_clx__v_') ?? 0) + 1);
-    };
-
-    window.onbeforeunload = () => {
-        fetch(`/analytics/data?__alsx__xu_clx__v_=${getLocalStorage('__alsx__xu_clx__v_')}`);
-        setLocalStorage('__alsx__xu_clx__v_', 0);
+<script>
+  function copyToClipboard(text) {
+    if (!navigator.clipboard) {
+      return false; // Clipboard API not supported
     }
+    return navigator.clipboard.writeText(text);
+  }
+</script>
 
-    const urlQuery = new URLSearchParams(window.location.search);
-    function query(key) {
-        return urlQuery.get(key);
-    }
+<script>
+  /* Analytics Scripts */
+  document.onclick = () => {
+    setLocalStorage(
+      "__alsx__xu_clx__v_",
+      Number(getLocalStorage("__alsx__xu_clx__v_") ?? 0) + 1,
+    );
+  };
 
-    if (query('__alsx__at_qrx__v_')) fetch(`/analytics/data?__alsx__at_qrx__v_=${query('__alsx__at_qrx__v_')}`);
+  window.onbeforeunload = () => {
+    fetch(
+      `/analytics/data?__alsx__xu_clx__v_=${getLocalStorage("__alsx__xu_clx__v_")}`,
+    );
+    setLocalStorage("__alsx__xu_clx__v_", 0);
+  };
+
+  const urlQuery = new URLSearchParams(window.location.search);
+  function query(key) {
+    return urlQuery.get(key);
+  }
+
+  if (query("portal")) fetch(`/analytics/data?portal=${query("portal")}`);
 </script>

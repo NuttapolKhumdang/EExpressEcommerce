@@ -127,6 +127,7 @@
 
         async function onAccountRoleChange(role) {
           access_rights = account_role[role].Access;
+          access_level = account_role[role].Level;
 
           const res = await fetchJson(
             "/managers/account/{{ profile._id.toString() }}",
@@ -135,6 +136,7 @@
               method: "PUT",
               body: JSON.stringify({
                 access: access_rights,
+                level: access_level,
                 role: role,
               }),
             },
@@ -179,7 +181,7 @@
             },
           );
 
-          if (res.status !== 200)
+          if (!res || res.status !== 200)
             return new Alert(res.message, AlertType.ERROR, true);
         }
 

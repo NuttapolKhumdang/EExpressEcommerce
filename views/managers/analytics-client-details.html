@@ -1,0 +1,30 @@
+<main class="flex flex-col gap-4">
+  <header class="my-2 flex flex-row items-center justify-between">
+    <h1 class="font-mono text-3xl">รายละเอียด</h1>
+  </header>
+
+  <section class="grid grid-cols-1 gap-4">
+    <section class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans">
+      <h3 class="py-2 text-xl font-bold">ข้อมูล</h3>
+
+      <div class="flex w-full flex-row items-start justify-between">
+        <p>ชื่อ</p>
+        <span>{{ access.title }}{{access.viewpath}}</span>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 gap-1 border-2 border-gray-950 p-4 font-sans">
+      <h3 class="py-2 text-xl font-bold">เวลา</h3>
+
+      {% for record in access.action %}
+      <div class="flex w-full flex-row items-start justify-between">
+        {% if record.timestamp %}
+        <p class="font-mono"> {{ record.timestamp|date("Y.m.d H:i:s", -420) }}</p>
+        <p class="font-mono"> {{ record.ip}}</p>
+        {% else %}
+        <p class="font-mono"> {{ record|date("Y.m.d H:i:s", -420) }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </section>
+</main>

@@ -31,7 +31,7 @@
 
             {% for view in Object.keys(all) %}
             <div class="font-mono hover:bg-gray-950 hover:text-white">
-                <a href="{{view}}">{{ decodeURI(view)}}</a>
+                <a href="/managers/analytics/access?view={{ view }}">{{ decodeURI(view)}}</a>
                 <span class="text-center">{{ all[view] }}</span>
             </div>
             {% endfor %}
