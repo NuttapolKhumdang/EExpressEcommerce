@@ -124,7 +124,7 @@
 <body>
     <main class="mailbody">
         <div class="logo-warp">
-            <img class="logo" src="https://shop.nuttapolkhumdang.work/static/web-mailheading.png" alt="eexpress logo">
+            <img class="logo" src="https://store.nuttapolkhumdang.work/static/web-mailheading.png" alt="eexpress logo">
         </div>
 
         <h3 class="sans">รายละเอียดคำสั่งซื้อ</h3>
@@ -149,7 +149,7 @@
             </tr>
         </table>
 
-        <a class="alink sans" href="https://shop.nuttapolkhumdang.work/checkout/detail/{{ order._id }}?token={{ order.token }}">
+        <a class="alink sans" href="https://store.nuttapolkhumdang.work/checkout/detail/{{ order._id }}?token={{ order.token }}">
             <div>รายละเพิ่มเติม</div>
         </a>
 
@@ -164,11 +164,11 @@
             {{#each products as | p |}}
             <tr>
                 <th style="width: 5rem;" class="outer">
-                    <img src="https://shop.nuttapolkhumdang.work/images/products/{{ product.id }}/{{lookup product.images option.imageindex}}"
+                    <img src="https://store.nuttapolkhumdang.work/images/products/{{ product.id }}/{{lookup product.images option.imageindex}}"
                         width="1" height="1" class="inner">
                 </th>
                 <th style="width: 80%;">
-                    <a class="alink" href="https://shop.nuttapolkhumdang.work/{{product.search}}?option={{option.id}}">
+                    <a class="alink" href="https://store.nuttapolkhumdang.work/{{product.search}}?option={{option.id}}">
                         <h4 class="sans">{{product.name}} - {{option.title}}</h4>
                     </a>
                 </th>
