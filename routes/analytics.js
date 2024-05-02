@@ -6,7 +6,7 @@ const { ClientAccess } = require('../models/Analytics');
 
 
 router.get('/data', async (req, res, next) => {
-    if (req.query?.__alsx__at_qrx__v_) await updatePortal(req.query.__alsx__at_qrx__v_);
+    if (req.query?.portal) await updatePortal({ portal: req.query.portal, ip: req.ip });
     if (req.query?.__alsx__xu_clx__v_) await updateAnalytics({ clicks: req.query?.__alsx__xu_clx__v_ });
 
     return res.end();

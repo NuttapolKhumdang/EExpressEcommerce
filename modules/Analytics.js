@@ -11,9 +11,9 @@ async function updateAnalytics(updateObject) {
     }
 }
 
-async function updatePortal(portal) {
+async function updatePortal({ portal, ip } = e) {
     try {
-        await PortalAccess.findOneAndUpdate({ portal }, { $push: { action: new Date(), } }, { upsert: true });
+        await PortalAccess.findOneAndUpdate({ portal }, { $push: { action: { timestamp: new Date(), ip } } }, { upsert: true });
         return true;
     } catch (e) {
         console.error(e);
@@ -35,7 +35,7 @@ function clientAccess() {
         if (ignoreViewpath.includes(base)) return next();
 
         const viewpath = req.originalUrl.split('?')[0];
-        await ClientAccess.findOneAndUpdate({ viewpath }, { $push: { action: new Date(), } }, { upsert: true });
+        await ClientAccess.findOneAndUpdate({ viewpath }, { $push: { action: { ip: req.ip, timestamp: new Date() }, } }, { upsert: true });
         return next();
     }
 }
