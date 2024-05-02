@@ -17,6 +17,7 @@ const app = express();
 app.engine('html', consolidate.swig);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
+app.set('trust proxy', true);
 
 app.use(logger('dev'));
 app.use(express.json());
