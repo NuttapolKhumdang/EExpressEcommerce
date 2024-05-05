@@ -6,6 +6,10 @@ const ArticleSchema = new Schema({
     description: String,
     content: Array,
     search: String,
+    static: String,
+
+    public: Boolean,
+    deleted: Boolean,
 }, {
     timestamps: true,
 });

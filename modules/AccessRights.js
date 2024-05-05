@@ -45,6 +45,13 @@ const Access = {
         MODIFY_EMAIL: 'PROFILE_MODIFY_EMAIL',
         MODIFY_USERNAME: 'PROFILE_MODIFY_USERNAME',
     },
+
+    //* Article
+    ARTICLE: {
+        WRITE: 'ARTICLE_WRITE',
+        OVERVIEW: 'ARTICLE_OVERVIEW',
+        REMOVE: 'ARTICLE_REMOVE',
+    }
 };
 
 const AccountRole = {

@@ -4,11 +4,10 @@
 
 <head>
     {% include 'head.html' %}
-    <link rel="stylesheet" href="/stylesheets/articles.css">
     <title>{{ title }} &mdash; EExpress</title>
 </head>
 
-<body>
+<body class="flex flex-col items-center overflow-x-hidden">
     {% include 'nav.html' %}
     {% include render %}
     {% include 'cartview.html' %}

@@ -33,8 +33,7 @@ class Alert {
         div.classList.add("grid", "w-full", "max-w-6xl", "grid-cols-[1fr_2rem]", "min-h-8", "place-items-center")
 
         container.insertAdjacentElement("beforeend", div);
-        container.classList.add("flex", "h-max", "w-full", "items-center", "justify-center", "text-gray-50",this.alertType == 'ERROR' ? 'bg-rose-800' : 'bg-teal-800');
-        console.log(this.alertType);
+        container.classList.add("flex", "h-max", "w-full", "items-center", "justify-center", "text-gray-50", this.alertType == 'ERROR' ? 'bg-rose-800' : 'bg-teal-800');
         document.body.insertAdjacentElement("afterbegin", container);
 
         button.addEventListener("click", () => { this.remove() });

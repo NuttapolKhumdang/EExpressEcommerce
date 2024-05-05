@@ -23,11 +23,72 @@ const { parseAccessAnalytics } = require('../modules/Analytics');
 const { Account, Actions } = require('../models/Account');
 const { Product, Category } = require('../models/Product');
 const { Address, Promotion, Order, OrderStatus, OrderStatusName } = require('../models/Order');
+const { SEOContent } = require('../models/Content');
+const { Article } = require('../models/Article');
 
 router.get('/', Access(false), (req, res, next) => {
     return res.render('managers', { render: 'managers/profile-personal.html', account: req.user, AccountRole, Rights });
 });
 
+// ?? Articles
+router.route('/articles')
+    .get(Access(Rights.ARTICLE.OVERVIEW), async (req, res, next) => {
+        const articles = await Article.find({});
+        return res.render('managers', { render: 'managers/articles.html', account: req.user, articles });
+    })
+    .post(Access(Rights.ARTICLE.WRITE), async (req, res, next) => {
+        const article = new Article();
+        await article.save();
+        return res.redirect('/article/writer/' + article._id.toString());
+    });
+
+// ?? SEO Content
+router.route('/seo-optimize')
+    .get(async (req, res, next) => {
+        const seoContent = await SEOContent.find();
+
+        return res.render('managers', {
+            render: 'managers/seo-content.html', account: req.user,
+            seoContent,
+        });
+    })
+    .post(async (req, res, next) => {
+        if (!req.body?.descriptions) return res.status(400).json({ status: 400, message: 'ต้องการคำอธิบาย' });
+
+        try {
+            const seoContent = new SEOContent({
+                index: {
+                    title: req.body?.title,
+                    descriptions: req.body?.descriptions,
+                    keyword: req.body?.keyword.split(', '),
+                }
+            });
+
+            await seoContent.save();
+            return res.json({ status: 200, message: 'OK' });
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ status: 500, message: 'server error' });
+        };
+    })
+    .put(async (req, res, next) => {
+        if (!req.body?.id || !req.body?.descriptions) return res.status(400).json({ status: 400, message: 'ข้อมูลไม่ถูกต้อง' });
+
+        try {
+            await SEOContent.findByIdAndUpdate(req.body?.id, {
+                index: {
+                    title: req.body?.title,
+                    descriptions: req.body?.descriptions,
+                    keyword: req.body?.keyword.split(',').map(e => e.trim()),
+                }
+            });
+
+            return res.json({ status: 200, message: 'OK' });
+        } catch (e) {
+            console.error(e);
+            return res.status(500).json({ status: 500, message: 'server error' });
+        };
+    });
 
 // ?? Analytics
 router.get('/analytics/insights', Access([Rights.MAKET.ANALYTICS]), async (req, res, next) => {
@@ -92,7 +153,6 @@ router.get('/analytics/insights', Access([Rights.MAKET.ANALYTICS]), async (req, 
             conversion: fdiffp(conversion),
             sales: fdiffp(sales),
         },
-
 
         Months,
         date: new Date(),

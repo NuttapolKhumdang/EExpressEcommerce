@@ -1,18 +1,17 @@
-<main class="articles article-reader">
-    <header class="article-heading">
-        <h1 class="sans title">บทความของเรา</h1>
-        <p class="sans">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Praesentium voluptatum maiores ipsa
-            neque suscipit minima a, placeat, quaerat omnis optio doloribus dolorem tenetur similique dignissimos magni
-            odio itaque alias nam!</p>
-    </header>
-</main>
+<main class="w-full max-w-2xl">
+    <main class="flex flex-col py-16 min-h-96 justify-center gap-16">
+        <header class="flex flex-col gap-4">
+            <h1 class="font-sans text-6xl font-bold leading-relaxed">บทความของเรา</h1>
+            <p class="font-sans text-base">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas qui, amet incidunt eius labore corrupti! Iure id modi fuga corrupti vero laboriosam nemo maiores, ratione quisquam eveniet, sapiente ex repudiandae.</p>
+        </header>
 
-
-<main class="articles article-table">
-    {% for block in article %}
-    <a href="/article/{{ block.search }}">
-        <h2 class="sans">{{ block.title }}</h2>
-        <span class="mono">{{ block.updatedAt|date('Y.m.d')}}</span>
-    </a>
-    {% endfor%}
+        <main class="flex flex-col gap-1">
+            {% for block in article %}
+            <a href="/article/{{ block.search }}">
+                <h2 class="font-sans text-2xl font-bold">{{ block.title }}</h2>
+                <span class="font-mono text-sm font-medium">{{ block.updatedAt|date('Y.m.d')}}</span>
+            </a>
+            {% endfor%}
+        </main>
+    </main>
 </main>

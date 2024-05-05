@@ -1,113 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     {% include 'head.html' %}
-    <link rel="stylesheet" href="/stylesheets/articles.css">
+    <meta name="robots" content="noindex" />
+
     <title>{{ title }} &mdash; EExpress</title>
 </head>
 
-<body>
+<body class="flex flex-col items-center overflow-x-hidden">
     {% include 'nav.html' %}
 
-    <main class="article-writer writer-container">
-        <article id="writer">
-            <header class="article-heading">
-                <textarea type="text" id="article-title" class="sans title"
-                    placeholder="หัวข้อบทความ">{{ article.title }}</textarea>
-                <textarea type="text" id="article-description" class="sans"
-                    placeholder="คำอธิบาย">{{ article.description }}</textarea>
+    <main class="my-8 grid h-max w-full max-w-6xl grid-cols-1 gap-8 px-4 md:grid-cols-[1fr_18rem]">
+        <article id="writer" class="w-full">
+            <header class="mb-8 border-b-2 border-black">
+                <textarea type="text" id="article-title" placeholder="หัวข้อบทความ" class="w-full resize-none bg-gray-100 px-2 py-4 text-6xl font-bold leading-relaxed">{{ article.title }}</textarea>
+                <textarea type="text" id="article-description" placeholder="คำอธิบาย" class="w-full resize-none bg-gray-100 px-2 py-4">{{ article.description }}</textarea>
             </header>
 
-            {% for block in article.content %}
-            {% if block.tag == 'ul' or block.tag == 'ol' %}
-
-            <{{block.tag}}>
-                {% for li in block.content %}
-                <li><textarea class="{{ li.style }}" placeholder="เนื้อความ">{{ li.text }}</textarea></li>
-                {% endfor %}
-            </{{block.tag}}>
-
-            {% elif block.tag == 'img'%} <img src="/article/image/{{ block.src }}" class="{{ block.style }}">
-            {% else %}<textarea class="{{ block.style }}" placeholder="เนื้อความ">{{ block.text }}</textarea>{%
-            endif %}
+            <!-- <img src="/images/articles/66344784815d6d5d003ed32a/d5c4aae0-14a7-4013-a1c0-ac0b0a36c638.webp" class="border-2 border-transparent my-4" /> -->
+            {% for block in article.content %} {% if block.tag == 'img'%}
+            <!--  -->
+            <img src="/images/articles/{{ article._id.toString() }}/{{ block.src }}" class="mb-2 border-2 border-transparent" />
+            {% else %}
+            <!--  -->
+            {% if block.style.startsWith('heading') %}
+            <textarea class="heading w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-4xl font-bold" placeholder="หัวข้อ">{{ block.text }}</textarea>
+            
+            {% elif block.style.startsWith('paragraph') %}
+            <textarea class="paragraph w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-lg" placeholder="หัวข้อ">{{ block.text }}</textarea>
+            <!--  -->
+            {% endif %}
+            {% endif %}
+            <!--  -->
             {% endfor %}
         </article>
 
-        <section class="element-config">
-            <h4 class="sans">รูปแบบตัวอักษร</h4>
-            <div class="text-format">
-                <select id="FONT_WEIGHT" onchange="writer.set_style(this.id, this.value)" , class="sans">
-                    <option value="weight-normal">หนาปกติ</option>
-                    <option value="weight-bold">หนามาก</option>
-                </select>
-
-                <select id="FONT_SIZE" , onchange="writer.set_style(this.id, this.value)" class="sans">
-                    <option value="size-small">ขนาดเล็ก</option>
-                    <option value="size-normal">ขนาดปกติ</option>
-                    <option value="size-large">ขนาดใหญ่</option>
-                </select>
-            </div>
-
-            <h4 class="sans">รูปแบบการจัดวาง</h4>
-            <div class="alignment-container">
-                <div class="alignment">
-                    <button class="sans" id="align-left" onclick="writer.set_style('TEXT_ALIGN', this.id)">
-                        <span class="material-icons-outlined">format_align_left</span>
+        <section class="sticky top-[calc(4rem_+_2rem_+_2px)] flex h-max max-h-[calc(100dvh_-_6rem)] w-full flex-col gap-2 border-2 border-black p-2 font-sans">
+            <p class="font-bold">เพิ่มส่วน</p>
+            <div class="flex flex-col gap-2">
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('heading')">
+                        หัวข้อ
                     </button>
-                    <button class="sans" id="align-center" onclick="writer.set_style('TEXT_ALIGN', this.id)">
-                        <span class="material-icons-outlined">format_align_center</span>
-                    </button>
-                    <button class="sans" id="align-right" onclick="writer.set_style('TEXT_ALIGN', this.id)">
-                        <span class="material-icons-outlined">format_align_right</span>
+                    <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('paragraph')">
+                        เนื้อความ
                     </button>
                 </div>
 
-                <div class="spacing">
-                    <button class="sans" id="space-before" onclick="writer.set_style('SPACE', this.id, true)">
-                        <span class="material-icons-outlined">vertical_align_top</span>
+                <hr />
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('image')">
+                    รูปภาพ
+                </button>
+            </div>
+
+            <menu class="hidden h-max w-full flex-col gap-2" id="SX_MENU_IMG_OPTIONS">
+                <p class="font-bold">รูปภาพ</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.replaceImage()">
+                        แทนที่
                     </button>
-                    <button class="sans" id="space-after" onclick="writer.set_style('SPACE', this.id, true)">
-                        <span class="material-icons-outlined">vertical_align_bottom</span>
+                    <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.removeImage()">
+                        ลบรูปภาพ
                     </button>
                 </div>
-            </div>
+            </menu>
 
-            <h4 class="sans">เพิ่มส่วน</h4>
-            <div class="section-insert">
-                <button class="sans" onclick="writer.insert('heading')">หัวข้อ</button>
-                <button class="sans" onclick="writer.insert('paragraph')">เนื้อความ</button>
-
-                <hr>
-                <button class="sans" onclick="writer.insert('ol')">รายการแบบลำดับ</button>
-                <button class="sans" onclick="writer.insert('ul')">รายการแบบไม่มีลำดับ</button>
-
-                <hr>
-                <button class="sans" onclick="writer.insert('image')">รูปภาพ</button>
-            </div>
+            <menu class="h-max w-full flex-col gap-2" id="SX_MENU_SAVING_OPTIONS">
+                <p class="font-bold">ตัวเลือก</p>
+                <div class="grid auto-cols-auto gap-2">
+                    <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.update()">
+                        <input type="checkbox" class="peer hidden" id="isloading" />
+                        <span class="hidden h-4 w-4 animate-spin rounded-full border-2 border-black border-t-gray-300 peer-checked:block"></span>
+                        <div class="flex items-center justify-center gap-2 peer-checked:hidden">
+                            <p>บันทึก</p>
+                        </div>
+                    </button>
+                    <a href="/managers/articles" class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white">
+                        <div class="flex items-center justify-center gap-2">
+                            <p>กลับหน้าหลัก</p>
+                        </div>
+                    </a>
+                </div>
+            </menu>
         </section>
     </main>
 
     <script>
-        const writer_container = document.getElementById('writer');
+        const WRITER_CONTAINER = document.getElementById("writer");
+        const SX_MENU_IMG_OPTIONS = document.getElementById(
+            "SX_MENU_IMG_OPTIONS",
+        );
+        const SX_MENU_SAVING_OPTIONS = document.getElementById(
+            "SX_MENU_SAVING_OPTIONS",
+        );
+        const BASE_IMAGE_ROUTE = "/images/articles/{{ article._id.toString() }}";
 
         class WriterGetImage {
             constructor(callback = (filename = String) => { }) {
                 const input = document.createElement("input");
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
+                input.setAttribute("type", "file");
+                input.setAttribute("accept", "image/*");
 
-                input.onchange = async e => {
+                input.onchange = async (e) => {
                     const fd = new FormData();
-                    fd.append('image', e.target.files[0]);
-                    const res = await fetchJson('/article/image/new', {
-                        method: 'POST',
+                    fd.append("image", e.target.files[0]);
+                    const res = await fetchJson("/article/image/{{ article._id.toString() }}", {
+                        method: "POST",
                         body: fd,
-                    });
+                    },);
 
-                    console.log(res);
-                    return callback(res.filename);
-                }
+                    if (res.status === 201) return callback(res.filename);
+                    else new Alert(res.message, AlertType.ERROR, true);
+                };
+
                 input.click();
             }
         }
@@ -120,110 +126,118 @@
                 this.update_timeout = 2000;
                 this.timeout_object = setTimeout(() => { }, this.update_timeout);
 
-                this.container.querySelectorAll("textarea").forEach(e => { this.initTextInput(e) });
+                this.container.querySelectorAll("textarea").forEach((e) => {
+                    this.initTextInput(e);
+                });
+
+                this.container.querySelectorAll("img").forEach((e) => {
+                    this.initImage(e);
+                });
             }
 
-            textFormatStyle() {
-                const FONT_WEIGHT = ['weight-normal', 'weight-bold'];
-                const FONT_SIZE = ['size-small', 'size-normal', 'size-large'];
-                const TEXT_ALIGN = ['align-left', 'align-center', 'align-right'];
-                const SPACE = ['space-before', 'space-after'];
-                const STYLE = { FONT_WEIGHT, FONT_SIZE, TEXT_ALIGN, SPACE };
-
-                return { FONT_WEIGHT, FONT_SIZE, TEXT_ALIGN, SPACE, STYLE };
+            unSelectImage() {
+                SX_MENU_IMG_OPTIONS.classList.add("hidden");
+                this.container
+                    .querySelectorAll("img")
+                    .forEach((e) => (e.classList = "border-2 border-transparent mb-2"));
             }
 
             initTextInput(obj = document.getElementById()) {
-                obj.setAttribute("style", "height:" + (obj.scrollHeight) + "px;overflow-y:hidden;");
-                obj.addEventListener("textarea", OnTextInput, false);
+                obj.setAttribute(
+                    "style",
+                    "height:" + obj.scrollHeight + "px;overflow-y:hidden;",
+                );
+                obj.addEventListener("input", OnTextInput, false);
                 obj.addEventListener("keydown", OnKeydown, false);
-                obj.addEventListener("focus", e => { this.select = obj });
+                obj.addEventListener("focus", (e) => {
+                    this.unSelectImage();
+                    this.select = obj;
+                });
 
                 obj.addEventListener("keypress", () => this.update(), false);
             }
 
-            createListObject(template) {
-                let container;
+            initImage(obj = document.getElementById()) {
+                obj.addEventListener("click", (e) => {
+                    obj.classList.remove("border-transparent");
+                    obj.classList.add("border-black", "rounded");
 
-                if (['ol', 'ul'].includes(template)) {
-                    container = document.createElement(template);
-                    container.insertAdjacentElement("afterbegin", this.createListObject('li'));
-                }
-
-                if (template == 'li') {
-                    container = document.createElement("li");
-
-                    const textarea = document.createElement("textarea");
-                    textarea.classList.add('sans');
-                    textarea.setAttribute('placeholder', 'ข้อความ');
-                    this.initTextInput(textarea);
-
-                    container.insertAdjacentElement("afterbegin", textarea);
-                }
-                return container;
+                    this.select = obj;
+                    SX_MENU_IMG_OPTIONS.classList.remove("hidden");
+                });
             }
 
             createTextInput(template) {
                 const template_title = {
-                    heading: 'หัวข้อ',
-                    paragraph: 'เนื้อความ',
-                }
+                    heading: "หัวข้อ",
+                    paragraph: "เนื้อความ",
+                };
 
                 const textarea = document.createElement("textarea");
-                textarea.classList.add(template, 'sans');
-                textarea.setAttribute('placeholder', template_title[template]);
+                textarea.classList =
+                    template +
+                    " w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto";
+                if (template == "heading")
+                    textarea.classList.add("text-4xl", "font-bold");
+
+                textarea.setAttribute("placeholder", template_title[template]);
                 this.initTextInput(textarea);
 
                 return textarea;
             }
 
-            replaceImage(obj) {
+            replaceImage() {
+                new WriterGetImage((filename) => {
+                    this.select.setAttribute("src", BASE_IMAGE_ROUTE + "/" + filename);
+                    this.update();
+                });
+            }
 
+            removeImage() {
+                this.select.remove();
+                this.select = null;
+                this.unSelectImage();
+                this.update();
             }
 
             createImage() {
                 new WriterGetImage((filename) => {
-                    const object = document.createElement("img");
-                    object.setAttribute('src', '/article/image/' + filename);
+                    const img = document.createElement("img");
+                    img.setAttribute("src", BASE_IMAGE_ROUTE + "/" + filename);
+
+                    img.classList = "border-2 border-transparent mb-2";
 
                     this.select
-                        ? this.select.insertAdjacentElement("afterend", object)
-                        : this.container.insertAdjacentElement("beforeend", object);
+                        ? this.select.insertAdjacentElement("afterend", img)
+                        : this.container.insertAdjacentElement("beforeend", img);
+                    this.initImage(img);
                     this.update();
                 });
             }
 
             insert(template) {
-                if (this.select && !['ARTICLE', 'OL', 'UL', 'LI'].includes(this.select.parentElement.tagName)) return;
+                if (
+                    this.select &&
+                    !["ARTICLE"].includes(this.select.parentElement.tagName)
+                )
+                    return;
                 let object;
 
-                if (['paragraph', 'heading'].includes(template)) object = this.createTextInput(template);
-                if (['ol', 'ul', 'li'].includes(template)) object = this.createListObject(template);
-                if (template == 'image') return this.createImage();
+                if (["paragraph", "heading"].includes(template))
+                    object = this.createTextInput(template);
+                if (template == "image") return this.createImage();
 
-                if (template == 'li') this.select.parentElement.insertAdjacentElement("afterend", object);
-                else this.select
+                this.select
                     ? this.select.insertAdjacentElement("afterend", object)
                     : this.container.insertAdjacentElement("beforeend", object);
                 focus(object);
             }
 
-            set_style(k, v, toggle = false) {
-                if (k !== 'SPACE' && this.select.classList.contains('heading')) return;
-
-                if (!toggle) {
-                    this.textFormatStyle().STYLE[k].forEach(e => this.select.classList.remove(e));
-                    this.select.classList.add(v);
-                } else {
-                    this.select.classList.toggle(v);
-                }
-
-                this.update();
-            }
-
             content() {
                 const title = document.getElementById("article-title").value;
-                const description = document.getElementById("article-description").value;
+                const description = document.getElementById(
+                    "article-description",
+                ).value;
                 const content = [];
 
                 for (let child of this.container.children) {
@@ -233,50 +247,59 @@
                         data = {
                             style: child.classList.toString(),
                             text: child.value,
-                        }
-                    }
-
-                    else if (child.tagName == "IMG" && child.src) {
+                        };
+                    } else if (child.tagName == "IMG" && child.src) {
                         data = {
-                            tag: 'img',
+                            tag: "img",
                             style: child.classList.toString(),
-                            src: child.src.split('/').reverse()[0],
-                        }
-                    }
-
-                    else if (['OL', 'UL'].includes(child.tagName)) {
+                            src: child.src.split("/").reverse()[0],
+                        };
+                    } else if (["OL", "UL"].includes(child.tagName)) {
                         data = {
                             tag: child.tagName.toLowerCase(),
-                            content: []
-                        }
+                            content: [],
+                        };
 
                         for (let li of child.children) {
                             const textarea = li.querySelector("textarea");
-                            data.content.push({ style: textarea.classList.toString(), text: textarea.value });
+                            data.content.push({
+                                style: textarea.classList.toString(),
+                                text: textarea.value,
+                            });
                         }
                     } else continue;
 
                     content.push(data);
                 }
 
-                console.log(content);
                 return { title, description, content };
             }
 
             update() {
                 clearTimeout(this.timeout_object);
-                this.timeout_object = setTimeout(() => fetch('/article/writer/{{ article._id.toString() }}', {
+                SX_MENU_SAVING_OPTIONS.querySelector("#isloading").checked = true;
+
+                this.timeout_object = setTimeout(() => fetch("/article/writer/{{ article._id.toString() }}", {
                     headers: {
-                        'Content-Type': 'application/json'
+                        "Content-Type": "application/json",
                     },
-                    method: 'PUT',
+                    method: "PUT",
                     body: JSON.stringify(this.content())
-                }).then(res => res.json()).then(res => {
-                    if (res.status !== 200) new Alert(res.message, AlertType.ERROR, true);
-                }).catch(e => {
-                    console.error(e);
-                    new Alert('something wrong with server', AlertType.ERROR, true);
-                }), this.update_timeout);
+                })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        if (res.status !== 200)
+                            new Alert(res.message, AlertType.ERROR, true);
+                    })
+                    .catch((e) => {
+                        console.error(e);
+                        new Alert("เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง", AlertType.ERROR, true);
+                    })
+                    .finally(() => {
+                        SX_MENU_SAVING_OPTIONS.querySelector("#isloading").checked = false;
+                    }),
+                    this.update_timeout,
+                );
             }
         }
     </script>
@@ -285,50 +308,76 @@
         function OnKeydown(k = new KeyboardEvent()) {
             if (k.code == "Backspace" && !this.value) {
                 k.preventDefault();
-                if (writer.container.children.length - 1 > 1 && writer.select.parentElement.tagName == "ARTICLE") {
+                if (
+                    writer.container.children.length - 1 > 1 &&
+                    writer.select.parentElement.tagName == "ARTICLE"
+                ) {
                     let currentIndex = 0;
-                    for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
-                    focus(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0]);
+                    for (let i = 0; i < writer.container.children.length; i++)
+                        if (writer.container.children[i] == this) currentIndex = i;
+                    focus(
+                        writer.container.children[
+                        currentIndex - 1 >= 0 ? currentIndex - 1 : 0
+                        ],
+                    );
 
                     this.remove();
-                }
-
-                if (writer.select.parentElement.tagName == "LI") {
-                    if (writer.select.parentElement.parentElement.children.length <= 1) {
-                        writer.select.parentElement.parentElement.remove();
-                    }
-
-                    writer.select.parentElement.remove();
                 }
 
                 writer.update();
             }
 
-            if (k.code == 'Enter') {
+            if (k.code == "Enter") {
                 k.preventDefault();
 
                 console.log(writer.select.parentElement.tagName);
-                if (writer.select.parentElement.tagName == "ARTICLE") writer.insert('paragraph');
-                if (writer.select.parentElement.tagName == "LI") writer.insert('li');
+                if (writer.select.parentElement.tagName == "ARTICLE")
+                    writer.insert("paragraph");
+                if (writer.select.parentElement.tagName == "LI") writer.insert("li");
             }
 
-            if (k.code == "ArrowUp" && this.selectionStart == 0 || (k.ctrlKey && k.code == "ArrowUp")) {
+            if (
+                (k.code == "ArrowUp" && this.selectionStart == 0) ||
+                (k.ctrlKey && k.code == "ArrowUp")
+            ) {
                 let currentIndex = 0;
-                for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
-                if (['UL', 'OL'].includes(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0].tagName)) currentIndex++;
-                focus(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0]);
+                for (let i = 0; i < writer.container.children.length; i++)
+                    if (writer.container.children[i] == this) currentIndex = i;
+                if (
+                    ["UL", "OL"].includes(
+                        writer.container.children[
+                            currentIndex - 1 >= 0 ? currentIndex - 1 : 0
+                        ].tagName,
+                    )
+                )
+                    currentIndex++;
+                focus(
+                    writer.container.children[
+                    currentIndex - 1 >= 0 ? currentIndex - 1 : 0
+                    ],
+                );
             }
 
-            if (k.code == "ArrowDown" && (this.selectionStart == this.value.length) || (k.ctrlKey && k.code == "ArrowDown")) {
+            if (
+                (k.code == "ArrowDown" && this.selectionStart == this.value.length) ||
+                (k.ctrlKey && k.code == "ArrowDown")
+            ) {
                 let currentIndex = 0;
-                for (let i = 0; i < writer.container.children.length; i++) if (writer.container.children[i] == this) currentIndex = i;
-                focus(writer.container.children[currentIndex + 1 >= writer.container.children.length - 1 ? writer.container.children.length - 1 : currentIndex + 1]);
+                for (let i = 0; i < writer.container.children.length; i++)
+                    if (writer.container.children[i] == this) currentIndex = i;
+                focus(
+                    writer.container.children[
+                    currentIndex + 1 >= writer.container.children.length - 1
+                        ? writer.container.children.length - 1
+                        : currentIndex + 1
+                    ],
+                );
             }
         }
 
         function OnTextInput() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + "px";
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
         }
 
         function focus(obj = document.getElementById()) {
@@ -336,13 +385,16 @@
         }
     </script>
 
-    <script>const writer = new Writer(writer_container)</script>
+    <script>
+        const writer = new Writer(WRITER_CONTAINER);
+    </script>
 
     {% if !article.content or article.content.length == 0 %}
-    <script>writer.insert();</script>
+    <script>writer.insert("paragraph")</script>
     {% if endif %}
-
+    <!--  -->
     {% include 'cartview.html' %}
+    <!--  -->
     {% include 'footer.html' %}
 </body>
 

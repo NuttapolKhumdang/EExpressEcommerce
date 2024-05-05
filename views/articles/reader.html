@@ -1,31 +1,36 @@
-<main class="articles article-reader">
-    <header class="article-heading">
-        <h1 class="sans title">{{ article.title }}</h1>
-        <p class="sans">{{ article.description }}</p>
-    </header>
-</main>
+<main class="w-full max-w-2xl">
+    <main class="flex flex-col py-16 min-h-96 justify-center">
+        <header class="flex flex-col gap-4">
+            <h1 class="font-sans text-6xl font-bold leading-relaxed">{{ article.title }}</h1>
+            <p class="font-sans text-base">{{ article.description }}</p>
+        </header>
 
+        <section class="flex flex-col items-end">
+            <div class="text-sm flex flex-row justify-start gap-1">
+                <p>เขียนเมื่อ</p>
+                <span class="font-mono">{{ article.createdAt|date('Y.m.d H:i', -420)}}</span>
+            </div>
+            <div class="text-sm flex flex-row justify-start gap-1">
+                <p>ปรับปรุงล่าสุด</p>
+                <span class="font-mono">{{ article.updatedAt|date('Y.m.d H:i', -420)}}</span>
+            </div>
+        </section>
+    </main>
 
-<main class="articles article-reader">
-    <article>
-        {{ article._id.toString() }}
-        {% for block in article.content %}
+    <main class="h-max">
+        <!-- {{ article._id.toString() }} -->
+        <article class="flex flex-col">
+            {% for block in article.content %}
 
-        {% if block.tag == 'ul' or block.tag == 'ol' %}
-        <{{block.tag}}>
-            {% for li in block.content %}
-            <li class="{{ style }}">{{ li.text }}</li>
+            {% if block.tag == 'img'%}
+            <img src="/images/articles/{{ article._id.toString() }}/{{ block.src }}" class="py-4" alt="{{ article.title }}'s insert image">
+
+            {% elif block.style.startsWith('heading') %}<h1 class="text-4xl font-bold py-8 pb-4">{{ block.text }}</h1>
+            {% elif block.style.startsWith('paragraph') %}
+            <pre class="font-sans text-lg whitespace-pre-wrap">{{ block.text }}</pre>
+            {% endif %}
+
             {% endfor %}
-        </{{block.tag}}>
-
-        {% elif block.tag == 'img'%}
-        <img src="/article/image/{{ block.src }}" class="{{block.styel}}" alt="{{ article.title }}'s insert image">
-
-        {% elif block.style.startsWith('heading') %}<h1 class="{{ block.style }}">{{ block.text }}</h1>
-        {% elif block.style.startsWith('paragraph') %}
-        <pre class="{{ block.style }}">{{ block.text }}</pre>
-        {% endif %}
-
-        {% endfor %}
-    </article>
+        </article>
+    </main>
 </main>
