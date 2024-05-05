@@ -2,256 +2,225 @@
 
 <!doctype html>
 <html lang="en">
-  <head>
-    {% include 'head.html' %}
-    <title>{{ product.name }} &mdash; EExpress</title>
-  </head>
 
-  <body class="flex flex-col items-center overflow-x-hidden">
-    {% include 'nav.html' %}
-    <!--  -->
-    <script>
-      if (!getLocalStorage('agree-site-example')) new Alert(
-        'ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/docs/about-this-project" class="underline">ข้อมูลเพิ่มเติม</a>',
-        AlertType.ERROR,
-      );
+<head>
+  {% include 'head.html' %}
+  <meta name="description" content="{{ product.description }}">
 
-      setLocalStorage('agree-site-example', true);
-    </script>
-    
-    <main
-      class="grid w-full max-w-6xl grid-cols-1 gap-8 px-12 py-8 lg:h-max lg:grid-cols-2"
-    >
-      <section class="flex h-max flex-col gap-4">
-        <img
-          class="h-full max-h-96 object-contain"
-          src="/images/products/{{ product._id.toString() }}/{{ product.images[0] }}"
-          id="renderview-image"
-          alt="product preview image"
-        />
+  <meta name="og:title" content="{{ product.name }} - EExpress">
+  <meta name="og:description" content="{{product.name}} {{ product.description }}">
+  <meta name="og:image" content="https://store.nuttapolkhumdang.work/images/products/{{ product._id.toString() }}/{{ product.images[0] }}">
+  <meta name="og:url" content="https://store.nuttapolkhumdang.work/{{product.search}}">
+  <meta name="og:type" content="product.group">
 
-        <div class="flex flex-row gap-2 items-start justify-start  w-full overflow-x-scroll" id="itable">
-          {% for image in product.images %}
-          <img
-            class="max-h-14 w-14 cursor-pointer object-cover"
-            src="/images/products/{{ product._id.toString() }}/{{ image }}"
-            loading="lazy"
-            alt="product image {{ loop.index}}"
-            onclick="previewImage(this.src)"
-          />
-          {% endfor %}
-        </div>
+  <title>{{ product.name }} &mdash; EExpress</title>
+</head>
 
-        <script>
-          const renderviewimage = document.getElementById("renderview-image");
-          function previewImage(src = "") {
-            renderviewimage.src = src;
+<body class="flex flex-col items-center overflow-x-hidden">
+  {% include 'nav.html' %}
+  <!--  -->
+  <script>
+    new Alert(
+      'ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/article/static/about-this-project" class="underline">ข้อมูลเพิ่มเติม</a>',
+      AlertType.ERROR,
+    );
+  </script>
+
+  <main class="grid w-full max-w-6xl grid-cols-1 gap-8 px-12 py-8 lg:h-max lg:grid-cols-2">
+    <section class="flex h-max flex-col gap-4">
+      <img class="h-full max-h-96 object-contain" src="/images/products/{{ product._id.toString() }}/{{ product.images[0] }}" id="renderview-image" alt="product preview image" />
+
+      <div class="flex flex-row gap-2 items-start justify-start  w-full overflow-x-scroll" id="itable">
+        {% for image in product.images %}
+        <img class="max-h-14 w-14 cursor-pointer object-cover" src="/images/products/{{ product._id.toString() }}/{{ image }}" loading="lazy" alt="product image {{ loop.index}}" onclick="previewImage(this.src)" />
+        {% endfor %}
+      </div>
+
+      <script>
+        const renderviewimage = document.getElementById("renderview-image");
+        function previewImage(src = "") {
+          renderviewimage.src = src;
+        }
+      </script>
+    </section>
+
+    <header class="flex h-max flex-col gap-4">
+      <h1 class="font-sans text-4xl font-bold">{{ product.name }}</h1>
+      <pre class="whitespace-pre-wrap font-sans text-lg">{{ product.description }}</pre>
+
+      <div class="flex w-full flex-row items-baseline justify-end gap-2">
+        <span class="font-sans text-sm">ราคา</span>
+        <p class="font-display text-2xl font-bold" id="pdprice">
+          {{ product.options[0].price }}
+        </p>
+      </div>
+
+      {%if product.options.length > 1 %}
+      <b class="font-sans">ตัวเลือกสินค้า</b>
+      <div class="flex flex-row flex-wrap gap-4" id="options-container">
+        {% for option in product.options %}
+        <button class="{% if option.id == option %}text-white bg-gray-950{% endif %} border-2 border-gray-950 px-4 py-2 font-sans font-bold duration-100 hover:bg-gray-950 hover:text-white" id="{{option.id}}" onclick="optionSelect(this, { id: '{{option.id}}', title: '{{option.title}}', price: '{{option.price}}', imageindex: '{{option.imageindex}}' })">
+          {{ option.title }}
+        </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <script>
+        const itable = document.getElementById("itable");
+        const images = [];
+        itable
+          .querySelectorAll("img")
+          .forEach((e) => images.push(e.src.split("/").reverse()[0]));
+      </script>
+
+      <div class="flex w-full flex-row gap-4">
+        <menu class="flex min-w-24 flex-1 flex-row">
+          <div class="grid grid-cols-1 grid-rows-2 place-items-center">
+            <button onclick="qinc()" class="flex h-full w-full items-center justify-center px-2 py-1 duration-100 hover:bg-gray-950 hover:text-white">
+              <span class="material-icons-outlined">add</span>
+            </button>
+            <button onclick="qdec()" class="flex h-full w-full items-center justify-center px-2 py-1 duration-100 hover:bg-gray-950 hover:text-white">
+              <span class="material-icons-outlined">remove</span>
+            </button>
+          </div>
+
+          <input type="text" disabled class="w-full border-2 border-gray-950 bg-white text-center font-display text-3xl font-bold" value="1" id="incv" />
+        </menu>
+
+        <button onclick="checkout()" class="w-64 shrink border-2 border-gray-950 font-sans text-2xl font-bold duration-100 hover:bg-gray-950 hover:text-white">
+          ซื้อ
+        </button>
+
+        <button id="addtocart" onclick="addToCart()" class="w-20 shrink-0 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+          <span class="material-icons-outlined">shopping_bag</span>
+        </button>
+      </div>
+      <script>
+        const btn_addtocart = document.getElementById("addtocart");
+        const incv = document.getElementById("incv");
+        function qinc() {
+          quantity = ++incv.value;
+        }
+        function qdec() {
+          if (incv.value > 1) quantity = --incv.value;
+        }
+      </script>
+
+      <script>
+        const optionscontainer = document.getElementById("options-container");
+        const pdprice = document.getElementById("pdprice");
+
+        const product = {
+          id: "{{ product.id }}",
+          name: "{{ product.name }}",
+          images: [
+            //{% for i in product.images %}
+            "{{ i }}",
+            //{% endfor %}
+          ],
+
+          search: "{{ product.search }}",
+        };
+
+        let selectOption = null;
+        let isAlreadyInCart = false;
+        let quantity = 1;
+
+        function optionSelect(
+          obj = document.getElementById(),
+          option = { id, title, price, imageindex },
+        ) {
+          if (typeof obj === "string") obj = document.getElementById(obj);
+          for (let e of optionscontainer.children) {
+            e.classList.remove("bg-gray-950", "text-white");
+            e.classList.add("bg-white", "text-black");
           }
-        </script>
-      </section>
+          obj.classList.remove("bg-white", "text-black");
+          obj.classList.add("bg-gray-950", "text-white");
 
-      <header class="flex h-max flex-col gap-4">
-        <h1 class="font-sans text-4xl font-bold">{{ product.name }}</h1>
-        <pre class="whitespace-pre-wrap font-sans text-lg">
-{{ product.description }}</pre
-        >
+          selectOption = option;
+          pdprice.innerHTML = option.price;
+          previewImage(
+            "/images/products/{{ product._id.toString() }}/" +
+            images[option.imageindex !== "" ? option.imageindex : 0],
+          );
 
-        <div class="flex w-full flex-row items-baseline justify-end gap-2">
-          <span class="font-sans text-sm">ราคา</span>
-          <p class="font-display text-2xl font-bold" id="pdprice">
-            {{ product.options[0].price }}
-          </p>
-        </div>
+          isAlreadyInCart = getLocalStorage("cart", true).filter(
+            (e) => e.option.id == selectOption.id,
+          )[0];
+          btn_addtocart.querySelector("span").innerHTML = isAlreadyInCart
+            ? "check"
+            : "shopping_bag";
+        }
 
-        {%if product.options.length > 1 %}
-        <b class="font-sans">ตัวเลือกสินค้า</b>
-        <div class="flex flex-row flex-wrap gap-4" id="options-container">
-          {% for option in product.options %}
-          <button
-            class="{% if option.id == option %}text-white bg-gray-950{% endif %} border-2 border-gray-950 px-4 py-2 font-sans font-bold duration-100 hover:bg-gray-950 hover:text-white"
-            id="{{option.id}}"
-            onclick="optionSelect(this, { id: '{{option.id}}', title: '{{option.title}}', price: '{{option.price}}', imageindex: '{{option.imageindex}}' })"
-          >
-            {{ option.title }}
-          </button>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        <script>
-          const itable = document.getElementById("itable");
-          const images = [];
-          itable
-            .querySelectorAll("img")
-            .forEach((e) => images.push(e.src.split("/").reverse()[0]));
-        </script>
-
-        <div class="flex w-full flex-row gap-4">
-          <menu class="flex min-w-24 flex-1 flex-row">
-            <div class="grid grid-cols-1 grid-rows-2 place-items-center">
-              <button
-                onclick="qinc()"
-                class="flex h-full w-full items-center justify-center px-2 py-1 duration-100 hover:bg-gray-950 hover:text-white"
-              >
-                <span class="material-icons-outlined">add</span>
-              </button>
-              <button
-                onclick="qdec()"
-                class="flex h-full w-full items-center justify-center px-2 py-1 duration-100 hover:bg-gray-950 hover:text-white"
-              >
-                <span class="material-icons-outlined">remove</span>
-              </button>
-            </div>
-
-            <input
-              type="text"
-              disabled
-              class="w-full border-2 border-gray-950 bg-white text-center font-display text-3xl font-bold"
-              value="1"
-              id="incv"
-            />
-          </menu>
-
-          <button
-            onclick="checkout()"
-            class="w-64 shrink border-2 border-gray-950 font-sans text-2xl font-bold duration-100 hover:bg-gray-950 hover:text-white"
-          >
-            ซื้อ
-          </button>
-
-          <button
-            id="addtocart"
-            onclick="addToCart()"
-            class="w-20 shrink-0 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-          >
-            <span class="material-icons-outlined">shopping_bag</span>
-          </button>
-        </div>
-        <script>
-          const btn_addtocart = document.getElementById("addtocart");
-          const incv = document.getElementById("incv");
-          function qinc() {
-            quantity = ++incv.value;
+        function addToCart(force = false) {
+          if (isAlreadyInCart && !force) {
+            btn_addtocart.querySelector("span").innerHTML = "shopping_bag";
+            cart.remove(isAlreadyInCart.id);
+            isAlreadyInCart = false;
+            return false;
           }
-          function qdec() {
-            if (incv.value > 1) quantity = --incv.value;
-          }
-        </script>
 
-        <script>
-          const optionscontainer = document.getElementById("options-container");
-          const pdprice = document.getElementById("pdprice");
-
-          const product = {
-            id: "{{ product.id }}",
-            name: "{{ product.name }}",
-            images: [
-              //{% for i in product.images %}
-              "{{ i }}",
-              //{% endfor %}
-            ],
-
-            search: "{{ product.search }}",
-          };
-
-          let selectOption = null;
-          let isAlreadyInCart = false;
-          let quantity = 1;
-
-          function optionSelect(
-            obj = document.getElementById(),
-            option = { id, title, price, imageindex },
-          ) {
-            if (typeof obj === "string") obj = document.getElementById(obj);
-            for (let e of optionscontainer.children) {
-              e.classList.remove("bg-gray-950", "text-white");
-              e.classList.add("bg-white", "text-black");
-            }
-            obj.classList.remove("bg-white", "text-black");
-            obj.classList.add("bg-gray-950", "text-white");
-
-            selectOption = option;
-            pdprice.innerHTML = option.price;
-            previewImage(
-              "/images/products/{{ product._id.toString() }}/" +
-                images[option.imageindex !== "" ? option.imageindex : 0],
+          if (!selectOption) {
+            new Alert(
+              "เลือกตัวเลือกสินค้าก่อนดำเนินการต่อ",
+              AlertType.ERROR,
+              true,
             );
-
-            isAlreadyInCart = getLocalStorage("cart", true).filter(
-              (e) => e.option.id == selectOption.id,
-            )[0];
-            btn_addtocart.querySelector("span").innerHTML = isAlreadyInCart
-              ? "check"
-              : "shopping_bag";
+            return false;
           }
 
-          function addToCart(force = false) {
-            if (isAlreadyInCart && !force) {
-              btn_addtocart.querySelector("span").innerHTML = "shopping_bag";
-              cart.remove(isAlreadyInCart.id);
-              isAlreadyInCart = false;
-              return false;
-            }
+          if (force && isAlreadyInCart) return true;
 
-            if (!selectOption) {
-              new Alert(
-                "เลือกตัวเลือกสินค้าก่อนดำเนินการต่อ",
-                AlertType.ERROR,
-                true,
-              );
-              return false;
-            }
+          btn_addtocart.querySelector("span").innerHTML = "check";
+          isAlreadyInCart = cart.add(product, selectOption, quantity);
+          return true;
+        }
+      </script>
 
-            if (force && isAlreadyInCart) return true;
+      {% if option %}{% for options in product.options %}{% if options.id ==
+      option %}
+      <script>
+        selectOption = {
+          id: "{{ options.id }}",
+          title: "{{ options.title }}",
+          price: "{{ options.price }}",
+          imageindex: "{{ options.imageindex }}",
+        };
 
-            btn_addtocart.querySelector("span").innerHTML = "check";
-            isAlreadyInCart = cart.add(product, selectOption, quantity);
-            return true;
-          }
-        </script>
+        if (selectOption) {
+          optionSelect("{{ options.id }}", selectOption);
+          btn_addtocart.querySelector("span").innerHTML = "check";
+        }
+      </script>
+      {% endif %}{% endfor %}{% endif %} {% if product.options.length == 1%}
+      <script>
+        selectOption = {
+          id: "{{ product.options[0].id }}",
+          title: "{{ product.options[0].title }}",
+          price: "{{ product.options[0].price }}",
+          imageindex: "{{ product.options[0].imageindex }}",
+        };
 
-        {% if option %}{% for options in product.options %}{% if options.id ==
-        option %}
-        <script>
-          selectOption = {
-            id: "{{ options.id }}",
-            title: "{{ options.title }}",
-            price: "{{ options.price }}",
-            imageindex: "{{ options.imageindex }}",
-          };
+        if (selectOption) {
+          optionSelect("{{ options.id }}", selectOption);
+          btn_addtocart.querySelector("span").innerHTML = "check";
+        }
+      </script>
+      {% endif %}
 
-          if (selectOption) {
-            optionSelect("{{ options.id }}", selectOption);
-            btn_addtocart.querySelector("span").innerHTML = "check";
-          }
-        </script>
-        {% endif %}{% endfor %}{% endif %} {% if product.options.length == 1%}
-        <script>
-          selectOption = {
-            id: "{{ product.options[0].id }}",
-            title: "{{ product.options[0].title }}",
-            price: "{{ product.options[0].price }}",
-            imageindex: "{{ product.options[0].imageindex }}",
-          };
+      <script>
+        function checkout() {
+          const isSuccess = addToCart(true);
+          if (!isSuccess) return;
+          redirect("/checkout");
+        }
+      </script>
+    </header>
+  </main>
 
-          if (selectOption) {
-            optionSelect("{{ options.id }}", selectOption);
-            btn_addtocart.querySelector("span").innerHTML = "check";
-          }
-        </script>
-        {% endif %}
-
-        <script>
-          function checkout() {
-            const isSuccess = addToCart(true);
-            if (!isSuccess) return;
-            redirect("/checkout");
-          }
-        </script>
-      </header>
-    </main>
-
-    <!-- <main class="webstatic product-detail">
+  <!-- <main class="webstatic product-detail">
         <article class="sans">
             <h1>Heading</h1>
             <p>
@@ -265,25 +234,24 @@
         </article>
     </main> -->
 
-    <header
-      class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold"
-    >
-      สินค้าที่คุณอาจสนใจ
-    </header>
+  <!-- <header class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold">
+    สินค้าที่คุณอาจสนใจ
+  </header> -->
+  <header class="flex h-max w-full max-w-6xl flex-row items-center px-12 py-8 font-sans text-2xl font-bold">
+    สินค้าที่คล้ายกัน
+  </header>
 
-    <main
-      class="grid w-full max-w-6xl grid-cols-1 gap-4 px-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
-      {% for product in products %}
-      <!--  -->
-      {{ template.ptableitem(product._id.toString() ,product.search,
-      product.images[0], product.name) }}
-      <!--  -->
-      {% endfor %}
-    </main>
-
-    {% include 'cartview.html' %}
+  <main class="grid w-full max-w-6xl grid-cols-1 gap-4 px-12 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {% for product in products %}
     <!--  -->
-    {% include 'footer.html' %}
-  </body>
+    {{ template.ptableitem(product._id.toString(), product.search,product.images[0], product.name, product.price) }}
+    <!--  -->
+    {% endfor %}
+  </main>
+
+  {% include 'cartview.html' %}
+  <!--  -->
+  {% include 'footer.html' %}
+</body>
+
 </html>

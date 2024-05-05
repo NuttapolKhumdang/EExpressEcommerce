@@ -4,12 +4,26 @@
 
 <head>
     {% include 'head.html' %}
+
+    <meta name="og:site_name" content="EExpress">
+    <meta name="og:title" content="Unleash Your Tech Potential - EExpress">
+    <meta name="og:description" content="Unleash your gaming potential. High-performance laptops, PCs, & gaming accessories. Shop EExpress now!">
+    <meta name="og:image" content="https://store.nuttapolkhumdang.work/static/eexpress-logo.png">
+    <meta name="og:url" content="https://store.nuttapolkhumdang.work/">
+    <meta name="og:type" content="product.group">
+
     <title>EExpress</title>
 </head>
 
-<body class="grid grid-cols-1 place-items-center items-center overflow-x-hidden">
+<body class="flex flex-col items-center overflow-x-hidden">
     {% include 'nav.html' %}
     <!--  -->
+    <script>
+        new Alert(
+            'ข้อมูลทั้งหมดเป็นเพียงตัวอย่างเพื่อแสดงการทำงานของเว็ปไซต์ และไม่มีการชำระค่าบริการหรือส่งสินค้าใดๆ ทั้งสิ้น &nbsp; <a href="/article/static/about-this-project" class="underline">ข้อมูลเพิ่มเติม</a>',
+            AlertType.INFO,
+        );
+    </script>
 
     {% if appearance.length === 0 %}
     <h2 class="font-bold text-3xl w-full max-w-6xl py-8">ไม่พบข้อมูล</h2>

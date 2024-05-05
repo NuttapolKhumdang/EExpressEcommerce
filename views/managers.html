@@ -1,52 +1,47 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    {% include 'head.html' %}
-    <link rel="stylesheet" href="/stylesheets/managers.css" />
-    <title>Manager &mdash; EExpress</title>
-  </head>
 
-  <body
-    class="grid grid-cols-1 place-items-center items-center overflow-x-hidden"
-  >
+<head>
+    {% include 'head.html' %}
+    <meta name="robots" content="noindex">
+    <title>Manager &mdash; EExpress</title>
+</head>
+
+<body class="grid grid-cols-1 place-items-center items-center overflow-x-hidden">
     {% include 'nav.html' %}
     <!--  -->
     {% if message %}
     <script>
-      new Alert("{{ message }}", AlertType.INFO, true);
+        new Alert("{{ message }}", AlertType.INFO, true);
     </script>
     {% elif error %}
     <script>
-      new Alert("{{ error }}", AlertType.ERROR, true);
+        new Alert("{{ error }}", AlertType.ERROR, true);
     </script>
     {% endif %}
     <!--  -->
-    <main
-      class="my-8 grid h-max w-full max-w-6xl grid-cols-1 gap-8 px-4 md:grid-cols-[18rem_1fr]"
-    >
-      <menu
-        id="managersnav"
-        class="fixed -left-full grid h-max max-h-[calc(100dvh_-_6rem)] w-full grid-cols-1 overflow-y-scroll border-gray-950 bg-white p-8 duration-700 md:sticky md:top-[calc(4rem_+_2rem_+_2px)] md:max-h-[calc(100vh_-_8rem_-_2px)] md:border-2 md:p-0"
-      >
-        {% include './managers/nav.html' %}
-      </menu>
-      {% include render %}
+    <main class="my-8 grid h-max w-full max-w-6xl grid-cols-1 gap-8 px-4 md:grid-cols-[18rem_1fr]">
+        <menu id="managersnav" class="fixed -left-full grid h-max max-h-[calc(100dvh_-_6rem)] w-full grid-cols-1 overflow-y-scroll border-gray-950 bg-white p-8 duration-700 md:sticky md:top-[calc(4rem_+_2rem_+_2px)] md:max-h-[calc(100vh_-_8rem_-_2px)] md:border-2 md:p-0">
+            {% include './managers/nav.html' %}
+        </menu>
+        {% include render %}
     </main>
 
     <script>
-      function extendManagersNav() {
-        const mnav = document.getElementById("managersnav");
+        function extendManagersNav() {
+            const mnav = document.getElementById("managersnav");
 
-        if (mnav.classList.contains("-left-full")) {
-          mnav.classList.remove("-left-full");
-          mnav.classList.add("-left-0");
-        } else {
-          mnav.classList.add("-left-full");
-          mnav.classList.remove("-left-0");
+            if (mnav.classList.contains("-left-full")) {
+                mnav.classList.remove("-left-full");
+                mnav.classList.add("-left-0");
+            } else {
+                mnav.classList.add("-left-full");
+                mnav.classList.remove("-left-0");
+            }
         }
-      }
     </script>
 
     {% include 'cartview.html' %}
-  </body>
+</body>
+
 </html>

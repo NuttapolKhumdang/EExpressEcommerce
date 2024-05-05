@@ -1,0 +1,60 @@
+<main class="flex flex-col gap-4">
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">เนื้อหาสำหรับการเพิ่มประสิทธิภาพการค้นหา</h1>
+
+        <button onclick="portalCreator.render()" class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white">
+            <span class="material-icons-outlined">add</span>
+        </button>
+    </header>
+
+    <section class="flex flex-col gap-2">
+        {% if not accounts or accounts.length === 0 %}
+        <h4 class="font-sans font-bold">ไม่พบข้อมูล</h4>
+        {% endif %}
+        <!--  -->
+
+        {% for content in seoContent %}
+        <button class="group grid h-max grid-cols-[6fr_1fr_1fr_2rem] place-items-center gap-4 border-2 border-black p-4 font-sans duration-100 hover:bg-gray-950 hover:text-white">
+            <p class="w-full text-left">{{ content.index.title }}</p>
+            <p class="w-full text-center">{{ content.index.descriptions }}</p>
+        </button>
+        {% endfor%}
+    </section>
+</main>
+
+
+<!-- !!!!!! -->
+<header id="insert-seo-content" class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg">
+    <div class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 overflow-y-scroll border-2 border-black bg-white p-4 py-8 my-4">
+        <header class="flex h-max w-full flex-row items-center justify-between">
+            <h1 class="font-sans text-2xl font-bold">เพิ่มข้อมูล</h1>
+
+            <button id="close" class="flex h-8 w-8 items-center justify-center border-2 border-black duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </header>
+
+        <form onsubmit="event.preventDefault()" class="flex flex-col gap-4">
+            <label for="section-title" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">ชื่อหน้าแรก</span>
+                <input type="text" id="section-title" name="title" class="h-12 border-b-2 border-black font-sans outline-offset-4" placeholder="ชื่อหน้าแรก" />
+            </label>
+            <label for="section-title" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">คำอธิบายหน้าหลัก</span>
+                <textarea type="text" name="descriptions" id="section-title" class="h-12 resize-none border-b-2 border-black py-4 font-sans outline-offset-4" placeholder="คำอธิบายหน้าหลัก"></textarea>
+            </label>
+            <label for="section-title" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">คำค้นหา</span>
+                <input type="text" name="keyword" id="section-title" class="h-12 border-b-2 border-black font-sans outline-offset-4" placeholder="คำค้นหา" />
+            </label>
+
+            <button type="submit" class="group/submit flex h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-gray-950 hover:text-white">
+                <p class="group-focus/submit:hidden">
+                    {% if product %} บันทึกการเปลี่ยนแปลง {% else %} เพิ่มสินค้า {% endif %}
+                </p>
+            </button>
+        </form>
+    </div>
+</header>
+
+<script src="/javascripts/textarea.js"></script>
