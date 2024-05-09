@@ -1,539 +1,608 @@
 <main class="flex flex-col gap-4">
-  <header class="my-2 flex flex-row items-center justify-between">
-    <h1 class="font-mono text-3xl">เพิ่มสินค้า</h1>
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">เพิ่มสินค้า</h1>
 
-    {% if product?._id %}
-    <menu class="flex flex-row gap-4">
-      <a
-        href=""
-        class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-      >
-        <span class="material-icons-outlined">article</span>
-      </a>
-      <button
-        onclick="remove()"
-        class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-      >
-        <span class="material-icons-outlined">delete</span>
-      </button>
-    </menu>
+        {% if product?._id %}
+        <menu class="flex flex-row gap-4">
+            <a href="" class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">article</span>
+            </a>
+            <button onclick="remove()" class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">delete</span>
+            </button>
+        </menu>
 
-    <script>
-      async function remove() {
-        const res = await fetchJson("/product/{{ product._id.toString() }}", {
-          method: "DELETE",
-        });
+        <script>
+            async function remove() {
+                const res = await fetchJson("/product/{{ product._id.toString() }}", {
+                    method: "DELETE",
+                });
 
-        if (res) redirect("/managers/product");
-      }
-    </script>
-    {% endif %}
-  </header>
-
-  <form id="product-create" class="flex flex-col gap-4">
-    <h3 class="py-2 text-xl font-bold">รูปภาพสินค้า</h3>
-
-    <section class="relative min-h-32 border-2 border-gray-950 p-4">
-      <label
-        for="image"
-        class="{% if product.images %}hidden {% endif %} absolute left-0 top-0 z-30 flex h-full w-full items-center justify-center bg-white duration-100 hover:bg-gray-950 hover:text-white"
-        id="image-select"
-      >
-        <div class="flex flex-row gap-2">
-          <span class="material-icons-outlined">image</span>
-          <p class="font-sans">เพิ่มรูปภาพ</p>
-        </div>
-
-        <input
-          type="file"
-          id="image"
-          accept="image/*"
-          multiple
-          class="hidden"
-        />
-      </label>
-
-      <div
-        class="grid h-max w-full grid-cols-6 gap-2 *:h-32 *:max-h-32 *:w-full *:object-cover"
-        id="image-preview"
-      >
-        <label
-          for="image"
-          class="flex h-full min-h-32 w-full items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-        >
-          <span class="material-icons-outlined">autorenew</span>
-        </label>
-
-        {% for image in product.images %}
-        <img
-          src="/images/products/{{ product._id.toString() }}/{{ image }}"
-          loading="lazy"
-          alt="product image {{ loop.index }}"
-        />
-        {% endfor %}
-      </div>
-
-      <script>
-        const image = document.getElementById("image");
-        const imagelabel = document.getElementById("image-select");
-        const imagepreview = document.getElementById("image-preview");
-        const defaultimagepreview = imagepreview.querySelector("label");
-
-        let images_store = [];
-        const imagefile = async () => {
-          const res = await fetchJson("/product/id/{{ product.search }}");
-          images_store = res?.images ?? [];
-          return res?.images ?? [];
-        };
-
-        let files = [];
-        function createPreview(files) {
-          let imgl = [];
-
-          for (let i = 0; i < files.length; i++) {
-            if (i >= 20) {
-              break;
+                if (res) redirect("/managers/product");
             }
-            const img = document.createElement("img");
-
-            if (typeof files[i] === "string") {
-              img.src =
-                "/images/products/{{ product._id.toString() }}/" + files[i];
-            } else {
-              const reader = new FileReader();
-
-              reader.onload = function (e) {
-                img.src = e.target.result;
-              };
-
-              reader.readAsDataURL(files[i]);
-            }
-            imgl.push(img);
-          }
-
-          return imgl;
-        }
-
-        image.addEventListener("change", (e) => {
-          if (e.target.files.length > 20) {
-            new Alert(
-              "สามารถเลือกรูปภาพได้สูงสุด 20 ภาพเท่านั้น",
-              AlertType.ERROR,
-              true,
-            );
-            return;
-          }
-
-          if (e.target.files.length !== 0) {
-            imagelabel.classList.add("hidden");
-            imagepreview.innerHTML = "";
-            imagepreview.insertAdjacentElement(
-              "afterbegin",
-              defaultimagepreview,
-            );
-
-            const imageContent = createPreview(e.target.files);
-            files = e.target.files;
-
-            imageContent.forEach((e) => {
-              imagepreview.insertAdjacentElement("beforeend", e);
-            });
-          } else {
-            imagelabel.classList.remove("hidden");
-            imagepreview.innerHTML = "";
-          }
-        });
-      </script>
-    </section>
-
-    <fieldset class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4">
-      <h3 class="py-2 text-xl font-bold">ข้อมูลสินค้า</h3>
-
-      <label for="name" class="grid grid-cols-1 gap-2">
-        <span class="w-max font-mono text-sm underline">ชื่อสินค้า</span>
-
-        <input
-          type="text"
-          id="name"
-          class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-          placeholder="ชื่อสินค้า"
-          value="{{ product.name }}"
-          required
-        />
-      </label>
-
-      <label for="desc" class="grid grid-cols-1 gap-2">
-        <span class="w-max font-mono text-sm underline">คำอธิบายสินค้า</span>
-
-        <textarea
-          id="desc"
-          class="h-12 resize-none border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-          placeholder="คำอธิบายสินค้า"
-          onkeydown="return event.keyCode != 13 ? true: false"
-        >
-{{ product.description }}</textarea
-        >
-      </label>
-
-      <label for="category" class="grid grid-cols-1 gap-2">
-        <span class="w-max font-mono text-sm underline">ประเภทสินค้า</span>
-
-        <select
-          id="category"
-          class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-        >
-          <option value="" disabled>ประเภทสินค้า</option>
-          <option value="category-new">เพิ่มประเภทสินค้า</option>
-          <hr />
-          {% for cate in category %}
-          <!--  -->
-          {% if cate._id.toString() == product.category %}
-          <option value="{{ cate._id.toString() }}" selected>
-            {{ cate.title }}
-          </option>
-          {% else %}
-          <option value="{{ cate._id.toString() }}">{{ cate.title }}</option>
-          {% endif %}
-          <!--  -->
-          {% endfor %}
-        </select>
-
-        <input
-          type="hidden"
-          id="category-new"
-          class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-          placeholder="ประเภทสินค้า"
-        />
-      </label>
-
-      <script>
-        const category_select = document.getElementById("category");
-        const category_new = document.getElementById("category-new");
-
-        function check_category_select() {
-          if (category_select.value == "category-new") {
-            category_new.setAttribute("type", "text");
-            category_new.setAttribute("required", true);
-          } else {
-            category_new.setAttribute("type", "hidden");
-            category_new.removeAttribute("required");
-          }
-        }
-        category_select.addEventListener("change", () => {
-          check_category_select();
-        });
-      </script>
-
-      {% if not product.category %}
-      <script>
-        check_category_select();
-      </script>
-      {% endif%}
-    </fieldset>
-
-    <header class="flex w-full flex-row items-center justify-between">
-      <h3 class="py-2 text-xl font-bold">ตัวเลือก</h3>
+        </script>
+        {% endif %}
     </header>
 
-    <button type="button" onclick="selectOptionImage('${optionId}')"></button>
-    <section id="options" class="flex h-max w-full flex-col gap-4">
-      {% for option in product.options %}
-      <div
-        id="{{ option.id }}"
-        class="options relative grid grid-cols-[16rem_1fr] gap-2 border-2 border-gray-950"
-      >
-        <button
-          type="button"
-          onclick="pOptions.removeOption('{{ option.id }}')"
-          class="absolute right-0 top-0 flex h-max w-max items-center justify-center border-b-2 border-l-2 border-gray-950 p-1 hover:bg-gray-950 hover:text-white"
-        >
-          <span class="material-icons-outlined">delete</span>
+    <form id="product-create" class="flex flex-col gap-4">
+        <h3 class="py-2 text-xl font-bold">รูปภาพสินค้า</h3>
+
+        <section class="relative min-h-32 border-2 border-gray-950 p-4">
+            <label for="image" class="{% if product.images %}hidden {% endif %} absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-white duration-100 hover:bg-gray-950 hover:text-white" id="image-select">
+                <div class="flex flex-row gap-2">
+                    <span class="material-icons-outlined">image</span>
+                    <p class="font-sans">เพิ่มรูปภาพ</p>
+                </div>
+
+                <input type="file" id="image" accept="image/*" multiple class="hidden" />
+            </label>
+
+            <div class="grid h-max w-full grid-cols-6 gap-2 *:h-32 *:max-h-32 *:w-full *:object-cover" id="image-preview">
+                <label for="image" class="flex h-full min-h-32 w-full items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+                    <span class="material-icons-outlined">autorenew</span>
+                </label>
+
+                {% for image in product.images %}
+                <img src="/images/products/{{ product._id.toString() }}/{{ image }}" loading="lazy" alt="product image {{ loop.index }}" />
+                {% endfor %}
+            </div>
+
+            <script>
+                const image = document.getElementById("image");
+                const imagelabel = document.getElementById("image-select");
+                const imagepreview = document.getElementById("image-preview");
+                const defaultimagepreview = imagepreview.querySelector("label");
+
+                let images_store = [];
+                const imagefile = async () => {
+                    const res = await fetchJson("/product/id/{{ product.search }}");
+                    images_store = res?.images ?? [];
+                    return res?.images ?? [];
+                };
+
+                let files = [];
+                function createPreview(files) {
+                    let imgl = [];
+
+                    for (let i = 0; i < files.length; i++) {
+                        if (i >= 20) {
+                            break;
+                        }
+                        const img = document.createElement("img");
+
+                        if (typeof files[i] === "string") {
+                            img.src =
+                                "/images/products/{{ product._id.toString() }}/" + files[i];
+                        } else {
+                            const reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                            };
+
+                            reader.readAsDataURL(files[i]);
+                        }
+                        imgl.push(img);
+                    }
+
+                    return imgl;
+                }
+
+                image.addEventListener("change", (e) => {
+                    if (e.target.files.length > 20) {
+                        new Alert(
+                            "สามารถเลือกรูปภาพได้สูงสุด 20 ภาพเท่านั้น",
+                            AlertType.ERROR,
+                            true,
+                        );
+                        return;
+                    }
+
+                    if (e.target.files.length !== 0) {
+                        imagelabel.classList.add("hidden");
+                        imagepreview.innerHTML = "";
+                        imagepreview.insertAdjacentElement(
+                            "afterbegin",
+                            defaultimagepreview,
+                        );
+
+                        const imageContent = createPreview(e.target.files);
+                        files = e.target.files;
+
+                        imageContent.forEach((e) => {
+                            imagepreview.insertAdjacentElement("beforeend", e);
+                        });
+                    } else {
+                        imagelabel.classList.remove("hidden");
+                        imagepreview.innerHTML = "";
+                    }
+                });
+            </script>
+        </section>
+
+        <fieldset class="grid grid-cols-1 gap-8 border-2 border-gray-950 p-4">
+            <h3 class="py-2 text-xl font-bold">ข้อมูลสินค้า</h3>
+
+            <label for="name" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">ชื่อสินค้า</span>
+
+                <input type="text" id="name" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="ชื่อสินค้า" value="{{ product.name }}" required />
+            </label>
+
+            <label for="desc" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">คำอธิบายสินค้า</span>
+
+                <textarea id="desc" class="h-12 resize-none border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="คำอธิบายสินค้า" onkeydown="return event.keyCode != 13 ? true: false">{{ product.description }}</textarea>
+            </label>
+
+            <label for="category" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">ประเภทสินค้า</span>
+
+                <select id="category" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4">
+                    <option value="" disabled>ประเภทสินค้า</option>
+                    <option value="category-new">เพิ่มประเภทสินค้า</option>
+                    <hr />
+                    {% for cate in category %}
+                    <!--  -->
+                    {% if cate._id.toString() == product.category %}
+                    <option value="{{ cate._id.toString() }}" selected>
+                        {{ cate.title }}</option>
+                    {% else %}
+                    <option value="{{ cate._id.toString() }}">{{ cate.title }}</option>
+                    {% endif %}
+                    <!--  -->
+                    {% endfor %}
+                </select>
+
+                <input type="hidden" id="category-new" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="ประเภทสินค้า" />
+            </label>
+
+            <script>
+                const category_select = document.getElementById("category");
+                const category_new = document.getElementById("category-new");
+
+                function check_category_select() {
+                    if (category_select.value == "category-new") {
+                        category_new.setAttribute("type", "text");
+                        category_new.setAttribute("required", true);
+                    } else {
+                        category_new.setAttribute("type", "hidden");
+                        category_new.removeAttribute("required");
+                    }
+                }
+
+                category_select.addEventListener("change", () => {
+                    check_category_select();
+                });
+            </script>
+
+            {% if not product.category %}
+            <script>check_category_select()</script>
+            {% endif%}
+
+
+            <label for="tags" class="grid grid-cols-1 gap-2" id="tags-container">
+                <span class="w-max font-mono text-sm underline">แท็กสินค้า</span>
+                <section id="tags-inserted" class="flex flex-row items-start justify-start gap-2 *:border *:border-black *:p-1 *:px-2 font-mono *:flex *:items-center *:justify-center *:relative"></section>
+                <div class="grid grid-cols-[1fr_4rem]">
+                    <input id="tags" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="เพิ่มแท็กสินค้า" />
+                    <button type="button" onclick="ImportTagsObject.open()" class="flex items-center justify-center border-2 border-black hover:bg-black hover:text-white duration-100"><span class="material-icons-outlined">download</span></button>
+                </div>
+            </label>
+
+            <script>
+                function createRenderTagsChild(v) {
+                    return `<div id="tags" class="group *:duration-100" onclick="tags.remove('${v}')">
+                        <p class="group-hover:opacity-0">${v}</p>
+                        <p class="opacity-0 group-hover:opacity-100 absolute">ลบ</p>
+                    </div>`;
+                }
+
+                class Tags {
+                    constructor(container = document.getElementById(), initTags = []) {
+                        this.contaienr = container;
+                        this.tags = initTags;
+                        if (initTags.length !== 0) this.render();
+
+                        this.contaienr.querySelector('input#tags').addEventListener("keydown", k => {
+                            if (k.code == "Enter") {
+                                k.preventDefault();
+                                tags.add(k.target.value);
+                                k.target.value = '';
+                            }
+                        })
+                    }
+
+                    add(v) {
+                        if (!v) return;
+
+                        const isduplicate = this.tags.filter(e => e === v).length !== 0;
+                        if (isduplicate) return new Alert('เพิ่มแท็กนี้แล้ว', AlertType.INFO, true);
+                        this.tags.push(String(v));
+                        this.render();
+                    }
+
+                    import(import_tags = []) {
+                        if (!import_tags) return;
+                        console.log(import_tags);
+                        import_tags.forEach(e => this.tags.push(String(e)));
+                        this.render();
+                    }
+
+                    remove(v) {
+                        if (!v) return;
+                        this.tags = this.tags.filter(e => e !== v);
+                        this.render();
+                    }
+
+                    render() {
+                        const inseted_container = this.contaienr.querySelector("#tags-inserted");
+                        const template = this.tags.map(e => createRenderTagsChild(e));
+
+                        inseted_container.innerHTML = "";
+                        template.forEach(e => inseted_container.innerHTML += e);
+                    }
+
+                    get() {
+                        return this.tags;
+                    }
+                }
+
+                const tag_container = document.getElementById("tags-container");
+                const tags = new Tags(tag_container, [
+                    // ** {% for tag in product.tags %}
+                    "{{ tag }}",
+                    // ** {% endfor %}
+                ]);
+            </script>
+        </fieldset>
+
+        <header class="flex w-full flex-row items-center justify-between">
+            <h3 class="py-2 text-xl font-bold">ตัวเลือก</h3>
+        </header>
+
+        <button type="button" onclick="selectOptionImage('${optionId}')"></button>
+        <section id="options" class="flex h-max w-full flex-col gap-4">
+
+            <!-- ? Render produect options if change details  -->
+            {% for option in product.options %}
+            <div id="{{ option.id }}" class="options relative grid grid-cols-[16rem_1fr] gap-2 border-2 border-gray-950">
+                <button type="button" onclick="pOptions.removeOption('{{ option.id }}')" class="absolute right-0 top-0 flex h-max w-max items-center justify-center border-b-2 border-l-2 border-gray-950 p-1 hover:bg-gray-950 hover:text-white">
+                    <span class="material-icons-outlined">delete</span>
+                </button>
+
+                <section class="flex flex-col gap-2 p-4">
+                    <header class="font-mono text-lg">ตัวเลือก {{ loop.index }}</header>
+                    <menu>
+                        {% if option.imageindex !== "" %}
+                        <img onclick="selectOptionImage('{{ option.id }}')" src="/images/products/{{ product._id.toString() }}/{{ product.images[option.imageindex] }}" loading="lazy" alt="option image preview" class="h-auto max-h-48 w-full object-cover" />
+                        {% else %}
+                        <button type="button" onclick="selectOptionImage('{{ option.id }}')" class="flex min-h-12 w-full flex-row items-center justify-center gap-2 border-2 border-gray-950 hover:bg-gray-950 hover:text-white">
+                            <span class="material-icons-outlined">art_track</span>
+                            <p class="sans">เลือกรูปภาพสินค้า</p>
+                        </button>
+                        {% endif %}
+                    </menu>
+                </section>
+                <fieldset class="flex h-full flex-col gap-4 border-l-2 border-gray-950 p-4">
+                    <input type="hidden" id="imageindex" value="{{ option.imageindex }}" />
+                    <input type="hidden" id="optionid" value="{{ option.id }}" />
+
+                    <label for="title" class="grid grid-cols-1 gap-2">
+                        <span class="w-max font-mono text-sm underline">ชื่อสินค้า</span>
+
+                        <input type="text" id="title" class="h-12 border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="ชื่อตัวเลือก" value="{{ option.title }}" />
+                    </label>
+
+                    <label for="price" class="grid grid-cols-1 gap-2">
+                        <span class="w-max font-mono text-sm underline">ราคา</span>
+
+                        <input type="number" id="price" class="h-12 border-b-2 border-gray-950 py-4 font-sans outline-offset-4" placeholder="ราคา" min="0" value="{{ option.price }}" />
+                    </label>
+                </fieldset>
+            </div>
+            {% endfor %}
+        </section>
+
+        <button type="button" onclick="pOptions.insertOption()" class="flex h-12 w-full items-center justify-center gap-2 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+            <span class="material-icons-outlined flex h-max w-max">add</span>
+            <p class="font-bold">เพิ่มตัวเลือกสินค้า</p>
         </button>
 
-        <section class="flex flex-col gap-2 p-4">
-          <header class="font-mono text-lg">ตัวเลือก {{ loop.index }}</header>
-          <menu>
-            {% if option.imageindex !== "" %}
-            <img
-              onclick="selectOptionImage('{{ option.id }}')"
-              src="/images/products/{{ product._id.toString() }}/{{ product.images[option.imageindex] }}"
-              loading="lazy"
-              alt="option image preview"
-              class="h-auto max-h-48 w-full object-cover"
-            />
-            {% else %}
-            <button
-              type="button"
-              onclick="selectOptionImage('{{ option.id }}')"
-              class="flex min-h-12 w-full flex-row items-center justify-center gap-2 border-2 border-gray-950 hover:bg-gray-950 hover:text-white"
-            >
-              <span class="material-icons-outlined">art_track</span>
-              <p class="sans">เลือกรูปภาพสินค้า</p>
-            </button>
-            {% endif %}
-          </menu>
-        </section>
-        <fieldset
-          class="flex h-full flex-col gap-4 border-l-2 border-gray-950 p-4"
-        >
-          <input
-            type="hidden"
-            id="imageindex"
-            value="{{ option.imageindex }}"
-          />
-          <input type="hidden" id="optionid" value="{{ option.id }}" />
+        <button type="submit" class="group/submit flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white">
+            <p class="group-focus/submit:hidden">
+                {% if product %} บันทึกการเปลี่ยนแปลง {% else %} เพิ่มสินค้า {% endif %}
+            </p>
 
-          <label for="title" class="grid grid-cols-1 gap-2">
-            <span class="w-max font-mono text-sm underline">ชื่อสินค้า</span>
+            <div class="hidden h-6 w-6 animate-spin rounded-full border-2 border-gray-950 border-t-gray-300 group-focus/submit:block"></div>
+        </button>
 
-            <input
-              type="text"
-              id="title"
-              class="h-12 border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-              placeholder="ชื่อตัวเลือก"
-              value="{{ option.title }}"
-            />
-          </label>
+        <script src="/javascripts/ProductOptions.js"></script>
 
-          <label for="price" class="grid grid-cols-1 gap-2">
-            <span class="w-max font-mono text-sm underline">ราคา</span>
+        <script>
+            const optionsContainer = document.getElementById("options");
+            const pOptions = new ProductOptions(
+                optionsContainer,
+                "{{ product._id.toString() }}",
+            );
 
-            <input
-              type="number"
-              id="price"
-              class="h-12 border-b-2 border-gray-950 py-4 font-sans outline-offset-4"
-              placeholder="ราคา"
-              min="0"
-              value="{{ option.price }}"
-            />
-          </label>
-        </fieldset>
-      </div>
-      {% endfor %}
-    </section>
+            function parseContent() {
+                const image = document.getElementById("image");
+                const name = document.getElementById("name").value;
+                const description = document.getElementById("desc").value;
+                const category = document.getElementById("category").value;
+                const newcategory = document.getElementById("category-new").value;
+                const options = pOptions.getresult();
 
-    <button
-      type="button"
-      onclick="pOptions.insertOption()"
-      class="flex h-12 w-full items-center justify-center gap-2 border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-    >
-      <span class="material-icons-outlined flex h-max w-max">add</span>
-      <p class="font-bold">เพิ่มตัวเลือกสินค้า</p>
-    </button>
+                const formData = new FormData();
+                let ignoreImage = false;
 
-    <button
-      type="submit"
-      class="group/submit flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white"
-    >
-      <p class="group-focus/submit:hidden">
-        {% if product %} บันทึกการเปลี่ยนแปลง {% else %} เพิ่มสินค้า {% endif %}
-      </p>
+                /*{% if product %}*/
+                ignoreImage = true;
+                /* {% endif %}*/
 
-      <div
-        class="hidden h-6 w-6 animate-spin rounded-full border-2 border-gray-950 border-t-gray-300 group-focus/submit:block"
-      ></div>
-    </button>
+                if (!name || !category) {
+                    new Alert(
+                        "กรุณาเพิ่มชื่อสินค้า หรือเลือกประเภทของสินค้า",
+                        AlertType.ERROR,
+                        true,
+                    );
+                    return false;
+                }
 
-    <script src="/javascripts/ProductOptions.js"></script>
+                if (
+                    !ignoreImage &&
+                    (!image?.files?.length || image?.files?.length === 0)
+                ) {
+                    new Alert("กรุณาเพิ่มภาพสินค้า", AlertType.ERROR, true);
+                    return false;
+                }
 
-    <script>
-      const optionsContainer = document.getElementById("options");
-      const pOptions = new ProductOptions(
-        optionsContainer,
-        "{{ product._id.toString() }}",
-      );
+                let invalidOptionCount = 0;
+                options.forEach((e) => {
+                    if (!e.title || !e.price || !e.id) invalidOptionCount++;
+                });
 
-      function parseContent() {
-        const image = document.getElementById("image");
-        const name = document.getElementById("name").value;
-        const description = document.getElementById("desc").value;
-        const category = document.getElementById("category").value;
-        const newcategory = document.getElementById("category-new").value;
-        const options = pOptions.getresult();
+                if (invalidOptionCount) {
+                    new Alert(
+                        "ตัวเลือกของสินค้าไม่ถูกต้อง ลองตรวจสอบและดำเนินการอีกครั้ง",
+                        AlertType.ERROR,
+                        true,
+                    );
+                    return false;
+                }
 
-        const formData = new FormData();
-        let ignoreImage = false;
+                formData.append("name", name);
+                formData.append("description", description);
+                formData.append("category", category);
+                formData.append("newcategory", newcategory);
+                formData.append("options", JSON.stringify(options));
+                formData.append("tags", JSON.stringify(tags.get()));
 
-        /*{% if product %}*/
-        ignoreImage = true;
-        /* {% endif %}*/
+                for (let i = 0; i < image.files.length; i++) {
+                    formData.append("images", image.files[i]);
+                }
 
-        if (!name || !category) {
-          new Alert(
-            "กรุณาเพิ่มชื่อสินค้า หรือเลือกประเภทของสินค้า",
-            AlertType.ERROR,
-            true,
-          );
-          return false;
-        }
+                return formData;
+            }
+        </script>
 
-        if (
-          !ignoreImage &&
-          (!image?.files?.length || image?.files?.length === 0)
-        ) {
-          new Alert("กรุณาเพิ่มภาพสินค้า", AlertType.ERROR, true);
-          return false;
-        }
+        {% if not product.options or product.options.length == 0 %}
+        <script>
+            pOptions.insertOption();
+        </script>
+        {% else %}
 
-        let invalidOptionCount = 0;
-        options.forEach((e) => {
-          if (!e.title || !e.price || !e.id) invalidOptionCount++;
-        });
-
-        if (invalidOptionCount) {
-          new Alert(
-            "ตัวเลือกของสินค้าไม่ถูกต้อง ลองตรวจสอบและดำเนินการอีกครั้ง",
-            AlertType.ERROR,
-            true,
-          );
-          return false;
-        }
-
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("category", category);
-        formData.append("newcategory", newcategory);
-        formData.append("options", JSON.stringify(options));
-
-        for (let i = 0; i < image.files.length; i++) {
-          formData.append("images", image.files[i]);
-        }
-
-        return formData;
-      }
-    </script>
-
-    {% if not product.options or product.options.length == 0 %}
-    <script>
-      pOptions.insertOption();
-    </script>
-    {% else %}
-
-    <script>
-      pOptions.update();
-    </script>
-    {% endif %}
-  </form>
+        <script>
+            pOptions.update();
+        </script>
+        {% endif %}
+    </form>
 </main>
 
 <script>
-  const productForm = document.getElementById("product-create");
-  productForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    const productForm = document.getElementById("product-create");
+    productForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    const data = parseContent();
-    if (!data) return;
+        const data = parseContent();
+        if (!data) return;
 
-    const res = await fetchJson(
-      "/product/" + "{{ product.search|default('new') }}",
-      {
-        method: "{% if product %}PUT{% else %}POST{% endif %}",
-        body: data,
-      },
-    );
+        const res = await fetchJson(
+            "/product/" + "{{ product.search|default('new') }}",
+            {
+                method: "{% if product %}PUT{% else %}POST{% endif %}",
+                body: data,
+            },
+        );
 
-    if (res.status == 200) window.location.href = "/managers/product/";
-    else new Alert(res.message, AlertType.ERROR, true);
-  });
+        if (res.status == 200) window.location.href = "/managers/product/";
+        else new Alert(res.message, AlertType.ERROR, true);
+    });
 </script>
 
 <script src="/javascripts/textarea.js"></script>
 
 <script>
-  async function setOptionImageIndex(id, index) {
-    const container = document.getElementById(id);
-    const menu = container.querySelector("menu");
-    const preview = document.createElement("img");
-    container.querySelector("input#imageindex").value = index;
+    async function setOptionImageIndex(id, index) {
+        const container = document.getElementById(id);
+        const menu = container.querySelector("menu");
+        const preview = document.createElement("img");
+        container.querySelector("input#imageindex").value = index;
 
-    if (!files || files.length === 0) {
-      preview.src =
-        "/images/products/{{ product._id.toString() }}/" + images_store[index];
-    } else {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        preview.src = e.target.result;
-      };
-      reader.readAsDataURL(files[index]);
+        if (!files || files.length === 0) {
+            preview.src =
+                "/images/products/{{ product._id.toString() }}/" + images_store[index];
+        } else {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(files[index]);
+        }
+
+        menu.innerHTML = "";
+        menu.insertAdjacentElement("beforeend", preview);
+        preview.addEventListener("click", () => selectOptionImage(id));
     }
 
-    menu.innerHTML = "";
-    menu.insertAdjacentElement("beforeend", preview);
-    preview.addEventListener("click", () => selectOptionImage(id));
-  }
+    async function selectOptionImage(id) {
+        if (await imagefile().length === 0 && (!files || files.length === 0))
+            return new Alert(
+                "กรุณาอัพโหลดรูปภาพสินค้าก่อนดำเนินการต่อ",
+                AlertType.ERROR,
+                true,
+            );
 
-  async function selectOptionImage(id) {
-    if (await imagefile().length === 0 && (!files || files.length === 0))
-      return new Alert(
-        "กรุณาอัพโหลดรูปภาพสินค้าก่อนดำเนินการต่อ",
-        AlertType.ERROR,
-        true,
-      );
+        const container = document.createElement("header");
+        container.classList.add(
+            "fixed",
+            "left-0",
+            "top-0",
+            "z-50",
+            "flex",
+            "h-dvh",
+            "w-full",
+            "items-center",
+            "justify-center",
+            "backdrop-blur-lg",
+        );
 
-    const container = document.createElement("header");
-    container.classList.add(
-      "fixed",
-      "left-0",
-      "top-0",
-      "z-50",
-      "flex",
-      "h-dvh",
-      "w-full",
-      "items-center",
-      "justify-center",
-      "backdrop-blur-lg",
-    );
+        const button = document.createElement("button");
+        const span = document.createElement("span");
+        span.classList.add("material-icons-outlined");
+        span.innerHTML = "close";
+        button.insertAdjacentElement("beforeend", span);
+        button.classList =
+            "flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white";
 
-    const button = document.createElement("button");
-    const span = document.createElement("span");
-    span.classList.add("material-icons-outlined");
-    span.innerHTML = "close";
-    button.insertAdjacentElement("beforeend", span);
-    button.classList =
-      "flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white";
+        button.addEventListener("click", () => container.remove());
+        const header = document.createElement("header");
+        header.classList =
+            "flex h-max w-full flex-row items-center justify-between";
 
-    button.addEventListener("click", () => container.remove());
-    const header = document.createElement("header");
-    header.classList =
-      "flex h-max w-full flex-row items-center justify-between";
+        const h1 = document.createElement("h1");
+        h1.classList = "font-sans text-2xl font-bold";
+        h1.insertAdjacentText("beforeend", "เลือกรูปภาพ");
+        header.insertAdjacentElement("beforeend", h1);
+        header.insertAdjacentElement("beforeend", button);
 
-    const h1 = document.createElement("h1");
-    h1.classList = "font-sans text-2xl font-bold";
-    h1.insertAdjacentText("beforeend", "เลือกรูปภาพ");
-    header.insertAdjacentElement("beforeend", h1);
-    header.insertAdjacentElement("beforeend", button);
+        const section = document.createElement("section");
+        const div = document.createElement("div");
 
-    const section = document.createElement("section");
-    const div = document.createElement("div");
+        div.classList =
+            "flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 border-2 border-gray-950 bg-white p-4";
+        section.classList = "grid grid-cols-6 gap-4";
+        div.insertAdjacentElement("afterbegin", header);
+        div.insertAdjacentElement("beforeend", section);
+        container.insertAdjacentElement("beforeend", div);
 
-    div.classList =
-      "flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 border-2 border-gray-950 bg-white p-4";
-    section.classList = "grid grid-cols-6 gap-4";
-    div.insertAdjacentElement("afterbegin", header);
-    div.insertAdjacentElement("beforeend", section);
-    container.insertAdjacentElement("beforeend", div);
+        const images = await imagefile();
+        const prefile = createPreview(images.length !== 0 ? images : files);
 
-    const images = await imagefile();
-    const prefile = createPreview(images.length !== 0 ? images : files);
+        const selectpack = prefile.map((e, index) => {
+            const img = document.createElement("div");
+            img.insertAdjacentElement("beforeend", e);
+            img.classList = "cursor-pointer";
 
-    const selectpack = prefile.map((e, index) => {
-      const img = document.createElement("div");
-      img.insertAdjacentElement("beforeend", e);
-      img.classList = "cursor-pointer";
+            img.addEventListener("click", () => {
+                setOptionImageIndex(id, index);
+                container.remove();
 
-      img.addEventListener("click", () => {
-        setOptionImageIndex(id, index);
-        container.remove();
+                setTimeout(() => {
+                    pOptions.update();
+                }, 160);
+            });
 
-        setTimeout(() => {
-          pOptions.update();
-        }, 160);
-      });
+            return img;
+        });
 
-      return img;
-    });
+        selectpack.forEach((e) => section.insertAdjacentElement("beforeend", e));
+        document.body.insertAdjacentElement("beforeend", container);
+    }
+</script>
 
-    selectpack.forEach((e) => section.insertAdjacentElement("beforeend", e));
-    document.body.insertAdjacentElement("beforeend", container);
-  }
+<header id="tags-import-section" class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg">
+    <div class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 overflow-y-scroll border-2 border-black bg-white p-4 py-8 my-4">
+        <header class="flex h-max w-full flex-row items-center justify-between">
+            <h1 class="font-sans text-2xl font-bold">นำเข้าแท็ก</h1>
+
+            <button id="close" class="flex h-8 w-8 items-center justify-center border-2 border-black duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </header>
+
+        <form onsubmit="event.preventDefault()" class="flex flex-col gap-4">
+            <label for="search" class="grid grid-cols-1 gap-2" id="tags-container">
+                <span class="w-max font-mono text-sm underline">ค้นหาสินค้า</span>
+                <input id="search" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="ค้นหาสินค้า" />
+            </label>
+        </form>
+
+        <section id="search-result" class="flex flex-col *:border-b *:border-black *:py-1"></section>
+    </div>
+</header>
+
+<script async>
+    const TIS = document.getElementById("tags-import-section");
+    TIS.remove();
+
+    class ImportTags {
+        constructor(template = document.getElementById()) {
+            this.template = template;
+            this.result = [];
+            this.result_container = this.template.querySelector("section#search-result");
+
+            this.template.querySelector("button#close").onclick = () => this.close();
+            this.template.querySelector("input#search").oninput = () => {
+                this.fetch(this.template.querySelector("input#search").value);
+            }
+
+            this.searchTimeout = 1000;
+            this.searchTimeoutObject = setTimeout(() => null, this.searchTimeout);
+        }
+
+        open() {
+            this.fetch();
+            document.body.insertAdjacentElement("beforeend", this.template);
+        }
+
+        close() {
+            this.clearTemplate();
+            this.template.remove();
+        }
+
+        clearTemplate() {
+            this.template.querySelector("input#search").value = "";
+        }
+
+        fetch(query = '') {
+            clearTimeout(this.searchTimeoutObject);
+            this.searchTimeoutObject = setTimeout(() => fetch(query ? '/product/search?query=' + query : '/product/').then(res => res.json()).then(res => {
+                this.result = res;
+                this.render();
+            }).catch(e => {
+                console.error(e);
+                return new Alert("เกิดข้อผิดพลาด", AlertType.ERROR, true);
+            }), this.searchTimeout);
+        }
+
+        select(id) {
+            const select = this.result.filter(e => e._id === id)[0];
+            console.log(select.tags);
+            tags.import(select.tags);
+            this.close();
+        }
+
+        createTemplte(e) {
+            return /*html*/`<p onclick="ImportTagsObject.select('${e._id}')">${e.name}</p>`;
+        }
+
+        render(search) {
+            this.result_container.innerHTML = '';
+            this.result.forEach(e => this.result_container.insertAdjacentHTML("beforeend", this.createTemplte(e)));
+        }
+    }
+
+    const ImportTagsObject = new ImportTags(TIS);
 </script>

@@ -1,0 +1,100 @@
+<main class="flex flex-col gap-4">
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">ประเภทสินค้า</h1>
+
+        <form action="" method="post">
+            <button type="submit" class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">add</span>
+            </button>
+        </form>
+    </header>
+
+    <section class="flex flex-col gap-2">
+        {% if not categories or categories.length === 0 %}
+        <h4 class="font-sans font-bold">ไม่พบข้อมูล</h4>
+        {% endif %}
+
+        <!--  -->
+
+        {% for category in categories %}
+        <div id="{{ category._id.toString() }}" class="grid h-max w-full grid-cols-[1fr_max-content] place-items-center gap-4 border-2 border-black p-4 font-sans duration-100">
+            <div class="flex flex-row items-start justify-start gap-2 w-full">
+                <p class="w-max text-left font-bold">{{ category.title }}</p>
+                <p class="w-max text-left font-bold">({{ category.quantity }})</p>
+            </div>
+
+            <menu class="flex flex-row items-center justify-center">
+                <button onclick="CategoryOptions.toggle('{{ category._id.toString() }}', 'search', !this.querySelector('input[type=checkbox]').checked)" class="group duration-100 hover:bg-black hover:text-white flex items-center justify-center p-1">
+                    {% if category.search %}
+                    <input type="checkbox" class="hidden peer" id="search" checked>
+                    {% else %}
+                    <input type="checkbox" class="hidden peer" id="search">
+                    {% endif %}
+
+                    <div class="hidden items-center justify-center peer-checked:flex">
+                        <span class="material-icons-outlined">filter_list</span>
+                    </div>
+                    <div class="flex items-center justify-center peer-checked:hidden">
+                        <span class="material-icons-outlined">filter_list_off</span>
+                    </div>
+                </button>
+                <button onclick="CategoryOptions.delete('{{ category._id.toString() }}')" class="group duration-100 hover:bg-black hover:text-white flex items-center justify-center p-1">
+                    <div class="flex items-center justify-center">
+                        {% if category.quantity === 0 %}
+                        <span class="material-icons-outlined">delete</span>
+                        {% else %}
+                        <span class="material-icons-outlined">delete_forever</span>
+                        {% endif %}
+                    </div>
+                </button>
+            </menu>
+        </div>
+        {% endfor%}
+    </section>
+</main>
+
+
+<script>
+    class CategoryOptions {
+        static set(id, k, v) {
+            console.log(id, k, v);
+        }
+
+        static async toggle(id, k, v) {
+            console.log(id, k, v);
+            const checkbox = document.getElementById(id).querySelector("input[type=checkbox]#" + k);
+            checkbox.checked = checkbox.checked ? false : true;
+
+            const object = {};
+            object[k] = v;
+            CategoryOptions.update(id, object, (res) => console.log(res));
+        }
+
+        static update(id, object = {}, done = (res = { status, message }) => null) {
+            fetch('', {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT',
+                body: JSON.stringify({
+                    id,
+                    update: object
+                })
+            }).then(res => res.json()).then(res => done(res)).catch(e => {
+                console.error(e); new Alert('เกิดข้อผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง', AlertType.ERROR, true);
+            });
+        }
+
+        static delete(id) {
+            fetch('?id=' + id, { method: 'DELETE', }).then(res => res.json()).then(res => {
+                res.status == 200
+                    ? redirect()
+                    : new Alert(res.message, AlertType.ERROR, true);
+            }).catch(e => {
+                console.error(e); new Alert('เกิดข้อผิดพลาด โปรดลองใหม่อีกครั้งในภายหลัง', AlertType.ERROR, true);
+            });
+        }
+    }
+
+    const PO = new CategoryOptions();
+</script>

@@ -5,6 +5,7 @@ const ProductSchema = new Schema({
     name: String,
     description: String,
     category: String,
+    tags: Array,
 
     options: Array,
     images: Array,
@@ -23,13 +24,21 @@ const ProductSchema = new Schema({
     timestamp: true,
 });
 
-ProductSchema.index({ name: 'text', description: 'text' });
+ProductSchema.index({ name: 'text', description: 'text', tags: 'text' });
 const ProductModel = mongoose.model('Product', ProductSchema);
 
 const CategorySchema = new Schema({
     id: String,
     title: String,
     quantity: Number,
+    search: {
+        type: Boolean,
+        default: false,
+    },
+    deleted: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const CategoryModel = mongoose.model('Category', CategorySchema);

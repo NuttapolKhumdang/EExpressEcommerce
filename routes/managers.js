@@ -37,7 +37,7 @@ router.route('/articles')
         return res.render('managers', { render: 'managers/articles.html', account: req.user, articles });
     })
     .post(Access(Rights.ARTICLE.WRITE), async (req, res, next) => {
-        const article = new Article();
+        const article = new Article({ public: false, deleted: false });
         await article.save();
         return res.redirect('/article/writer/' + article._id.toString());
     });
@@ -257,9 +257,39 @@ router.get('/product', Access([Rights.PRODUCT.INFOMATION, Rights.PRODUCT.MODIFY]
 });
 
 router.get('/product/create', Access([Rights.PRODUCT.ADD]), async (req, res, next) => {
-    const category = await Category.find({});
+    const category = await Category.find({ deleted: false });
     return res.render('managers', { render: 'managers/product-create.html', account: req.user, category });
 });
+
+router.route('/product/category')
+    .get(Access([Rights.PRODUCT.INFOMATION, Rights.PRODUCT.MODIFY]), async (req, res, next) => {
+        const categories = await Category.find({ deleted: false });
+        return res.render('managers', { render: 'managers/product-category.html', account: req.user, categories });
+    })
+    .put(Access([Rights.PRODUCT.MODIFY]), async (req, res, next) => {
+        try {
+            await Category.findByIdAndUpdate(req.body.id, req.body.update);
+            return res.json({ status: 200, message: 'OK' });
+        } catch (e) {
+            console.error(e);
+            return res.status(400).json({ satus: 400, message: 'เกิดข้อผิดพลาดขึ้น' });
+        }
+    })
+    .delete(Access([Rights.PRODUCT.MODIFY]), async (req, res, next) => {
+        if (!req.query?.id) return res.status(400).json({ status: 400, message: 'require infomation incomplete' });
+
+        try {
+            const category = await Category.findById(req.query?.id);
+            if (category?.quantity !== 0)
+                return res.status(409).json({ status: 409, message: 'ข้อมูลไม่ถูกต้อง' });
+
+            await Category.findByIdAndUpdate(req.query?.id, { deleted: true });
+            return res.json({ status: 200, message: 'OK' });
+        } catch (e) {
+            console.error(e);
+            return res.status(400).json({ satus: 400, message: 'เกิดข้อผิดพลาดขึ้น' });
+        }
+    });
 
 router.get('/product/:id', Access([Rights.PRODUCT.INFOMATION]), async (req, res, next) => {
     try {
