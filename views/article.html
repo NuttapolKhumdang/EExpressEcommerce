@@ -1,0 +1,17 @@
+{% import './components.html' as template %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'head.html' %}
+    <title>{{ title }} &mdash; EExpress</title>
+</head>
+
+<body class="flex flex-col items-center overflow-x-hidden">
+    {% include 'nav.html' %}
+    {% include render %}
+    {% include 'cartview.html' %}
+    {% include 'footer.html' %}
+</body>
+
+</html>

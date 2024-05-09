@@ -13,12 +13,12 @@ const Access = require('../modules/Access');
 const { Rights, AccountRole } = require('../modules/AccessRights');
 
 router.get('/', async (req, res, next) => {
-    const article = await Article.find();
-    return res.render('articles', { render: 'articles/article.html', title: 'บทความของเรา', article });
+    const article = await Article.find({ public: true });
+    return res.render('articles', { article });
 });
 
 // ?? Upload Article's Image
-router.post('/image/:id'    , upload.single('image'), async (req, res, next) => {
+router.post('/image/:id', Access(Rights.ARTICLE.WRITE, true), upload.single('image'), async (req, res, next) => {
     const filepath = path.join(__dirname, '../', 'resource', 'articles', 'images', req.params.id);
     if (!fs.existsSync(filepath)) fs.mkdirSync(filepath, { recursive: true });
 
@@ -35,7 +35,7 @@ router.route('/writer/:id')
             return res.render('writer', { title: article.title, article });
         } catch (e) { console.error(e); return next('route') };
     })
-    .put(Access(Rights.ARTICLE.WRITE), async (req, res, next) => {
+    .put(Access(Rights.ARTICLE.WRITE, true), async (req, res, next) => {
         if (req?.body?.title) req.body.search = parseSearch(req.body.title);
 
         try {
@@ -47,7 +47,7 @@ router.route('/writer/:id')
         }
     });
 
-router.get('/object/:search', async (req, res, next) => {
+router.get('/object/:search', Access(Rights.ARTICLE.OVERVIEW, Rights.ARTICLE.WRITE, true), async (req, res, next) => {
     try {
         const article = await Article.findOne({ search: req.params.search });
         return res.json(article);
@@ -71,7 +71,40 @@ router.get('/:search', async (req, res, next) => {
     try {
         const article = await Article.findOne({ search: req.params.search, deleted: false });
         if (!article || article.length == 0) return next('route');
-        return res.render('articles', { render: 'articles/reader.html', title: article.title, article, });
+        const content = article.content.map(e => {
+            if (e.text.startsWith("[TABLE]")) {
+                let table = [];
+                let tname = "";
+
+                for (let l of e.text.split("\n")) {
+                    let r, tag, rawChild;
+
+                    if (l.startsWith("[TABLE]")) {
+                        tname = l.split("[TABLE]")[1];
+                        continue;
+                    }
+
+                    if (l.startsWith("[HEAD]")) {
+                        rawChild = l.split("[HEAD]")[1].split(",");
+                        tag = 'TH';
+                    }
+                    else {
+                        rawChild = l.split(",");
+                        tag = 'TD';
+                    }
+
+                    if (!tag) continue;
+                    r = {
+                        tag,
+                        child: rawChild.map(e => e.trim()),
+                    }
+                    table.push(r);
+                }
+                return { tag: 'TABLE', table, tname };
+            } else return e;
+        });
+
+        return res.render('article', { render: 'articles/reader.html', title: article.title, article, content });
     } catch (e) {
         console.error(e);
         return next('route');

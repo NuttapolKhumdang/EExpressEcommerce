@@ -26,7 +26,7 @@
             <!--  -->
             {% if block.style.startsWith('heading') %}
             <textarea class="heading w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-4xl font-bold" placeholder="หัวข้อ">{{ block.text }}</textarea>
-            
+
             {% elif block.style.startsWith('paragraph') %}
             <textarea class="paragraph w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-lg" placeholder="หัวข้อ">{{ block.text }}</textarea>
             <!--  -->
@@ -42,6 +42,9 @@
                 <div class="grid grid-cols-2 gap-2">
                     <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('heading')">
                         หัวข้อ
+                    </button>
+                    <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('subheading')">
+                        หัวข้อรอง
                     </button>
                     <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('paragraph')">
                         เนื้อความ
@@ -159,6 +162,7 @@
 
             initImage(obj = document.getElementById()) {
                 obj.addEventListener("click", (e) => {
+                    this.unSelectImage();
                     obj.classList.remove("border-transparent");
                     obj.classList.add("border-black", "rounded");
 
@@ -170,15 +174,16 @@
             createTextInput(template) {
                 const template_title = {
                     heading: "หัวข้อ",
+                    subheading: "หัวข้อรอง",
                     paragraph: "เนื้อความ",
                 };
 
                 const textarea = document.createElement("textarea");
-                textarea.classList =
-                    template +
-                    " w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto";
+                textarea.classList = template + " w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto";
                 if (template == "heading")
                     textarea.classList.add("text-4xl", "font-bold");
+                if (template == "subheading")
+                    textarea.classList.add("text-2xl", "font-bold");
 
                 textarea.setAttribute("placeholder", template_title[template]);
                 this.initTextInput(textarea);
@@ -223,7 +228,7 @@
                     return;
                 let object;
 
-                if (["paragraph", "heading"].includes(template))
+                if (["paragraph", "heading", "subheading"].includes(template))
                     object = this.createTextInput(template);
                 if (template == "image") return this.createImage();
 
@@ -245,7 +250,7 @@
 
                     if (child.tagName == "TEXTAREA" && child.value) {
                         data = {
-                            style: child.classList.toString(),
+                            style: child.classList.toString().split(" ")[0],
                             text: child.value,
                         };
                     } else if (child.tagName == "IMG" && child.src) {
@@ -254,19 +259,6 @@
                             style: child.classList.toString(),
                             src: child.src.split("/").reverse()[0],
                         };
-                    } else if (["OL", "UL"].includes(child.tagName)) {
-                        data = {
-                            tag: child.tagName.toLowerCase(),
-                            content: [],
-                        };
-
-                        for (let li of child.children) {
-                            const textarea = li.querySelector("textarea");
-                            data.content.push({
-                                style: textarea.classList.toString(),
-                                text: textarea.value,
-                            });
-                        }
                     } else continue;
 
                     content.push(data);
@@ -327,13 +319,9 @@
                 writer.update();
             }
 
-            if (k.code == "Enter") {
+            if (k.ctrlKey && k.code == "Enter") {
                 k.preventDefault();
-
-                console.log(writer.select.parentElement.tagName);
-                if (writer.select.parentElement.tagName == "ARTICLE")
-                    writer.insert("paragraph");
-                if (writer.select.parentElement.tagName == "LI") writer.insert("li");
+                if (writer.select.parentElement.tagName == "ARTICLE") writer.insert("paragraph");
             }
 
             if (
@@ -343,19 +331,7 @@
                 let currentIndex = 0;
                 for (let i = 0; i < writer.container.children.length; i++)
                     if (writer.container.children[i] == this) currentIndex = i;
-                if (
-                    ["UL", "OL"].includes(
-                        writer.container.children[
-                            currentIndex - 1 >= 0 ? currentIndex - 1 : 0
-                        ].tagName,
-                    )
-                )
-                    currentIndex++;
-                focus(
-                    writer.container.children[
-                    currentIndex - 1 >= 0 ? currentIndex - 1 : 0
-                    ],
-                );
+                focus(writer.container.children[currentIndex - 1 >= 0 ? currentIndex - 1 : 0]);
             }
 
             if (

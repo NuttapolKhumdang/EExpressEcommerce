@@ -4,12 +4,42 @@
 
 <head>
     {% include 'head.html' %}
-    <title>{{ title }} &mdash; EExpress</title>
+    <title>บทความ &mdash; EExpress</title>
 </head>
 
 <body class="flex flex-col items-center overflow-x-hidden">
     {% include 'nav.html' %}
-    {% include render %}
+
+    <main class="w-full min-h-96 max-w-6xl px-12">
+        <header class="flex flex-col pt-8 py-24">
+            <h1 class="font-sans text-8xl font-bold leading-relaxed">บทความ</h1>
+            <p class="text-lg">เพลิดเพลินกับการอ่านบทความที่เต็มไปด้วยสาระความรู้ เรื่องราวที่น่าสนใจ และสิ่งพิเศษมากมาย ค้นพบสิ่งใหม่ ๆ ผ่านคลังความรู้มหาศาลของเรา</p>
+        </header>
+
+        <menu class="flex flex-row items-center justify-start gap-2 py-8 text-lg *:font-bold *:underline-offset-4 *:duration-100 *:px-4 -ml-4">
+            <button class="underline text-emerald-500">ทั้งหมด</button>
+            <button class="hover:text-cyan-500">โปรโมชั่น</button>
+            <button class="hover:text-purple-500">ประกาศ</button>
+        </menu>
+
+        <main class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for block in article %}
+            <a href="/article/{{ block.search }}" class="w-full flex flex-col bg-teal-500 rounded-lg h-max bg-opacity-5">
+                <div class="w-full h-64 bg-teal-500"></div>
+
+                <header class="flex flex-col p-4 gap-4 h-max">
+                    <div class="min-h-24 h-full">
+                        <h2 class="font-sans text-2xl font-bold">{{ block.title }}</h2>
+                        <p>{{ block.description}}</p>
+                    </div>
+
+                    <span class="font-mono text-sm font-normal py-2">{{ block.updatedAt|date('Y.m.d')}}</span>
+                </header>
+            </a>
+            {% endfor%}
+        </main>
+    </main>
+
     {% include 'cartview.html' %}
     {% include 'footer.html' %}
 </body>

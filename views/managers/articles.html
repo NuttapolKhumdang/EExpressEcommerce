@@ -1,0 +1,121 @@
+<main class="flex flex-col gap-4">
+    <header class="my-2 flex flex-row items-center justify-between">
+        <h1 class="font-mono text-3xl">บทความทั้งหมด</h1>
+
+        <form action="" method="post">
+            <button type="submit" class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">add</span>
+            </button>
+        </form>
+    </header>
+
+    <section class="flex flex-col gap-2">
+        {% if not articles or articles.length === 0 %}
+        <h4 class="font-sans font-bold">ไม่พบข้อมูล</h4>
+        {% endif %}
+
+        <!--  -->
+
+        {% for article in articles %}
+        <div class="group w-full grid h-max grid-cols-[1fr_2rem] place-items-center gap-4 border-2 border-black p-4 font-sans duration-100 hover:bg-gray-950 hover:text-white">
+            <a href="/article/writer/{{ article._id.toString() }}" class="w-full text-left font-bold">{{ article.title }}</a>
+            <button onclick="AO.render('{{ article.search }}')" class="material-icons-outlined text-white opacity-0 duration-100 group-hover:opacity-100">settings</button>
+        </div>
+        {% endfor%}
+    </section>
+</main>
+
+<header id="article-track-options" class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg">
+    <div class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 overflow-y-scroll border-2 border-black bg-white p-4 py-8 my-4">
+        <header class="flex h-max w-full flex-row items-center justify-between">
+            <h1 class="font-sans text-2xl font-bold">ตั้งค่าบทความ</h1>
+
+            <button id="close" class="flex h-8 w-8 items-center justify-center border-2 border-black duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </header>
+
+        <form onsubmit="event.preventDefault()" class="flex flex-col gap-4">
+            <label for="title" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">ชื่อบทความ</span>
+                <input type="text" id="title" name="title" class="h-12 border-b-2 border-black font-sans outline-offset-4" placeholder="ชื่อบทความ" />
+            </label>
+
+            <label for="static" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">ลิ้งค์แบบคงที่</span>
+                <input type="text" id="static" name="static" class="h-12 border-b-2 border-black font-sans outline-offset-4" placeholder="ลิ้งค์แบบคงที่" />
+            </label>
+
+            <label for="public" class="grid grid-cols-1 gap-2">
+                <span class="w-max font-mono text-sm underline">การเผยแพร่</span>
+                <select name="public" id="public" class="h-12 border-b-2 min-w-32  border-black font-sans outline-offset-4">
+                    <option value="public">สาธารณะ</option>
+                    <option value="private">ซ่อน</option>
+                </select>
+            </label>
+        </form>
+    </div>
+</header>
+
+<script>
+    const ATO = document.getElementById("article-track-options");
+    ATO.remove();
+
+    class ArticleOptions {
+        constructor(template = document.getElementById()) {
+            this.template = template;
+            this.id = null;
+            this.updateTimeout = 1000;
+            this.updateTimeoutObject = setTimeout(() => null, this.updateTimeout);
+            this.template.querySelector("button#close").onclick = () => this.close();
+        }
+
+        close() {
+            this.save(true, () => {
+                this.clearTemplate();
+                this.template.remove();
+            })
+        }
+
+        clearTemplate() {
+            this.template.querySelector("input#title").value = "";
+            this.template.querySelector("input#static").value = "";
+            this.template.querySelector("select#public").value = "";
+        }
+
+        save(ignoreTimeout = false, done = () => null) {
+            const title = this.template.querySelector("input#title").value;
+            const static_link = this.template.querySelector("input#static").value;
+            const public_status = this.template.querySelector("select#public").value === 'public';
+
+            const upload = () => fetch('/article/writer/' + this.id, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT',
+                body: JSON.stringify({
+                    title,
+                    static: static_link,
+                    public: public_status
+                })
+            }).then(res => res.json()).then(res => { done() });
+
+            clearTimeout(this.updateTimeoutObject);
+            if (ignoreTimeout) upload();
+            else this.updateTimeoutObject = setTimeout(() => { upload() }, this.updateTimeout);
+        }
+
+        async render(search) {
+            const article = await fetchJson('/article/object/' + search);
+            this.id = String(article._id);
+
+            this.template.querySelector("input#title").value = article.title;
+            this.template.querySelector("input#static").value = article?.static || "";
+            this.template.querySelector("select#public").value = article?.public ? "public" : "private";
+
+            document.body.insertAdjacentElement("beforeend", this.template);
+        }
+    }
+
+    const AO = new ArticleOptions(ATO);
+</script>
