@@ -6,6 +6,7 @@
 <head>
   {% include 'head.html' %}
   <meta name="description" content="{{ product.description }}">
+  <meta name="keywords" content="{% for tag in product.tags %}{{tag}}, {% endfor %}">
 
   <meta name="og:title" content="{{ product.name }} - EExpress">
   <meta name="og:description" content="{{product.name}} {{ product.description }}">
