@@ -18,11 +18,16 @@ router.get('/tailwind', async (req, res, next) => {
 });
 
 router.get('/images/:source/:oid/:filename', async (req, res, next) => {
+    const size = {
+        w: req.query?.size ?? req.query?.w ?? 2048,
+        h: req.query?.size ?? req.query?.h ?? 2048
+    }
+
     try {
         const file = fs.readFileSync(path.join(__dirname, '../', 'resource', req.params.source, 'images', req.params.oid, req.params.filename));
         sharp(file)
             .webp()
-            .resize(1200, 1200, {
+            .resize(Number(size.w), Number(size.h), {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true
             })
@@ -39,7 +44,7 @@ router.get('/:parent/:filename', async (req, res, next) => {
         const file = fs.readFileSync(path.join(__dirname, '../', 'resource', req.params.parent, req.params.filename));
         sharp(file)
             .webp()
-            .resize(512, 512, {
+            .resize(req.query?.size ?? req.query?.w ?? 2048, req.query?.size ?? req.query?.h ?? 2048, {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true
             })
