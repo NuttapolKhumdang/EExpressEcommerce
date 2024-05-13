@@ -1,5 +1,5 @@
-<main class="w-full max-w-2xl">
-    <main class="flex flex-col py-16 min-h-96 justify-center">
+<main class="w-full max-w-2xl px-12">
+    <main class="flex flex-col py-16 min-h-96 justify-center gap-8">
         <header class="flex flex-col gap-4">
             <h1 class="font-sans text-6xl font-bold leading-relaxed">{{ article.title }}</h1>
             <p class="font-sans text-base">{{ article.description }}</p>
@@ -18,42 +18,6 @@
     </main>
 
     <main class="h-max">
-        <!-- {{ article._id.toString() }} -->
-        <article class="flex flex-col">
-            {% for block in content %}
-
-            {% if block.tag == 'img'%}
-            <div class="w-full h-max flex items-center justify-center min-h-48">
-                <img src="/images/articles/{{ article._id.toString() }}/{{ block.src }}" class="py-4 w-max object-contain" alt="{{ article.title }}'s insert image">
-            </div>
-
-            {% elif block.tag == 'TABLE' %}
-            <table class="table-auto">
-                {% for t in block.table %}
-                {% if t.tag == 'TH'%}
-                <tr>
-                    {% for th in t.child %}
-                    <th class="h-12 border border-black border-opacity-30">{{ th }}</th>
-                    {% endfor %}
-                </tr>
-                {% elif t.tag == 'TD'%}
-                <tr class="*:p-2">
-                    {% for td in t.child %}
-                    <td class="border border-black border-opacity-30">{{ td }}</td>
-                    {% endfor %}
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </table>
-            <p class="text-sm opacity-80">{{ block.tname }}</p>
-
-            {% elif block.style.startsWith('heading') %}<h1 class="text-4xl font-bold py-8 pb-4">{{ block.text }}</h1>
-            {% elif block.style.startsWith('subheading') %}<h1 class="text-2xl font-semibold py-8 pb-4">{{ block.text }}</h1>
-            {% elif block.style.startsWith('paragraph') %}
-            <pre class="font-sans text-lg whitespace-pre-wrap">{{ block.text }}</pre>
-            {% endif %}
-
-            {% endfor %}
-        </article>
+        {% include 'render.html'%}
     </main>
 </main>
