@@ -4,8 +4,11 @@
 
         {% if product?._id %}
         <menu class="flex flex-row gap-4">
-            <a href="" class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+            <a href="/managers/product/{{ product._id.toString() }}/detail" class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
                 <span class="material-icons-outlined">article</span>
+            </a>
+            <a href="/product/duplicate/{{ product._id.toString() }}" class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">difference</span>
             </a>
             <button onclick="remove()" class="flex h-12 w-12 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
                 <span class="material-icons-outlined">delete</span>
