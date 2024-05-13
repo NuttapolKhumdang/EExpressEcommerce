@@ -10,6 +10,11 @@ const ArticleSchema = new Schema({
 
     public: Boolean,
     deleted: Boolean,
+
+    forproduct: {
+        type: String,
+        default: null,
+    },
 }, {
     timestamps: true,
 });
