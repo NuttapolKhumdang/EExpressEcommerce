@@ -28,7 +28,9 @@ router.get('/product', async (req, res, next) => {
     if (req.query.id) query["_id"] = req.query.id;
     if (req.query.q) query["$text"] = { $search: req.query.q };
 
-    const result = await Product.find(query).limit(10);
+    let result;
+    if (req.query?.q) result = await Product.find(query).limit(10);
+    result = await Product.find(query);
     return res.json({ status: 200, message: 'OK', result });
 });
 
