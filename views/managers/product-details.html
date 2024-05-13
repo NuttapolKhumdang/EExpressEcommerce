@@ -1,0 +1,172 @@
+<main class="h-max flex flex-col w-full max-w-6xl gap-8 px-4">
+    <section class="sticky top-[calc(4rem_+_2rem_+_2px)] flex h-max w-full flex-row gap-2 border-2 border-black p-2 font-sans bg-white">
+        <menu class="h-max w-full flex-col gap-2 flex-auto">
+            <p class="font-bold">เพิ่มส่วน</p>
+            <div class="grid grid-cols-4 gap-2">
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('heading')">
+                    หัวข้อ
+                </button>
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('subheading')">
+                    หัวข้อรอง
+                </button>
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('paragraph')">
+                    เนื้อความ
+                </button>
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.insert('image')">
+                    รูปภาพ
+                </button>
+            </div>
+        </menu>
+
+        <menu class="hidden h-max w-full flex-col gap-2 flex-auto" id="SX_MENU_IMG_OPTIONS">
+            <p class="font-bold">รูปภาพ</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.replaceImage()">
+                    แทนที่
+                </button>
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.removeImage()">
+                    ลบรูปภาพ
+                </button>
+            </div>
+        </menu>
+
+        <menu class="h-max w-full flex-col gap-2 flex-auto max-w-24" id="SX_MENU_SAVING_OPTIONS">
+            <p class="font-bold">ไฟล์</p>
+            <div class="flex flex-row gap-2">
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="importDocumentObject.open()">
+                    <p class="material-icons-outlined">download</p>
+                </button>
+
+                <button class="flex min-h-12 w-full items-center justify-center border-2 border-black font-bold duration-100 hover:bg-black hover:text-white" onclick="writer.update()">
+                    <input type="checkbox" class="peer hidden" id="isloading" />
+                    <span class="hidden h-4 w-4 animate-spin rounded-full border-2 border-black border-t-gray-300 peer-checked:block"></span>
+                    <div class="flex items-center justify-center gap-2 peer-checked:hidden">
+                        <span class="material-icons-outlined">save</span>
+                    </div>
+                </button>
+            </div>
+        </menu>
+    </section>
+
+    <textarea disabled type="text" id="article-title" class="hidden">{{ article.title }}</textarea>
+    <textarea disabled type="text" id="article-description" class="hidden">{{ article.description }}</textarea>
+    <article id="writer" class="w-full">
+
+        {% for block in article.content %} {% if block.tag == 'img'%}
+        <!--  -->
+        <img src="/images/articles/{{ article._id.toString() }}/{{ block.src }}" class="mb-2 border-2 border-transparent" />
+        {% else %}
+        <!--  -->
+        {% if block.style.startsWith('heading') %}
+        <textarea class="heading w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-4xl font-bold" placeholder="หัวข้อ">{{ block.text }}</textarea>
+
+        {% elif block.style.startsWith('subheading') %}
+        <textarea class="heading w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-2xl font-semibold" placeholder="หัวข้อรอง">{{ block.text }}</textarea>
+
+        {% elif block.style.startsWith('paragraph') %}
+        <textarea class="paragraph w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-lg" placeholder="หัวข้อ">{{ block.text }}</textarea>
+        <!--  -->
+        {% endif %}
+        {% endif %}
+        <!--  -->
+        {% endfor %}
+    </article>
+</main>
+
+<script>
+    const WRITER_CONTAINER = document.getElementById("writer");
+    const DOCUMENT_ID = '{{ article._id.toString() }}';
+
+    const SX_MENU_IMG_OPTIONS = document.getElementById("SX_MENU_IMG_OPTIONS",);
+    const SX_MENU_SAVING_OPTIONS = document.getElementById("SX_MENU_SAVING_OPTIONS",);
+    const BASE_IMAGE_ROUTE = "/images/articles/" + DOCUMENT_ID;
+</script>
+
+<script>
+    const writer_config = {
+        update_route: '/managers/product/{{ product._id.toString() }}/detail',
+    }
+</script>
+<script src="/javascripts/Writer.js"></script>
+
+{% if !article.content or article.content.length == 0 %}
+<script>writer.insert("paragraph")</script>
+{% endif %}
+
+<!-- ?!!! -->
+
+<header id="document-import-section" class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg">
+    <div class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 overflow-y-scroll border-2 border-black bg-white p-4 py-8 my-4">
+        <header class="flex h-max w-full flex-row items-center justify-between">
+            <h1 class="font-sans text-2xl font-bold">นำเข้าคำอธิบาย</h1>
+
+            <button id="close" class="flex h-8 w-8 items-center justify-center border-2 border-black duration-100 hover:bg-gray-950 hover:text-white">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </header>
+
+        <section id="search-result" class="flex flex-col *:border-b *:border-black *:py-1"></section>
+    </div>
+</header>
+
+<script>
+    class ImportDocument {
+        constructor(template = document.getElementById()) {
+            this.template = template;
+            this.result = [];
+            this.result_container = this.template.querySelector("section#search-result");
+
+            this.template.querySelector("button#close").onclick = () => this.close();
+            template.remove()
+        }
+
+        open() {
+            this.fetch();
+            document.body.insertAdjacentElement("beforeend", this.template);
+        }
+
+        close() {
+            this.template.remove();
+        }
+
+        fetch() {
+            fetch('/product/document').then(res => res.json()).then(res => {
+                this.result = res;
+                this.render();
+            }).catch(e => {
+                console.error(e);
+                return new Alert("เกิดข้อผิดพลาด", AlertType.ERROR, true);
+            });
+        }
+
+        select(pname) {
+            const select = this.result.filter(e => e.name === pname)[0].article;
+
+            fetch(`/product/document/duplicate-content/${select._id}/${DOCUMENT_ID}`, { method: 'POST' });
+            function createTemplate(e = { tag: String(), style: String(), src: String(), text: String() }) {
+                const { tag, style, src, text } = e;
+                if (tag === 'img') return /*html*/`<img src="/images/articles/${select._id}/${src}" class="mb-2 border-2 border-transparent" />`
+                else if (style.startsWith('heading')) return /*html*/`<textarea class="heading w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-4xl font-bold" placeholder="หัวข้อ">${text}</textarea>`
+                else if (style.startsWith('subheading')) return /*html*/`<textarea class="heading w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-2xl font-semibold" placeholder="หัวข้อรอง">${text}</textarea>`
+                else if (style.startsWith('paragraph')) return /*html*/`<textarea class="paragraph w-full resize-none bg-gray-100 px-2 py-4 min-h-12 h-auto text-lg" placeholder="หัวข้อ">${text}</textarea>`
+            }
+
+            WRITER_CONTAINER.innerHTML = "";
+            const template = select.content?.map(e => createTemplate(e));
+            template.forEach(e => WRITER_CONTAINER.insertAdjacentHTML("beforeend", e));
+            writer = new Writer(WRITER_CONTAINER);
+            this.close();
+        }
+
+        createTemplte(e) {
+            return /*html*/`<button onclick="importDocumentObject.select('${e.name}')">${e.name}</button>`;
+        }
+
+        render(search) {
+            this.result_container.innerHTML = '';
+            this.result.forEach(e => this.result_container.insertAdjacentHTML("beforeend", this.createTemplte(e)));
+        }
+    }
+
+    const importDocumentObject = new ImportDocument(document.getElementById("document-import-section"));
+</script>

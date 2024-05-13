@@ -9,12 +9,65 @@ const { Rights } = require('../modules/AccessRights');
 
 const { Product, Category } = require('../models/Product');
 const { UpdateAction, Action } = require('../modules/UpdateActions');
+const { Article } = require('../models/Article');
 
 const Image = require('../modules/Images');
 const ParseSearch = require('../modules/ParseSearch');
 
 
+router.get('/', async (req, res, next) => res.json(await Product.find({ deleted: false })));
+router.get('/search', async (req, res, next) => res.json(await Product.find({ $text: { $search: req.query?.query }, deleted: false })));
 router.get('/id/:id', async (req, res, next) => res.json(await Product.findOne({ search: req.params.id, deleted: false })));
+
+router.get('/document', async (req, res, next) => {
+    const articles = await Article.find({ forproduct: { $exists: true } });
+    const products = await Product.find();
+
+    const result = articles.map(e => {
+        const product = products.filter(p => p._id.toString() === e.forproduct)[0];
+        return {
+            name: product.name,
+            article: e,
+        }
+    });
+
+    console.log(result);
+    return res.json(result);
+});
+
+router.post('/document/duplicate-content/:source/:target', async (req, res, next) => {
+    try {
+        const filepath = path.join(__dirname, '../', 'resource', 'articles', 'images');
+        if (fs.existsSync(path.join(filepath, req.params.source)))
+            fs.cpSync(path.join(filepath, req.params.source), path.join(filepath, req.params.target), { recursive: true });
+        return res.json({ status: 200, message: 'OK' });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ status: 500, message: 'server die' });
+    }
+});
+
+// Access([Rights.PRODUCT.ADD]), 
+router.get('/duplicate/:id', async (req, res, next) => {
+    try {
+        const origin = await Product.findById(req.params.id).lean();
+        const origin_id = String(origin._id);
+        delete origin._id;
+        origin.name = origin.name + "Duplicated";
+        origin.search = origin.search + "-duplicated";
+
+        const product = new Product(origin);
+        await product.save();
+
+        const filepath = path.join(__dirname, '../', 'resource', 'products', 'images');
+        fs.cpSync(path.join(filepath, origin_id), path.join(filepath, product._id.toString()), { recursive: true });
+        return res.redirect('/managers/product/' + product.search);
+    } catch (e) {
+        console.error(e);
+        return res.status(400).render('error', { render: 'errors/400.html', account: req?.user });
+    }
+});
+
 router.route('/:id')
     .post(Access([Rights.PRODUCT.ADD]), Image.upload.array('images'), async (req, res, next) => {
         const _id = new mongoose.Types.ObjectId();
@@ -76,6 +129,7 @@ router.route('/:id')
             price,
             category,
 
+            tags: JSON.parse(req.body.tags),
             name: req.body.name,
             description: req.body.description,
             deleted: false,
@@ -144,7 +198,8 @@ router.route('/:id')
             price,
             category,
 
-            images: images.length !== 0 ? images : original.images,
+            images: images?.length !== 0 ? images : original.images,
+            tags: JSON.parse(req.body.tags),
             name: req.body.name,
             description: req.body.description,
             deleted: false,

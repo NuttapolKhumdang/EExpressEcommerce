@@ -33,7 +33,7 @@ router.get('/', Access(false), (req, res, next) => {
 // ?? Articles
 router.route('/articles')
     .get(Access(Rights.ARTICLE.OVERVIEW), async (req, res, next) => {
-        const articles = await Article.find({});
+        const articles = await Article.find({ forproduct: { $exists: false }});
         return res.render('managers', { render: 'managers/articles.html', account: req.user, articles });
     })
     .post(Access(Rights.ARTICLE.WRITE), async (req, res, next) => {
@@ -304,9 +304,27 @@ router.get('/product/:id', Access([Rights.PRODUCT.INFOMATION]), async (req, res,
     }
 });
 
-router.get('/product/:id/detail', Access([Rights.PRODUCT.MODIFY]), async (req, res, next) => {
-
-});
+router.route('/product/:id/detail')
+    .get(Access([Rights.PRODUCT.MODIFY]), async (req, res, next) => {
+        try {
+            const product = await Product.findById(req.params.id);
+            let article = await Article.findOne({ forproduct: req.params.id });
+            if (!article) {
+                article = new Article({ forproduct: req.params.id });
+                await article.save();
+            }
+            return res.render('managers', { render: 'managers/product-details.html', account: req.user, product, article });
+        } catch (e) { console.error(e); return next('route') };
+    })
+    .put(Access([Rights.PRODUCT.MODIFY]), async (req, res, next) => {
+        try {
+            await Article.findOneAndUpdate({ forproduct: req.params.id }, { content: req.body.content }, { upsert: true });
+            return res.json({ status: 200, message: 'OK' });
+        } catch (e) {
+            console.error(e);
+            return res.status(404).json({ status: 404, message: 'document not found' });
+        }
+    });
 
 // ?? Orders
 router.get('/orders', Access([Rights.ORDER.INFOMATION, Rights.ORDER.OVERVIEW]), async (req, res, next) => {
