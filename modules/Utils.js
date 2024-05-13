@@ -22,8 +22,47 @@ function token(length) {
     return result;
 };
 
+function articleMapContent(content) {
+    try {
+        return content.map(e => {
+            if (e?.text?.startsWith("[TABLE]")) {
+                let table = [];
+                let tname = "";
+
+                for (let l of e.text.split("\n")) {
+                    let r, tag, rawChild;
+
+                    if (l.startsWith("[TABLE]")) {
+                        tname = l.split("[TABLE]")[1];
+                        continue;
+                    }
+
+                    if (l.startsWith("[HEAD]")) {
+                        rawChild = l.split("[HEAD]")[1].split("|");
+                        tag = 'TH';
+                    }
+                    else {
+                        rawChild = l.split("|");
+                        tag = 'TD';
+                    }
+
+                    if (!tag) continue;
+                    r = {
+                        tag,
+                        child: rawChild.map(e => e.trim()),
+                    }
+                    table.push(r);
+                }
+                return { tag: 'TABLE', table, tname };
+            } else return e;
+        });
+    } catch (e) { 
+        return null;
+    };
+}
 module.exports = {
     Months,
     fdiffp,
     token,
+    articleMapContent,
 }
