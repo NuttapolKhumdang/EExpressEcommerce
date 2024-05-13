@@ -12,7 +12,7 @@ class Resize {
 
         await sharp(buffer)
             .webp()
-            .resize(1280, 1280, {
+            .resize(2048, 2048, {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true
             })
