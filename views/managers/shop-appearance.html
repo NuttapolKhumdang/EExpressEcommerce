@@ -1,546 +1,436 @@
 <main class="flex flex-col gap-4">
-  <header class="my-2 flex flex-row items-center justify-between">
-    <h1 class="font-mono text-3xl">รูปแบบและการจัดวาง</h1>
+	<header class="my-2 flex flex-row items-center justify-between">
+		<h1 class="font-mono text-3xl">รูปแบบและการจัดวาง</h1>
 
-    <button
-      class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white"
-      onclick="appearance.createInsertTrack()"
-    >
-      <span class="material-icons-outlined">add</span>
-    </button>
-  </header>
+		<button class="flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white" onclick="appearance.createInsertTrack()">
+			<span class="material-icons-outlined">add</span>
+		</button>
+	</header>
 
-  <article id="appearance-placement-container" class="flex flex-col gap-4">
-    <h3 class="font-bold">ยังไม่มีการจัดวางใดๆ</h3>
-  </article>
+	<article id="appearance-placement-container" class="flex flex-col gap-4">
+		<h3 class="font-bold">ยังไม่มีการจัดวางใดๆ</h3>
+	</article>
 </main>
 
-<header
-  id="shop-appearance-insert-track"
-  class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg"
->
-  <div
-    class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 overflow-y-scroll border-2 border-gray-950 bg-white p-4 py-8 my-4"
-  >
-    <header class="flex h-max w-full flex-row items-center justify-between">
-      <h1 class="font-sans text-2xl font-bold">เพิ่มส่วน</h1>
+<header id="shop-appearance-insert-track" class="fixed left-0 top-0 z-50 flex h-dvh w-full items-center justify-center backdrop-blur-lg">
+	<div class="flex h-max max-h-dvh w-full max-w-5xl flex-col gap-8 overflow-y-scroll border-2 border-gray-950 bg-white p-4 py-8 my-4">
+		<header class="flex h-max w-full flex-row items-center justify-between">
+			<h1 class="font-sans text-2xl font-bold">เพิ่มส่วน</h1>
 
-      <button
-        id="close"
-        class="flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white"
-      >
-        <span class="material-icons-outlined">close</span>
-      </button>
-    </header>
+			<button id="close" class="flex h-8 w-8 items-center justify-center border-2 border-gray-950 duration-100 hover:bg-gray-950 hover:text-white">
+				<span class="material-icons-outlined">close</span>
+			</button>
+		</header>
 
-    <section>
-      <form onsubmit="event.preventDefault()" class="flex flex-col gap-4">
-        <label for="section-title" class="grid grid-cols-1 gap-2">
-          <span class="w-max font-mono text-sm underline">ชื่่อส่วน</span>
+		<section>
+			<form onsubmit="event.preventDefault()" class="flex flex-col gap-4">
+				<label for="section-title" class="grid grid-cols-1 gap-2">
+					<span class="w-max font-mono text-sm underline">ชื่่อส่วน</span>
 
-          <input
-            type="text"
-            id="section-title"
-            class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-            placeholder="ชื่่อส่วน"
-          />
-        </label>
+					<input type="text" id="section-title" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" placeholder="ชื่่อส่วน" />
+				</label>
 
-        <h3 class="py-2 font-mono text-lg">เพิ่มสินค้า</h3>
+				<h3 class="py-2 font-mono text-lg">เพิ่มสินค้า</h3>
 
-        <main class="flex flex-col gap-4">
-          <section class="plist" id="product-selector-selected">
-            <h4 class="font-sans font-bold">ยังไม่เลือกสินค้า</h4>
-          </section>
+				<main class="flex flex-col gap-4">
+					<section class="plist" id="product-selector-selected">
+						<h4 class="font-sans font-bold">ยังไม่เลือกสินค้า</h4>
+					</section>
 
-          <section class="grid grid-cols-[1fr_3rem]">
-            <input
-              type="text"
-              id="search"
-              placeholder="ค้นหาสินค้า"
-              class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4"
-              oninput="sectionCreator.search(this.value)"
-            />
-            <button
-              id="clearseach"
-              class="flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white"
-            >
-              <span class="material-icons-outlined">close</span>
-            </button>
-          </section>
+					<section class="grid grid-cols-[1fr_3rem]">
+						<input type="text" id="search" placeholder="ค้นหาสินค้า" class="h-12 border-b-2 border-gray-950 font-sans outline-offset-4" oninput="sectionCreator.search(this.value)" />
+						<button id="clearseach" class="flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white">
+							<span class="material-icons-outlined">close</span>
+						</button>
+					</section>
 
-          <section class="plist" id="product-selector-filtered">
-            <div
-              class="my-2 h-6 w-6 animate-spin rounded-full border-2 border-gray-950 border-t-gray-300"
-            ></div>
-          </section>
-        </main>
-      </form>
-    </section>
-  </div>
+					<section class="plist" id="product-selector-filtered">
+						<div class="my-2 h-6 w-6 animate-spin rounded-full border-2 border-gray-950 border-t-gray-300"></div>
+					</section>
+				</main>
+			</form>
+		</section>
+	</div>
 </header>
 
 <script>
-  var sectionCreator;
-  class SectionCreator {
-    constructor(
-      parent = new AppearancePlacement(),
-      container = document.getElementById(),
-      id = false,
-      title = "",
-      result = [],
-    ) {
-      this.parent = parent;
-      this.container = container;
+	var sectionCreator;
+	class SectionCreator {
+		constructor(
+			parent = new AppearancePlacement(),
+			container = document.getElementById(),
+			id = false,
+			title = "",
+			result = [],
+		) {
+			this.parent = parent;
+			this.container = container;
 
-      this.submitButton = document.createElement("button");
-      this.submitButton.classList.add(
-        "flex",
-        "h-12",
-        "w-full",
-        "items-center",
-        "justify-center",
-        "border-2",
-        "border-gray-950",
-        "font-bold",
-        "duration-100",
-        "hover:bg-gray-950",
-        "hover:text-white",
-      );
-      this.submitButton.setAttribute("type", "submit");
-      this.submitButton.insertAdjacentText("beforeend", "ยืนยัน");
-      this.submitButton.onclick = () => this.submit();
+			this.submitButton = document.createElement("button");
+			this.submitButton.classList = "flex h-12 w-full items-center justify-center border-2 border-gray-950 font-bold duration-100 hover:bg-gray-950 hover:text-white";
+			this.submitButton.setAttribute("type", "submit");
+			this.submitButton.insertAdjacentText("beforeend", "ยืนยัน");
+			this.submitButton.onclick = () => this.submit();
 
-      this.container
-        .querySelector("button#close")
-        .addEventListener("click", () => this.close());
-      this.container
-        .querySelector("button#clearseach")
-        .addEventListener("click", () => {
-          this.container.querySelector("input#search").value = "";
-          this.loadProduct();
-        });
+			this.container
+				.querySelector("button#close")
+				.addEventListener("click", () => this.close());
+			this.container
+				.querySelector("button#clearseach")
+				.addEventListener("click", () => {
+					this.container.querySelector("input#search").value = "";
+					this.loadProduct();
+				});
 
-      this.selectedContainer = container.querySelector(
-        "section#product-selector-selected",
-      );
-      this.filteredContainer = container.querySelector(
-        "section#product-selector-filtered",
-      );
-      this.selectedContainer.insertAdjacentElement(
-        "afterend",
-        this.submitButton,
-      );
+			this.selectedContainer = container.querySelector("section#product-selector-selected");
+			this.filteredContainer = container.querySelector("section#product-selector-filtered");
+			this.selectedContainer.insertAdjacentElement("afterend", this.submitButton);
 
-      this.selectedContainerDefault = `<h4 class="font-sans font-bold">ยังไม่เลือกสินค้า</h4>`;
-      this.filteredContainerDefault = `<div class="w-6 h-6 rounded-full border-2 border-gray-950 border-t-gray-300 animate-spin my-2"></div>`;
+			this.selectedContainerDefault = `<h4 class="font-sans font-bold">ยังไม่เลือกสินค้า</h4>`;
+			this.filteredContainerDefault = `<div class="w-6 h-6 rounded-full border-2 border-gray-950 border-t-gray-300 animate-spin my-2"></div>`;
 
-      this.search_timeout = 1000;
-      this.search_timeout_object = setTimeout(() => {}, this.search_timeout);
+			this.search_timeout = 1000;
+			this.search_timeout_object = setTimeout(() => { }, this.search_timeout);
 
-      this.clearRendered();
-      this.container.querySelector("input#section-title").value = title;
-      this.id = id;
-      this.result = result;
-      this.product = [];
+			this.clearRendered();
+			this.container.querySelector("input#section-title").value = title;
+			this.id = id;
+			this.result = result;
+			this.product = [];
 
-      this.loadProduct();
-    }
+			this.loadProduct();
+		}
 
-    clearRendered() {
-      this.filteredContainer.innerHTML = this.filteredContainerDefault;
-      this.selectedContainer.innerHTML = this.selectedContainerDefault;
-    }
+		clearRendered() {
+			this.filteredContainer.innerHTML = this.filteredContainerDefault;
+			this.selectedContainer.innerHTML = this.selectedContainerDefault;
+		}
 
-    loadProduct() {
-      fetch("/api/product")
-        .then((res) => res.json())
-        .then((json) => {
-          this.product = json.result;
-          this.renderFiltered(this.product);
-          if (this.result.length !== 0) this.renderSelected();
-        })
-        .catch((e) => {
-          console.error(e);
-          new Alert(
-            "เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง",
-            AlertType.ERROR,
-            true,
-          );
-        });
-    }
+		loadProduct() {
+			fetch("/api/product")
+				.then((res) => res.json())
+				.then((json) => {
+					this.product = json.result;
+					this.renderFiltered(this.product);
+					if (this.result.length !== 0) this.renderSelected();
+				})
+				.catch((e) => {
+					console.error(e);
+					new Alert(
+						"เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง",
+						AlertType.ERROR,
+						true,
+					);
+				});
+		}
 
-    search(keyword) {
-      clearTimeout(this.search_timeout_object);
-      this.search_timeout_object = setTimeout(() => {
-        fetch("/api/product?q=" + keyword)
-          .then((res) => res.json())
-          .then((json) => {
-            this.product = json.result;
-            this.renderFiltered(json.result);
-          })
-          .catch(
-            (e) =>
-              new Alert(
-                "เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง",
-                AlertType.ERROR,
-                true,
-              ),
-          );
-      }, this.search_timeout);
-    }
+		search(keyword) {
+			clearTimeout(this.search_timeout_object);
+			this.search_timeout_object = setTimeout(() => {
+				fetch("/api/product?q=" + keyword)
+					.then((res) => res.json())
+					.then((json) => {
+						this.product = json.result;
+						this.renderFiltered(json.result);
+					})
+					.catch(
+						(e) =>
+							new Alert(
+								"เกิดข้อผิดพลาดบางอย่าง ลองอีกครั้งในภายหลัง",
+								AlertType.ERROR,
+								true,
+							),
+					);
+			}, this.search_timeout);
+		}
 
-    createProductTemplate(product = {}, selected = false) {
-      if (!product?.images) {
-        product = this.product.filter((e) => e._id === product._id)[0];
-      }
+		createProductTemplate(product = {}, selected = false) {
+			if (!product?.images) {
+				product = this.product.filter((e) => e._id === product._id)[0];
+			}
 
-      const container = document.createElement("div");
-      const img = document.createElement("img");
-      const p = document.createElement("p");
+			const container = document.createElement("div");
+			const img = document.createElement("img");
+			const p = document.createElement("p");
 
-      img.classList.add("h-12", "w-12", "object-cover");
-      p.classList.add("font-bold");
+			img.classList.add("h-12", "w-12", "object-cover");
+			p.classList.add("font-bold");
 
-      container.insertAdjacentElement("beforeend", img);
-      container.insertAdjacentElement("beforeend", p);
-      container.setAttribute("id", product._id);
-      container.classList.add(
-        "flex",
-        "flex-row",
-        "h-12",
-        "w-full",
-        "gap-4",
-        "cursor-pointer",
-      );
+			container.insertAdjacentElement("beforeend", img);
+			container.insertAdjacentElement("beforeend", p);
+			container.setAttribute("id", product._id);
+			container.classList = "flex flex-row h-12 w-full gap-4 cursor-pointer";
 
-      img.setAttribute(
-        "src",
-        `/images/products/${String(product._id)}/${product?.images[0]}`,
-      );
-      p.insertAdjacentText("beforeend", product.name);
-      p.classList.add("sans");
+			img.setAttribute("src", `/images/products/${String(product._id)}/${product?.images[0]}`);
+			p.insertAdjacentText("beforeend", product.name);
+			p.classList.add("sans");
 
-      if (!selected) container.onclick = () => this.insertSelected(product);
-      else container.onclick = () => this.removeSelected(product._id);
-      return container;
-    }
+			if (!selected) container.onclick = () => this.insertSelected(product);
+			else container.onclick = () => this.removeSelected(product._id);
+			return container;
+		}
 
-    renderFiltered(result = []) {
-      this.filteredContainer.innerHTML = "";
-      if (result.length === 0)
-        this.filteredContainer.innerHTML = this.filteredContainerDefault;
+		renderFiltered(result = []) {
+			this.filteredContainer.innerHTML = "";
+			if (result.length === 0)
+				this.filteredContainer.innerHTML = this.filteredContainerDefault;
 
-      const template = result.map((e) => this.createProductTemplate(e, false));
-      template.forEach((e) =>
-        this.filteredContainer.insertAdjacentElement("beforeend", e),
-      );
-    }
+			const template = result.map((e) => {
+				if (this.result.filter(s => s._id === e._id).length !== 0) return null;
+				return this.createProductTemplate(e, false);
+			});
 
-    renderSelected() {
-      this.selectedContainer.innerHTML = "";
-      if (this.result.length === 0) {
-        this.selectedContainer.innerHTML = this.selectedContainerDefault;
-        this.submitButton.classList.add("hide");
-      } else this.submitButton.classList.remove("hide");
+			template.forEach((e) => (e) ? this.filteredContainer.insertAdjacentElement("beforeend", e) : null);
+		}
 
-      const template = this.result.map((e) =>
-        this.createProductTemplate(e, true),
-      );
-      template.forEach((e) =>
-        this.selectedContainer.insertAdjacentElement("beforeend", e),
-      );
-    }
+		renderSelected() {
+			this.selectedContainer.innerHTML = "";
+			if (this.result.length === 0) {
+				this.selectedContainer.innerHTML = this.selectedContainerDefault;
+				this.submitButton.classList.add("hide");
+			} else this.submitButton.classList.remove("hide");
 
-    insertSelected(product) {
-      const filter = this.result.filter((e) => e._id === product._id);
-      if (filter.length !== 0) return false;
+			const template = this.result.map((e) =>
+				this.createProductTemplate(e, true)
+			);
+			template.forEach((e) =>
+				this.selectedContainer.insertAdjacentElement("beforeend", e),
+			);
+		}
 
-      this.result.push(product);
-      this.renderSelected();
-    }
+		insertSelected(product) {
+			const filter = this.result.filter((e) => e._id === product._id);
+			if (filter.length !== 0) return false;
 
-    removeSelected(id) {
-      this.result = this.result.filter((e) => e._id != id);
-      this.renderSelected();
-    }
+			this.result.push(product);
+			this.renderSelected();
+			this.renderFiltered(this.product);
+		}
 
-    submit() {
-      const title = this.container.querySelector("input#section-title").value;
-      const products = this.result.map((e) => {
-        return { _id: e._id, name: e.name };
-      });
-      this.parent.insertContainer(title, products, this.id);
-      this.submitButton.remove();
-      this.close();
-    }
+		removeSelected(id) {
+			this.result = this.result.filter((e) => e._id != id);
+			this.renderSelected();
+			this.renderFiltered(this.product);
+		}
 
-    close() {
-      this.submitButton.remove();
-      this.container.remove();
-    }
-  }
+		submit() {
+			const title = this.container.querySelector("input#section-title").value;
+			const products = this.result.map((e) => {
+				return { _id: e._id, name: e.name };
+			});
+			this.parent.insertContainer(title, products, this.id);
+			this.submitButton.remove();
+			this.close();
+		}
+
+		close() {
+			this.submitButton.remove();
+			this.container.remove();
+		}
+	}
 </script>
 
 <script>
-  const sait = document.getElementById("shop-appearance-insert-track");
-  sait.remove();
+	const sait = document.getElementById("shop-appearance-insert-track");
+	sait.remove();
 </script>
 
 <script>
-  function createAppearancePlacementTemplate(
-    parent = new AppearancePlacement(),
-    id = uuidv4(),
-    title = "",
-    products = [],
-  ) {
-    const productTemaplate = products.map((e) => {
-      const div = document.createElement("div");
-      const a = document.createElement("a");
+	function createAppearancePlacementTemplate(
+		parent = new AppearancePlacement(),
+		id = uuidv4(),
+		title = "",
+		products = [],
+	) {
+		const productTemaplate = products.map((e) => {
+			const div = document.createElement("div");
+			const a = document.createElement("a");
 
-      a.insertAdjacentText("beforeend", e.name);
-      div.insertAdjacentElement("afterbegin", a);
-      div.classList.add(
-        "w-full",
-        "border-b",
-        "border-gray-950",
-        "font-bold",
-        "py-1",
-      );
+			a.insertAdjacentText("beforeend", e.name);
+			div.insertAdjacentElement("afterbegin", a);
+			div.classList = "w-full border-b border-gray-950 font-bold py-1";
+			return div;
+		});
 
-      return div;
-    });
+		const container = document.createElement("section");
+		container.classList = "flex flex-col gap-4 border-2 border-gray-950 p-4";
 
-    const container = document.createElement("section");
-    container.classList.add(
-      "flex",
-      "flex-col",
-      "gap-4",
-      "border-2",
-      "border-gray-950",
-      "p-4",
-    );
+		const header = document.createElement("header");
+		header.classList = "flex w-full flex-row items-center justify-between";
 
-    const header = document.createElement("header");
-    header.classList.add(
-      "flex",
-      "w-full",
-      "flex-row",
-      "items-center",
-      "justify-between",
-    );
+		const h2 = document.createElement("h2");
+		h2.classList.add("font-sans", "text-2xl");
+		h2.insertAdjacentText("beforeend", title);
 
-    const h2 = document.createElement("h2");
-    h2.classList.add("font-sans", "text-2xl");
-    h2.insertAdjacentText("beforeend", title);
+		container.insertAdjacentElement("afterbegin", header);
+		header.insertAdjacentElement("afterbegin", h2);
 
-    container.insertAdjacentElement("afterbegin", header);
-    header.insertAdjacentElement("afterbegin", h2);
+		const menu = document.createElement("div");
+		menu.classList.add("relative");
 
-    const menu = document.createElement("div");
-    menu.classList.add("relative");
+		const menu_button = document.createElement("button");
+		menu_button.classList = "flex h-8 w-8 items-center justify-center duration-100 hover:bg-gray-950 hover:text-white";
 
-    const menu_button = document.createElement("button");
-    menu_button.classList.add(
-      "flex",
-      "h-8",
-      "w-8",
-      "items-center",
-      "justify-center",
-      "duration-100",
-      "hover:bg-gray-950",
-      "hover:text-white",
-    );
+		menu_button.onclick = () => {
+			const check = menu_button.parentElement.querySelector("input[type=checkbox]");
+			check.checked = check.checked != true ? true : false;
+		};
+		const menu_button_icon = document.createElement("span");
+		menu_button_icon.classList.add("material-icons-outlined");
+		menu_button_icon.insertAdjacentText("afterbegin", "more_vert");
+		menu_button.insertAdjacentElement("afterbegin", menu_button_icon);
+		menu.insertAdjacentElement("afterbegin", menu_button);
 
-    menu_button.onclick = () => {
-      const check = menu_button.parentElement.querySelector(
-        "input[type=checkbox]",
-      );
-      check.checked = check.checked != true ? true : false;
-    };
-    const menu_button_icon = document.createElement("span");
-    menu_button_icon.classList.add("material-icons-outlined");
-    menu_button_icon.insertAdjacentText("afterbegin", "more_vert");
-    menu_button.insertAdjacentElement("afterbegin", menu_button_icon);
-    menu.insertAdjacentElement("afterbegin", menu_button);
+		const menu_open_nav = document.createElement("input");
+		menu_open_nav.setAttribute("type", "checkbox");
+		menu_open_nav.classList.add("peer", "hidden");
+		menu.insertAdjacentElement("afterbegin", menu_open_nav);
 
-    const menu_open_nav = document.createElement("input");
-    menu_open_nav.setAttribute("type", "checkbox");
-    menu_open_nav.classList.add("peer", "hidden");
-    menu.insertAdjacentElement("afterbegin", menu_open_nav);
+		const menu_nav = document.createElement("nav");
+		menu_nav.classList = "absolute right-0 top-8 hidden w-max min-w-36 flex-col border-2 border-gray-950 bg-white peer-checked:flex";
 
-    const menu_nav = document.createElement("nav");
-    menu_nav.classList.add(
-      "absolute",
-      "right-0",
-      "top-8",
-      "hidden",
-      "w-max",
-      "min-w-36",
-      "flex-col",
-      "border-2",
-      "border-gray-950",
-      "bg-white",
-      "peer-checked:flex",
-    );
+		header.insertAdjacentElement("beforeend", menu);
 
-    header.insertAdjacentElement("beforeend", menu);
+		const menunav_list = [
+			{
+				icon: "edit",
+				text: "แก้ไข",
+				onclick: () => parent.editTrack(id),
+			},
+			{
+				icon: "delete",
+				text: "ลบ",
+				onclick: () => parent.removeTrack(id)
+			},
+		];
 
-    const menunav_list = [
-      {
-        icon: "edit",
-        text: "แก้ไข",
-        onclick: () => {
-          parent.editTrack(id);
-        },
-      },
-      {
-        icon: "delete",
-        text: "ลบ",
-        onclick: () => {
-          parent.removeTrack(id);
-        },
-      },
-    ];
+		const menulist = menunav_list.map((e) => {
+			const a = document.createElement("a");
+			const icon = document.createElement("span");
+			const text = document.createElement("p");
 
-    const menulist = menunav_list.map((e) => {
-      const a = document.createElement("a");
-      const icon = document.createElement("span");
-      const text = document.createElement("p");
+			icon.classList.add("material-icons-outlined");
+			icon.style.fontSize = "20px";
+			icon.insertAdjacentText("beforeend", e.icon);
+			text.insertAdjacentText("beforeend", e.text);
+			a.onclick = e.onclick;
 
-      icon.classList.add("material-icons-outlined");
-      icon.style.fontSize = "20px";
-      icon.insertAdjacentText("beforeend", e.icon);
-      text.insertAdjacentText("beforeend", e.text);
-      a.onclick = e.onclick;
+			a.insertAdjacentElement("beforeend", icon);
+			a.insertAdjacentElement("beforeend", text);
+			a.classList = "flex h-max flex-row items-center gap-2 px-4 py-2 duration-100 hover:bg-gray-950 hover:text-white";
+			return a;
+		});
 
-      a.insertAdjacentElement("beforeend", icon);
-      a.insertAdjacentElement("beforeend", text);
-      a.classList.add(
-        "flex",
-        "h-max",
-        "flex-row",
-        "items-center",
-        "gap-2",
-        "px-4",
-        "py-2",
-        "duration-100",
-        "hover:bg-gray-950",
-        "hover:text-white",
-      );
-      return a;
-    });
+		menulist.forEach((e) => menu_nav.insertAdjacentElement("beforeend", e));
+		menu.insertAdjacentElement("beforeend", menu_nav);
 
-    menulist.forEach((e) => menu_nav.insertAdjacentElement("beforeend", e));
-    menu.insertAdjacentElement("beforeend", menu_nav);
-
-    const app = document.createElement("div");
-    app.classList.add("appearance-product-placement");
-    productTemaplate.forEach((e) => app.insertAdjacentElement("beforeend", e));
-    container.insertAdjacentElement("beforeend", app);
-    return container;
-  }
+		const app = document.createElement("div");
+		app.classList.add("appearance-product-placement");
+		productTemaplate.forEach((e) => app.insertAdjacentElement("beforeend", e));
+		container.insertAdjacentElement("beforeend", app);
+		return container;
+	}
 </script>
 
 <script>
-  class AppearancePlacement {
-    constructor(
-      container = document.getElementById(),
-      insertTrackTempalte = document.getElementById(),
-    ) {
-      this.container = container;
-      this.containerDefault = this.container.innerHTML;
-      this.insertTrackTempalte = insertTrackTempalte;
-      this.result = [];
-      this.render(true);
-    }
+	class AppearancePlacement {
+		constructor(
+			container = document.getElementById(),
+			insertTrackTempalte = document.getElementById(),
+		) {
+			this.container = container;
+			this.containerDefault = this.container.innerHTML;
+			this.insertTrackTempalte = insertTrackTempalte;
+			this.result = [];
+			this.render(true);
+		}
 
-    renderResult() {
-      this.container.innerHTML = "";
-      if (this.result.length === 0)
-        this.container.innerHTML = this.containerDefault;
+		renderResult() {
+			this.container.innerHTML = "";
+			if (this.result.length === 0)
+				this.container.innerHTML = this.containerDefault;
 
-      this.result.forEach((e) => {
-        const template = createAppearancePlacementTemplate(
-          this,
-          e._id,
-          e.title,
-          e.products,
-        );
-        this.container.insertAdjacentElement("beforeend", template);
-      });
-    }
+			this.result.forEach((e) => {
+				const template = createAppearancePlacementTemplate(
+					this,
+					e._id,
+					e.title,
+					e.products,
+				);
+				this.container.insertAdjacentElement("beforeend", template);
+			});
+		}
 
-    render(refetch = false) {
-      if (refetch)
-        fetch("/api/managers/shop/appearance")
-          .then((res) => res.json())
-          .then((res) => {
-            this.result = res.appearance;
-            this.renderResult();
-          });
-      else this.renderResult();
-    }
+		render(refetch = false) {
+			if (refetch)
+				fetch("/api/managers/shop/appearance")
+					.then((res) => res.json())
+					.then((res) => {
+						this.result = res.appearance;
+						this.renderResult();
+					});
+			else this.renderResult();
+		}
 
-    createInsertTrack() {
-      document.body.insertAdjacentElement(
-        "beforeend",
-        this.insertTrackTempalte,
-      );
-      sectionCreator = new SectionCreator(this, this.insertTrackTempalte);
-    }
+		createInsertTrack() {
+			document.body.insertAdjacentElement(
+				"beforeend",
+				this.insertTrackTempalte,
+			);
+			sectionCreator = new SectionCreator(this, this.insertTrackTempalte);
+		}
 
-    editTrack(id) {
-      const track = this.result.filter((e) => e._id == id)[0];
-      document.body.insertAdjacentElement(
-        "beforeend",
-        this.insertTrackTempalte,
-      );
-      sectionCreator = new SectionCreator(
-        this,
-        this.insertTrackTempalte,
-        track._id,
-        track.title,
-        track.products,
-      );
-    }
+		editTrack(id) {
+			const track = this.result.filter((e) => e._id == id)[0];
+			document.body.insertAdjacentElement(
+				"beforeend",
+				this.insertTrackTempalte,
+			);
+			sectionCreator = new SectionCreator(
+				this,
+				this.insertTrackTempalte,
+				track._id,
+				track.title,
+				track.products,
+			);
+		}
 
-    removeTrack(id) {
-      fetch("/api/managers/shop/appearance", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "DELETE",
-        body: JSON.stringify({ id }),
-      })
-        .then((res) => res.json)
-        .then((res) => this.render(true));
-    }
+		removeTrack(id) {
+			fetch("/api/managers/shop/appearance", {
+				headers: {
+					"Content-Type": "application/json",
+				},
+				method: "DELETE",
+				body: JSON.stringify({ id }),
+			})
+				.then((res) => res.json)
+				.then((res) => this.render(true));
+		}
 
-    insertContainer(title = "", products = [], id = false) {
-      fetch("/api/managers/shop/appearance", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: id ? "PUT" : "POST",
-        body: JSON.stringify({ id, title, products }),
-      })
-        .then((res) => res.json)
-        .then((res) => this.render(true));
-    }
+		insertContainer(title = "", products = [], id = false) {
+			fetch("/api/managers/shop/appearance", {
+				headers: {
+					"Content-Type": "application/json",
+				},
+				method: id ? "PUT" : "POST",
+				body: JSON.stringify({ id, title, products }),
+			})
+				.then((res) => res.json)
+				.then((res) => this.render(true));
+		}
 
-    getResult() {
-      return this.result;
-    }
-  }
+		getResult() {
+			return this.result;
+		}
+	}
 </script>
 
 <script>
-  const appearanceplacementcontainer = document.getElementById(
-    "appearance-placement-container",
-  );
-  const appearance = new AppearancePlacement(
-    appearanceplacementcontainer,
-    sait,
-  );
+	const appearanceplacementcontainer = document.getElementById(
+		"appearance-placement-container",
+	);
+	const appearance = new AppearancePlacement(
+		appearanceplacementcontainer,
+		sait,
+	);
 </script>
