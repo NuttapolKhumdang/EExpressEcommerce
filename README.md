@@ -29,6 +29,8 @@ Install node package
 
 A `.env` file is required within the directory for proper operation. This is require argument for this app
 
+    DATABASE=<MongoDB Server Connection URI>
+
     MAILSENDER_SERVICE=Gmail
     MAILSENDER_HOST=smtp.gmail.com
     MAILSENDER_SECURE=true
