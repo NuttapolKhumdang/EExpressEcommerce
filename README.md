@@ -10,7 +10,7 @@ I'm excited to share EExpress, my personal project built to explore e-commerce d
 
 ### Features
 
-This project is currently in development. Some feature may broken or haveing bug in working process
+This project is currently in development. Some feature may broken or having bug in working process
 
 - **Comprehensive User Experience:** Simulating a full e-commerce journey from product browsing to checkout.
 - **Inventory Management:** Adding, editing, and managing products to understand e-commerce backend functionalities.
