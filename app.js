@@ -1,3 +1,4 @@
+require('dotenv').config();
 require('./modules/Database');
 
 const express = require('express');
@@ -67,17 +68,17 @@ const indexRouter = require('./routes/index');
 const checkoutRouter = require('./routes/checkout');
 const productRouter = require('./routes/product');
 const managersRouter = require('./routes/managers');
-const testsRouter = require('./routes/test');
+const testsRouter = process.env.ROUTE_TEST ? require('./routes/test') : false;
 const staticRouter = require('./routes/static');
+
+if (process.env.ROUTE_TEST) app.use('/test', testsRouter);
 
 app.use('/analytics', analyticsRouter);
 app.use('/managers', managersRouter);
-
 app.use('/api', apiRouter);
 app.use('/article', articlesRouter);
 app.use('/checkout', checkoutRouter);
 app.use('/product', productRouter);
-app.use('/test', testsRouter);
 app.use('/', indexRouter);
 app.use('/', staticRouter);
 
