@@ -62,13 +62,14 @@ const { clientAccess } = require('./modules/Analytics');
 app.use(clientAccess());
 
 if (process.env.ROUTE_TEST) app.use('/test', require('./routes/test'));
-app.use('/analytics', require('./routes/api'));
-app.use('/managers', require('./routes/articles'));
-app.use('/api', require('./routes/analytics'));
-app.use('/article', require('./routes/index'));
+
+app.use('/api', require('./routes/api'));
+app.use('/article', require('./routes/articles'));
+app.use('/analytics', require('./routes/analytics'));
 app.use('/checkout', require('./routes/checkout'));
 app.use('/product', require('./routes/product'));
-app.use('/', require('./routes/managers'));
+app.use('/managers', require('./routes/managers'));
+app.use('/', require('./routes/index'));
 app.use('/', require('./routes/static'));
 
 module.exports = app;
