@@ -61,26 +61,15 @@ app.use(passport.session());
 const { clientAccess } = require('./modules/Analytics');
 app.use(clientAccess());
 
-const apiRouter = require('./routes/api');
-const articlesRouter = require('./routes/articles');
-const analyticsRouter = require('./routes/analytics');
-const indexRouter = require('./routes/index');
-const checkoutRouter = require('./routes/checkout');
-const productRouter = require('./routes/product');
-const managersRouter = require('./routes/managers');
-const testsRouter = process.env.ROUTE_TEST ? require('./routes/test') : false;
-const staticRouter = require('./routes/static');
-
-if (process.env.ROUTE_TEST) app.use('/test', testsRouter);
-
-app.use('/analytics', analyticsRouter);
-app.use('/managers', managersRouter);
-app.use('/api', apiRouter);
-app.use('/article', articlesRouter);
-app.use('/checkout', checkoutRouter);
-app.use('/product', productRouter);
-app.use('/', indexRouter);
-app.use('/', staticRouter);
+if (process.env.ROUTE_TEST) app.use('/test', require('./routes/test'));
+app.use('/analytics', require('./routes/api'));
+app.use('/managers', require('./routes/articles'));
+app.use('/api', require('./routes/analytics'));
+app.use('/article', require('./routes/index'));
+app.use('/checkout', require('./routes/checkout'));
+app.use('/product', require('./routes/product'));
+app.use('/', require('./routes/managers'));
+app.use('/', require('./routes/static'));
 
 module.exports = app;
 
