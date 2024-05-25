@@ -20,7 +20,7 @@ This project is currently in development. Some feature may broken or having bug 
 # Installation and Setup Instructions
 
 Clone down this repository. You will need `node` and `npm` installed globally on your machine.
-and `MongoDB Server` (optional) if you want to store data in your server or use `Mongo Atlas` instread of MongoDB Server
+and `MongoDB Server` (optional) if you want to store data in your server or use `MongoDB Atlas` instead of MongoDB Server
 ## Installation
 
 Install node package
