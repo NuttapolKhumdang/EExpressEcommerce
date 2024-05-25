@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "set debug=eexpress:* & nodemon"
   },
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.5",
