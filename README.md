@@ -20,7 +20,7 @@ This project is currently in development. Some feature may broken or having bug 
 # Installation and Setup Instructions
 
 Clone down this repository. You will need `node` and `npm` installed globally on your machine.
-
+and `MongoDB Server` (optional) if you want to store data in your server or use `Mongo Atlas` instread of MongoDB Server
 ## Installation
 
 Install node package
@@ -43,7 +43,7 @@ A `.env` file is required within the directory for proper operation. This is req
     PORT=3000 # Server listening port
 
 ### To Run Test Suite:
-There is no test for this project. everything is test
+run `npm test`
 
 ### To Start Server:
 run `npm start`
